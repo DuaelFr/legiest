@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Provides features integration for Commerce modules.
+ */
+
+/**
+ * Implements hook_features_api().
+ */
+function commerce_features_features_api() {
+  return array(
+    'commerce_product_type' => array(
+      'name' => t('Commerce product types'),
+      'feature_source' => TRUE,
+      'default_hook' => 'commerce_product_default_types',
+  		'file' => drupal_get_path('module', 'commerce_features') .'/commerce_product_type.features.inc',
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Those product types provided by features shall not be deleted.
+ */
+function commerce_features_menu_alter(&$items) {
+  foreach (module_implements('commerce_product_default_types') as $module) {
+    foreach (module_invoke($module, 'commerce_product_default_types') as $type => $product_type) {
+      $type_arg = strtr($type, '_', '-');
+      unset($items['admin/commerce/products/types/' . $type_arg . '/delete']);
+    }
+  }
+}
