@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * @file
+ * Installs the tables required by Commerce Card on File.
+ */
+
+
+/**
+ * Implements hook_schema().
+ */
+function commerce_cardonfile_schema() {
+  $schema = array();
+
+  $schema['commerce_card_data'] = array(
+    'description' => 'Stores truncated card data with references to the full card data stored at payment gateways.',
+    'fields' => array(
+      'card_id' => array(
+        'description' => 'Serial numeric ID of the truncated card data in the local database.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that supplied this card data.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'payment_method' => array(
+        'description' => 'The payment method method_id for this transaction.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'instance_id' => array(
+        'description' => 'The payment method instance ID for this transaction.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'remote_id' => array(
+        'description' => 'The remote ID to the full card data at the payment gateway.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'card_type' => array(
+        'description' => 'The credit card type.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'card_name' => array(
+        'description' => 'The name on the credit card.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'card_number' => array(
+        'description' => 'Truncated number of the credit card (last 4 digits).',
+        'type' => 'varchar',
+        'length' => 4,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'card_exp_month' => array(
+        'description' => 'Expiration month of the credit card.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'card_exp_year' => array(
+        'description' => 'Expiration year of the credit card.',
+        'type' => 'int',
+        'size' => 'small',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'description' => 'Status of the card data: inactive (0), active (1), or active and not deletable (2).',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the card data was first stored.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the card data was last updated.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('card_id'),
+    'indexes' => array(
+      'uid' => array('uid'),
+      'instance_id' => array('instance_id'),
+    ),
+    'foreign keys' => array(
+      'owner' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+
+  return $schema;
+}
