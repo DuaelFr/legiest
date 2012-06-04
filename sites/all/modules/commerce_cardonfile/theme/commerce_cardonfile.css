@@ -1,0 +1,9 @@
+
+.commerce-card-data.links.operations {
+  text-transform: lowercase;
+  margin-left: 0;
+}
+
+.commerce-card-data-line .label {
+  font-weight: bold;
+}
