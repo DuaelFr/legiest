@@ -9,7 +9,13 @@
  * Page callback for creating a customer profile of a given type.
  */
 function commerce_addressbook_profile_create($account, $profile_type) {
+  // Add the breadcrumb for the form's location.
+  commerce_addressbook_set_breadcrumb($account, $profile_type);
+
   $profile = commerce_customer_profile_new($profile_type, $account->uid);
+  // The submit handler needs an indication that the profile was just added.
+  // The regular is_new property gets unset after save is complete.
+  $profile->_is_new = TRUE;
   module_load_include('inc', 'commerce_customer', 'includes/commerce_customer_profile.forms');
   return drupal_get_form('commerce_addressbook_customer_profile_form', $profile);
 }
@@ -30,16 +36,16 @@ function commerce_addressbook_profile_options_edit($account, $customer_profile) 
     $profile->is_new = TRUE;
   }
   module_load_include('inc', 'commerce_customer', 'includes/commerce_customer_profile.forms');
-  return drupal_get_form('commerce_addressbook_customer_profile_options_edit', $profile);
+  return drupal_get_form('commerce_addressbook_customer_profile_form', $profile);
 }
 
 /**
- * Submit handler for commerce_addressbook_customer_profile_options_edit form.
+ * Submit handler for commerce_addressbook_customer_profile_form.
  */
-function commerce_addressbook_customer_profile_options_edit_submit($form, &$form_state) {
-  list($profile) = $form_state['build_info']['args'];
+function commerce_addressbook_customer_profile_form_submit($form, &$form_state) {
+  $profile = $form_state['customer_profile'];
 
-  // The profile has been duplicated.
+  // The profile has been edited and duplicated.
   // Disable the previous one to prevent it from showing up in listings.
   if (!empty($profile->previous_id)) {
     $old_profile = commerce_customer_profile_load($profile->previous_id);
@@ -50,6 +56,22 @@ function commerce_addressbook_customer_profile_options_edit_submit($form, &$form
     // as the default.
     $default_profile_id = commerce_addressbook_get_default_profile_id($profile->uid, $profile->type);
     if ($old_profile->profile_id == $default_profile_id) {
+      commerce_addressbook_set_default_profile($profile);
+    }
+  }
+
+  // Set the profile as default if it has just been added, and the user has no
+  // other active profiles of this type.
+  if (!empty($profile->_is_new)) {
+    $query = new EntityFieldQuery;
+    $query->entityCondition('entity_type', 'commerce_customer_profile')
+          ->entityCondition('bundle', $profile->type)
+          ->propertyCondition('uid', $profile->uid)
+          ->propertyCondition('status', 1)
+          ->count();
+    $result = $query->execute();
+
+    if ($result < 2) {
       commerce_addressbook_set_default_profile($profile);
     }
   }
