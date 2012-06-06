@@ -76,6 +76,15 @@ function commerce_shipping_commerce_customer_profile_type_info() {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function commerce_shipping_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'addressfield') {
+    return 'plugins/' . $plugin_type;
+  }
+}
+
+/**
  * Implements hook_commerce_checkout_page_info().
  */
 function commerce_shipping_commerce_checkout_page_info() {
@@ -990,6 +999,11 @@ function commerce_shipping_add_shipping_line_item($line_item, $order, $skip_save
   // Save the updated order.
   if (!$skip_save) {
     commerce_order_save($order);
+  }
+  // Otherwise, we still need to update the order total to take for account
+  // added shipping line item.
+  else {
+    commerce_order_calculate_total($order);
   }
 
   return $line_item;
