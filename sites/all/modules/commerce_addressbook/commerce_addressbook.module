@@ -292,6 +292,13 @@ function commerce_addressbook_form_alter(&$form, &$form_state, $form_id) {
             '#weight' => -100,
             '#default_value' => $default_value,
           );
+          if ($pane_id == 'customer_profile_shipping') {
+            $form[$pane_id]['addressbook']['#states'] = array(
+              'invisible' => array(
+                ':input[name="customer_profile_billing[commerce_customer_address][und][0][copy_billing_address]"]' => array('checked' => TRUE),
+              )
+            );
+          }
         }
       }
     }
