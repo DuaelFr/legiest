@@ -1,0 +1,7 @@
+name = "Legiest Commerce"
+description = ""
+core = "7.x"
+package = "Legiest"
+version = "7.x-1.0"
+dependencies[] = "commerce"
+dependencies[] = "commerce_order"
