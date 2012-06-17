@@ -55,7 +55,7 @@ function legiest_commerce_rules_condition_is_shippable($order) {
       }
     }
   }
-dsm($shippable);
+
   return $shippable;
 }
 
