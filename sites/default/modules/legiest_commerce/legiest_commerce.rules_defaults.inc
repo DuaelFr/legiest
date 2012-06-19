@@ -187,7 +187,6 @@ function legiest_commerce_default_rules_configuration() {
   $rule = rule($variables);
   $rule->label = t('(Legiest Commerce) Order no shipping');
   $rule->active = TRUE;
-  $rule->weight = -97;
   $rule
     ->condition('data_is', array(
       'data:select' => 'commerce-order:status',
@@ -199,6 +198,9 @@ function legiest_commerce_default_rules_configuration() {
     ->action('commerce_order_update_status', array(
       'commerce_order:select' => 'commerce_order',
       'order_status' => 'completed',
+    ))
+    ->action('drupal_message', array(
+      'message' => 'Automatic transition from processing to completed',
     ));
   $rules['legiest_commerce_order_no_shipping'] = $rule;
 
@@ -207,7 +209,6 @@ function legiest_commerce_default_rules_configuration() {
   $rule = rule($variables);
   $rule->label = t('(Legiest Commerce) Order paid');
   $rule->active = TRUE;
-  $rule->weight = -98;
   $rule
     ->condition('data_is', array(
       'data:select' => 'commerce-order:status',
@@ -224,6 +225,9 @@ function legiest_commerce_default_rules_configuration() {
     ->action('commerce_order_update_status', array(
       'commerce_order:select' => 'commerce_order',
       'order_status' => 'processing',
+    ))
+    ->action('drupal_message', array(
+      'message' => 'Automatic transition from pending to processing',
     ));
   $rules['legiest_commerce_order_paid'] = $rule;
 
@@ -232,7 +236,6 @@ function legiest_commerce_default_rules_configuration() {
   $rule = rule($variables);
   $rule->label = t('(Legiest Commerce) Order paid special');
   $rule->active = TRUE;
-  $rule->weight = -97;
   $rule
     ->condition('data_is', array(
       'data:select' => 'commerce-order:status',
@@ -246,6 +249,9 @@ function legiest_commerce_default_rules_configuration() {
     ->action('commerce_order_update_status', array(
       'commerce_order:select' => 'commerce_order',
       'order_status' => 'completed',
+    ))
+    ->action('drupal_message', array(
+      'message' => 'Automatic transition from pending_special to completed',
     ));
   $rules['legiest_commerce_order_paid_special'] = $rule;
 
@@ -254,7 +260,6 @@ function legiest_commerce_default_rules_configuration() {
   $rule = rule($variables);
   $rule->label = t('(Legiest Commerce) Order no shipping special');
   $rule->active = TRUE;
-  $rule->weight = -98;
   $rule
     ->condition('data_is', array(
       'data:select' => 'commerce-order:status',
@@ -266,6 +271,9 @@ function legiest_commerce_default_rules_configuration() {
     ->action('commerce_order_update_status', array(
       'commerce_order:select' => 'commerce_order',
       'order_status' => 'pending_special',
+    ))
+    ->action('drupal_message', array(
+      'message' => 'Automatic transition from processing_special to pending_special',
     ));
   $rules['legiest_commerce_order_no_shipping_special'] = $rule;
 
@@ -274,7 +282,6 @@ function legiest_commerce_default_rules_configuration() {
   $rule = rule($variables);
   $rule->label = t('(Legiest Commerce) Alternative order process');
   $rule->active = TRUE;
-  $rule->weight = -99;
   $rule
     ->condition('data_is', array(
       'data:select' => 'commerce-order:status',
@@ -286,6 +293,9 @@ function legiest_commerce_default_rules_configuration() {
     ->action('commerce_order_update_status', array(
       'commerce_order:select' => 'commerce_order',
       'order_status' => 'processing_special',
+    ))
+    ->action('drupal_message', array(
+      'message' => 'Automatic transition from pending to processing_special',
     ));
   $rules['legiest_commerce_order_client_special'] = $rule;
 
@@ -298,23 +308,11 @@ function legiest_commerce_default_rules_configuration() {
       'data:select' => 'commerce-order:status',
       'value' => 'pending',
     ))
-    ->action('legiest_commerce_order_client_special', array(
+    ->action('component_legiest_commerce_order_client_special', array(
       'commerce_order:select' => 'commerce_order',
       'commerce_order_unchanged:select' => 'commerce_order_unchanged',
     ))
-    ->action('legiest_commerce_order_no_shipping_special', array(
-      'commerce_order:select' => 'commerce_order',
-      'commerce_order_unchanged:select' => 'commerce_order_unchanged',
-    ))
-    ->action('legiest_commerce_order_paid_special', array(
-      'commerce_order:select' => 'commerce_order',
-      'commerce_order_unchanged:select' => 'commerce_order_unchanged',
-    ))
-    ->action('legiest_commerce_order_paid', array(
-      'commerce_order:select' => 'commerce_order',
-      'commerce_order_unchanged:select' => 'commerce_order_unchanged',
-    ))
-    ->action('legiest_commerce_order_no_shipping', array(
+    ->action('component_legiest_commerce_order_paid', array(
       'commerce_order:select' => 'commerce_order',
       'commerce_order_unchanged:select' => 'commerce_order_unchanged',
     ));
@@ -329,7 +327,7 @@ function legiest_commerce_default_rules_configuration() {
       'data:select' => 'commerce-order:status',
       'value' => 'processing',
     ))
-    ->action('legiest_commerce_order_no_shipping', array(
+    ->action('component_legiest_commerce_order_no_shipping', array(
       'commerce_order:select' => 'commerce_order',
       'commerce_order_unchanged:select' => 'commerce_order_unchanged',
     ));
@@ -344,11 +342,7 @@ function legiest_commerce_default_rules_configuration() {
       'data:select' => 'commerce-order:status',
       'value' => 'processing_special',
     ))
-    ->action('legiest_commerce_order_no_shipping_special', array(
-      'commerce_order:select' => 'commerce_order',
-      'commerce_order_unchanged:select' => 'commerce_order_unchanged',
-    ))
-    ->action('legiest_commerce_order_paid_special', array(
+    ->action('component_legiest_commerce_order_no_shipping_special', array(
       'commerce_order:select' => 'commerce_order',
       'commerce_order_unchanged:select' => 'commerce_order_unchanged',
     ));
@@ -363,7 +357,7 @@ function legiest_commerce_default_rules_configuration() {
       'data:select' => 'commerce-order:status',
       'value' => 'pending_special',
     ))
-    ->action('legiest_commerce_order_paid_special', array(
+    ->action('component_legiest_commerce_order_paid_special', array(
       'commerce_order:select' => 'commerce_order',
       'commerce_order_unchanged:select' => 'commerce_order_unchanged',
     ));
