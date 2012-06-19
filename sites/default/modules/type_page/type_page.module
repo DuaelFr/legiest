@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Type Page feature.
+ */
+
+include_once 'type_page.features.inc';
