@@ -1,0 +1,210 @@
+<?php
+
+/**
+ * Implements hook_enable().
+ */
+function legiest_commerce_enable() {
+  // France normal
+  $shipping_service = array(
+    'name' => 'france',
+    'title' => 'France',
+    'display_title' => 'France',
+    'description' => 'Pour toute commande de moins de 99 € expédiée en France métropolitaine.',
+    'rules_component' => FALSE,
+    'amount' => '650',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  // Franco de port
+  $shipping_service = array(
+    'name' => 'free_shipping',
+    'title' => 'Franco de port',
+    'display_title' => 'Franco de port',
+    'description' => 'Pour toute commande de 99 € et plus expédiée en France métropolitaine.',
+    'rules_component' => FALSE,
+    'amount' => '0',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  // Zone 1
+  $shipping_service = array(
+    'name' => 'area1_0_100',
+    'title' => 'Zone 1 - 0g -> 100g',
+    'display_title' => 'Zone 1 - 0g -> 100g',
+    'description' => 'Pour toute commande pesant entre 0 et 99g expédiée dans la Zone 1.',
+    'rules_component' => FALSE,
+    'amount' => '1250',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area1_100_500',
+    'title' => 'Zone 1 - 100g -> 500g',
+    'display_title' => 'Zone 1 - 100g -> 500g',
+    'description' => 'Pour toute commande pesant entre 100g et 499g expédiée dans la Zone 1.',
+    'rules_component' => FALSE,
+    'amount' => '1700',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area1_500_1000',
+    'title' => 'Zone 1 - 500g -> 1kg',
+    'display_title' => 'Zone 1 - 500g -> 1kg',
+    'description' => 'Pour toute commande pesant entre 500g et 999g expédiée dans la Zone 1.',
+    'rules_component' => FALSE,
+    'amount' => '2200',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area1_1000_2000',
+    'title' => 'Zone 1 - 1kg -> 2kg',
+    'display_title' => 'Zone 1 - 1kg -> 2kg',
+    'description' => 'Pour toute commande pesant entre 1kg et 1kg 999g expédiée dans la Zone 1.',
+    'rules_component' => FALSE,
+    'amount' => '2700',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area1_2000_10000',
+    'title' => 'Zone 1 - 2kg -> 10kg',
+    'display_title' => 'Zone 1 - 2kg -> 10kg',
+    'description' => 'Pour toute commande pesant entre 2kg et 9kg 999g expédiée dans la Zone 1.',
+    'rules_component' => FALSE,
+    'amount' => '3200',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area1_10000+',
+    'title' => 'Zone 1 - 10kg et plus',
+    'display_title' => 'Zone 1 - 10kg et plus',
+    'description' => 'Pour toute commande pesant 10kg et plus expédiée dans la Zone 1.',
+    'rules_component' => FALSE,
+    'amount' => '4150',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  // Zone 2
+  $shipping_service = array(
+    'name' => 'area2_0_100',
+    'title' => 'Zone 2 - 0g -> 100g',
+    'display_title' => 'Zone 2 - 0g -> 100g',
+    'description' => 'Pour toute commande pesant entre 0 et 99g expédiée dans la Zone 2.',
+    'rules_component' => FALSE,
+    'amount' => '1450',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area2_100_500',
+    'title' => 'Zone 2 - 100g -> 500g',
+    'display_title' => 'Zone 2 - 100g -> 500g',
+    'description' => 'Pour toute commande pesant entre 100g et 499g expédiée dans la Zone 2.',
+    'rules_component' => FALSE,
+    'amount' => '2000',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area2_500_1000',
+    'title' => 'Zone 2 - 500g -> 1kg',
+    'display_title' => 'Zone 2 - 500g -> 1kg',
+    'description' => 'Pour toute commande pesant entre 500g et 999g expédiée dans la Zone 2.',
+    'rules_component' => FALSE,
+    'amount' => '3200',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area2_1000_2000',
+    'title' => 'Zone 2 - 1kg -> 2kg',
+    'display_title' => 'Zone 2 - 1kg -> 2kg',
+    'description' => 'Pour toute commande pesant entre 1kg et 1kg 999g expédiée dans la Zone 2.',
+    'rules_component' => FALSE,
+    'amount' => '4400',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area2_2000_10000',
+    'title' => 'Zone 2 - 2kg -> 10kg',
+    'display_title' => 'Zone 2 - 2kg -> 10kg',
+    'description' => 'Pour toute commande pesant entre 2kg et 9kg 999g expédiée dans la Zone 2.',
+    'rules_component' => FALSE,
+    'amount' => '5700',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+  
+  $shipping_service = array(
+    'name' => 'area2_10000+',
+    'title' => 'Zone 2 - 10kg et plus',
+    'display_title' => 'Zone 2 - 10kg et plus',
+    'description' => 'Pour toute commande pesant 10kg et plus expédiée dans la Zone 2.',
+    'rules_component' => FALSE,
+    'amount' => '6350',
+    'currency_code' => 'EUR',
+    'is_new' => TRUE,
+  );
+  commerce_flat_rate_service_save($shipping_service, TRUE);
+
+  // Regenerate registries
+  commerce_shipping_services_reset();
+  entity_defaults_rebuild();
+  rules_clear_cache(TRUE);
+  menu_rebuild();
+}
+
+/**
+ * Implements hook_disable().
+ */
+function legiest_commerce_disable() {
+  commerce_flat_rate_service_delete('france', TRUE);
+  commerce_flat_rate_service_delete('free_shipping', TRUE);
+  commerce_flat_rate_service_delete('area1_0_99', TRUE);
+  commerce_flat_rate_service_delete('area1_100_499', TRUE);
+  commerce_flat_rate_service_delete('area1_500_1000', TRUE);
+  commerce_flat_rate_service_delete('area1_1000_2000', TRUE);
+  commerce_flat_rate_service_delete('area1_2000_10000', TRUE);
+  commerce_flat_rate_service_delete('area1_10000+', TRUE);
+  commerce_flat_rate_service_delete('area2_0_99', TRUE);
+  commerce_flat_rate_service_delete('area2_100_499', TRUE);
+  commerce_flat_rate_service_delete('area2_500_1000', TRUE);
+  commerce_flat_rate_service_delete('area2_1000_2000', TRUE);
+  commerce_flat_rate_service_delete('area2_2000_10000', TRUE);
+  commerce_flat_rate_service_delete('area2_10000+', TRUE);
+
+  // Regenerate registries
+  commerce_shipping_services_reset();
+  entity_defaults_rebuild();
+  rules_clear_cache(TRUE);
+  menu_rebuild();
+}
