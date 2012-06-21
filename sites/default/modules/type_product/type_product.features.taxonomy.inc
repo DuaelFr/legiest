@@ -20,7 +20,7 @@ function type_product_taxonomy_default_vocabularies() {
     'product_theme' => array(
       'name' => 'Thématique de Produit',
       'machine_name' => 'product_theme',
-      'description' => '',
+      'description' => 'Classement par métier',
       'hierarchy' => '0',
       'module' => 'taxonomy',
       'weight' => '0',
