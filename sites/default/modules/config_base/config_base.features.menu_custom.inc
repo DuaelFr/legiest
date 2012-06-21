@@ -14,7 +14,7 @@ function config_base_menu_default_menu_custom() {
   $menus['main-menu'] = array(
     'menu_name' => 'main-menu',
     'title' => 'Main menu',
-    'description' => 'The <em>Main</em> menu is used on many sites to show the major sections of the site, often in a top navigation bar.',
+    'description' => 'Ce menu contient la taxonomie de classement des produits par catégorie',
   );
   // Exported menu: menu-footer-menu
   $menus['menu-footer-menu'] = array(
@@ -26,7 +26,7 @@ function config_base_menu_default_menu_custom() {
   $menus['menu-secondary-menu'] = array(
     'menu_name' => 'menu-secondary-menu',
     'title' => 'Secondary menu',
-    'description' => '',
+    'description' => 'Ce menu contient la taxonomie de classement des produits par métier',
   );
   // Exported menu: user-menu
   $menus['user-menu'] = array(
@@ -36,10 +36,11 @@ function config_base_menu_default_menu_custom() {
   );
   // Translatables
   // Included for use with string extractors like potx.
+  t('Ce menu contient la taxonomie de classement des produits par catégorie');
+  t('Ce menu contient la taxonomie de classement des produits par métier');
   t('Footer menu');
   t('Main menu');
   t('Secondary menu');
-  t('The <em>Main</em> menu is used on many sites to show the major sections of the site, often in a top navigation bar.');
   t('The <em>User</em> menu contains links related to the user\'s account, as well as the \'Log out\' link.');
   t('User menu');
 
