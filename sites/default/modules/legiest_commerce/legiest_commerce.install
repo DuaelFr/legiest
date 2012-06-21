@@ -208,3 +208,10 @@ function legiest_commerce_disable() {
   rules_clear_cache(TRUE);
   menu_rebuild();
 }
+
+/**
+ * Force flat rate services creation.
+ */
+function legiest_commerce_update_7000(&$sandbox) {
+  legiest_commerce_enable();
+}
