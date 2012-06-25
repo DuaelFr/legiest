@@ -29,7 +29,7 @@ function commerce_tax_type_features_export_options() {
   $tax_types = commerce_tax_types();
   if (!empty($tax_types)) {
     foreach($tax_types as $type) {
-      $feature_types[$type['name']] = $type['display_title'];
+      $feature_types[$type['name']] = $type['title'];
     }
   }
   return $feature_types;
