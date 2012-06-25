@@ -541,7 +541,7 @@ function _legiest_commerce_default_rules_configuration_shipping_rates() {
       rules_condition('data_is', array(
         'data:select' => 'commerce-order:commerce-order-total:amount',
         'op' => '<',
-        'value' => '99',
+        'value' => '9900',
       ))->negate()
     )
     ->action('commerce_shipping_service_rate_order', array(
@@ -558,7 +558,7 @@ function _legiest_commerce_default_rules_configuration_shipping_rates() {
     ->condition('data_is', array(
       'data:select' => 'commerce-order:commerce-order-total:amount',
       'op' => '<',
-      'value' => '99',
+      'value' => '9900',
     ))
     ->action('commerce_shipping_service_rate_order', array(
       'shipping_service_name' => 'france',
