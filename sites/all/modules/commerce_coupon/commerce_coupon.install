@@ -153,7 +153,13 @@ function commerce_coupon_update_7002(&$sandbox) {
       ->execute();
 
   // Get all line items from the system.
-  $line_items = commerce_line_item_load_multiple(array_keys($result['commerce_line_item']));
+  if (!empty($result['commerce_line_item'])) {
+    $line_items = commerce_line_item_load_multiple(array_keys($result['commerce_line_item']));
+  }
+  else {
+    $line_items = array();
+  }
+  
 
   // Store an array with the line item id and the coupon id.
   $values = array();
@@ -197,7 +203,12 @@ function commerce_coupon_update_7004(&$sandbox) {
       ->execute();
 
   // Get all line items from the system.
-  $line_items = commerce_line_item_load_multiple(array_keys($result['commerce_line_item']));
+  if (!empty($result['commerce_line_item'])) {
+    $line_items = commerce_line_item_load_multiple(array_keys($result['commerce_line_item']));
+  }
+  else {
+    $line_items = array();
+  }
 
   // Store an array with the line item id and the coupon id.
   $values = array();
