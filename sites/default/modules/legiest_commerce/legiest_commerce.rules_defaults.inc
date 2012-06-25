@@ -1166,93 +1166,27 @@ function _legiest_commerce_default_rules_configuration_taxes() {
   $rules = array();
   
   
-  // Billing address without VAT
+  // Billing address with VAT
   $rule = rules_or($variables);
-  $rule->label = t('(Legiest Commerce) Condition Billing region without VAT');
+  $rule->label = t('(Legiest Commerce) Condition Billing region with VAT');
   $rule->active = TRUE;
   $rule
     ->condition('commerce_order_compare_address', array(
       'commerce_order:select' => 'commerce_order',
       'address_field' => 'commerce_customer_billing|commerce_customer_address',
       'address_component' => 'country',
-      'value' => 'GP', // Guadeloupe
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_billing|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'GF', // Guyane française
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_billing|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'MQ', // Martinique
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_billing|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'YT', // Mayotte
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_billing|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'RE', // Réunion
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_billing|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'BL', // Saint-Pierre-et-Miquelon
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'NC', // Nouvelle-Calédonie
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'PF', // Polynésie française
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'MF', // Saint Barthélemy
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'PM', // Saint-Martin (partie française)
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'TF', // Terres australes françaises
-    ))
-    ->condition('commerce_order_compare_address', array(
-      'commerce_order:select' => 'commerce_order',
-      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'WF', // Wallis et Futuna
+      'value' => 'FR', // France
     ));
-  $rules['legiest_commerce_condition_billing_no_vat'] = $rule;
+  $rules['legiest_commerce_condition_billing_with_vat'] = $rule;
 
   // Declencheur commande "En attente : Administration"
   $rule = rules_reaction_rule();
   $rule->label = t('(Legiest Commerce) Apply tax "tva_standard"');
   $rule->active = TRUE;
   $rule->event('commerce_product_calculate_sell_price')
-    ->condition(rules_condition('component_legiest_commerce_condition_billing_no_vat', array(
+    ->condition('component_legiest_commerce_condition_billing_with_vat', array(
       'commerce_order:select' => 'commerce-line-item:order',
-    ))->negate())
+    ))
     ->action('commerce_tax_rate_apply', array(
       'commerce_line_item:select' => 'commerce_line_item',
       'tax_rate_name' => 'tva_standard',
