@@ -23,6 +23,23 @@ function legiest_commerce_commerce_order_status_info() {
 }
 
 /**
+ * Implements hook_commerce_tax_rate_info().
+ */
+function legiest_commerce_commerce_tax_rate_info() {
+  $tax_rates = array();
+
+  $tax_rates['tva_standard'] = array(
+    'title' => t('TVA standard'),
+    'rate' => .196,
+    'type' => 'vat',
+    'default_rules_component' => FALSE,
+    'admin_list' => TRUE,
+  );
+
+  return $tax_rates;
+}
+
+/**
  * Implements hook_permission().
  */
 function legiest_commerce_permission() {

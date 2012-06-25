@@ -16,6 +16,7 @@ function legiest_commerce_default_rules_configuration() {
   $rules += _legiest_commerce_default_rules_configuration_shipping_weight();
   $rules += _legiest_commerce_default_rules_configuration_shipping_area();
   $rules += _legiest_commerce_default_rules_configuration_shipping_rates();
+  $rules += _legiest_commerce_default_rules_configuration_taxes();
   $rules += _legiest_commerce_default_rules_configuration_states();
   
   //----------------------------------------------------------------------------
@@ -1153,6 +1154,112 @@ function _legiest_commerce_default_rules_configuration_states() {
       'commerce_order_unchanged:select' => 'commerce_order_unchanged',
     ));
   $rules['legiest_commerce_order_becomes_pending_special'] = $rule;
+
+  return $rules;
+}
+
+
+/**
+ * Define rules and components related to taxes
+ */
+function _legiest_commerce_default_rules_configuration_taxes() {
+  $rules = array();
+  
+  
+  // Billing address without VAT
+  $rule = rules_or($variables);
+  $rule->label = t('(Legiest Commerce) Condition Billing region without VAT');
+  $rule->active = TRUE;
+  $rule
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_billing|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'GP', // Guadeloupe
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_billing|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'GF', // Guyane française
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_billing|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'MQ', // Martinique
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_billing|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'YT', // Mayotte
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_billing|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'RE', // Réunion
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_billing|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'BL', // Saint-Pierre-et-Miquelon
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'NC', // Nouvelle-Calédonie
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'PF', // Polynésie française
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'MF', // Saint Barthélemy
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'PM', // Saint-Martin (partie française)
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'TF', // Terres australes françaises
+    ))
+    ->condition('commerce_order_compare_address', array(
+      'commerce_order:select' => 'commerce_order',
+      'address_field' => 'commerce_customer_shipping|commerce_customer_address',
+      'address_component' => 'country',
+      'value' => 'WF', // Wallis et Futuna
+    ));
+  $rules['legiest_commerce_condition_billing_no_vat'] = $rule;
+
+  // Declencheur commande "En attente : Administration"
+  $rule = rules_reaction_rule();
+  $rule->label = t('(Legiest Commerce) Apply tax "tva_standard"');
+  $rule->active = TRUE;
+  $rule->event('commerce_product_calculate_sell_price')
+    ->condition(rules_condition('component_legiest_commerce_condition_billing_no_vat', array(
+      'commerce_order:select' => 'commerce-line-item:order',
+    ))->negate())
+    ->action('commerce_tax_rate_apply', array(
+      'commerce_line_item:select' => 'commerce_line_item',
+      'tax_rate_name' => 'tva_standard',
+      'applied_tax:var' => 'applied_tax',
+      'applied_tax:label' => 'Taxe appliquée',
+    ));
+  $rules['legiest_commerce_apply_tax_tva_standard'] = $rule;
 
   return $rules;
 }
