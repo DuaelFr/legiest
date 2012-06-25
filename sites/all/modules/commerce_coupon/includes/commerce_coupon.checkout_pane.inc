@@ -2,9 +2,7 @@
 
 /**
  * @file
- * Coupon..
- *
- * This file contains...
+ * Coupon checkout panes.
  */
 
 /**
@@ -56,18 +54,14 @@ function commerce_coupon_pane_checkout_form_validate($form, &$form_state, $check
     form_set_error('commerce_coupon][coupon_code', $message);
     return FALSE;
   }
-
 }
-
 
 function commerce_coupon_pane_checkout_form_submit($form, &$form_state, $checkout_pane, $order) {
   if ($code = $form_state['values']['commerce_coupon']['coupon_code']) {
-    $coupon = commerce_coupon_load_by_code($code);
-    commerce_coupon_redeem_coupon($coupon, $order);
+    $commerce_coupon = commerce_coupon_load_by_code($code);
+    commerce_coupon_redeem_coupon($commerce_coupon, $order);
   }
 }
-
-
 
 /**
  * Implements the callback for the checkout pane review form
@@ -80,8 +74,6 @@ function commerce_coupon_pane_review($form, $form_state, $checkout_pane, $order)
   return commerce_embed_view($view_id, $display_id, array($order->order_id));
 }
 
-
-
 /**
  * Checkout pane callback: returns the cart contents pane's settings form.
  */
@@ -91,15 +83,15 @@ function commerce_coupon_pane_settings_form($checkout_pane) {
   // Build an options array of Views available for the cart contents pane.
   $options = array();
 
-   // Generate an option list from all user defined and module defined views.
-   foreach (views_get_all_views() as $view_id => $view_value) {
+  // Generate an option list from all user defined and module defined views.
+  foreach (views_get_all_views() as $view_id => $view_value) {
     // Only include line item Views.
-    if ($view_value->base_table == 'commerce_coupon_log') {
-       foreach ($view_value->display as $display_id => $display_value) {
+    if ($view_value->base_table == 'commerce_coupon') {
+      foreach ($view_value->display as $display_id => $display_value) {
         $options[check_plain($view_id)][$view_id . '|' . $display_id] = check_plain($display_value->display_title);
       }
-     }
-   }
+    }
+  }
 
   $form['commerce_coupon_review_pane_view'] = array(
     '#type' => 'select',
@@ -119,4 +111,3 @@ function commerce_coupon_pane_settings_form($checkout_pane) {
 
   return $form;
 }
-
