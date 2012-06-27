@@ -1203,7 +1203,7 @@ function commerce_subscription_get_price_long($product) {
 function commerce_subscription_form_commerce_paypal_wps_redirect_form_alter(&$form, &$form_state) {
 
   $order = $form_state['build_info']['args'][0];
-	$account = user_load($order->uid);
+  $account = user_load($order->uid);
   $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
 
   // Look at each line item in turn to determine if it's a subscription
@@ -1226,17 +1226,17 @@ function commerce_subscription_form_commerce_paypal_wps_redirect_form_alter(&$fo
         $product = commerce_product_load($product_wrapper->product_id->value());
         $subscription = commerce_subscription_create_subscription($product,$account->uid);
 
-				$paypal_fields = array(
-         'item_name' => variable_get('site_name'),
-         'a3' => commerce_currency_amount_to_decimal($product_wrapper->commerce_price->amount->value(), $product_wrapper->commerce_price->currency_code->value()),
-         'p3' => $product_wrapper->subscription_period->value() == 0 ? 1 : $product_wrapper->subscription_period->value(),
-         't3' => $units[$product_wrapper->subscription_units->value()],
-         'src' => $product_wrapper->subscription_recurs->value(),
-         'srt' => ($product_wrapper->subscription_recurs->value() != 0 && $product_wrapper->subscription_recur_limit->value() > 0) ? (1 + $product_wrapper->subscription_recur_limit->value()) : 0,
-         'sra' => true,
-         'no_note' => true,
-         'custom' => $subscription->subscription_id,
-         'modify' => false,
+        $paypal_fields = array(
+          'item_name' => variable_get('site_name'),
+          'a3' => commerce_currency_amount_to_decimal($product_wrapper->commerce_price->amount->value(), $product_wrapper->commerce_price->currency_code->value()),
+          'p3' => $product_wrapper->subscription_period->value() == 0 ? 1 : $product_wrapper->subscription_period->value(),
+          't3' => $units[$product_wrapper->subscription_units->value()],
+          'src' => $product_wrapper->subscription_recurs->value(),
+          'srt' => ($product_wrapper->subscription_recurs->value() != 0 && $product_wrapper->subscription_recur_limit->value() > 0) ? (1 + $product_wrapper->subscription_recur_limit->value()) : 0,
+          'sra' => 1,
+          'no_note' => 1,
+          'custom' => $subscription->subscription_id,
+          'modify' => 0,
         );
 				
         if ($product_wrapper->subscription_recurs->value() != 0) {
