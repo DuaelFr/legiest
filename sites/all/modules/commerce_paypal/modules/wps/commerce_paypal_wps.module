@@ -44,6 +44,7 @@ function commerce_paypal_wps_settings_form($settings = NULL) {
     'currency_code' => in_array($default_currency, array_keys(commerce_paypal_wps_currencies())) ? $default_currency : 'USD',
     'language' => 'US',
     'server' => 'sandbox',
+    'notify_domain' => '',
     'payment_action' => 'sale',
     'ipn_logging' => 'notification',
   );
@@ -76,6 +77,17 @@ function commerce_paypal_wps_settings_form($settings = NULL) {
       'live' => ('Live - use for processing real transactions'),
     ),
     '#default_value' => $settings['server'],
+  );
+  $form['notify_domain'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Paypal notify base url'),
+  	'#description' => t('Base url accessible by Paypal to notify for received payments. Leave empty to use the current domain.'),
+    '#default_value' => $settings['notify_domain'],
+    '#states' => array(
+      'visible' => array(
+        ':input[name="server"]' => array('value' => 'sandbox'),
+      ),
+    ),
   );
   $form['payment_action'] = array(
     '#type' => 'radios',
@@ -267,6 +279,11 @@ function commerce_paypal_wps_order_form($form, &$form_state, $order, $settings) 
 
   // Ensure a default value for the payment_method setting.
   $settings += array('payment_method' => '');
+  
+  // Allow notify_domain only for sandbox server
+  if ($settings['server'] != 'sandbox') {
+    $settings['notify_domain'] = '';
+  }
 
   // Build the data array that will be translated into hidden form values.
   $data = array(
@@ -280,7 +297,7 @@ function commerce_paypal_wps_order_form($form, &$form_state, $order, $settings) 
     'business' => $settings['business'],
 
     // The path PayPal should send the IPN to
-    'notify_url' => commerce_paypal_ipn_url($settings['payment_method']),
+    'notify_url' => commerce_paypal_ipn_url($settings['payment_method'], $settings['notify_domain']),
 
     // Set the correct character set
     'charset' => 'utf-8',

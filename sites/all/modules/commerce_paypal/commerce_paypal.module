@@ -37,7 +37,7 @@ function commerce_paypal_menu() {
  * @param $method_id
  *   Optionally specify a payment method ID to include in the URL.
  */
-function commerce_paypal_ipn_url($method_id = NULL) {
+function commerce_paypal_ipn_url($method_id = NULL, $notify_domain = NULL) {
   $parts = array(
     'commerce_paypal',
     'ipn',
@@ -47,7 +47,8 @@ function commerce_paypal_ipn_url($method_id = NULL) {
     $parts[] = $method_id;
   }
 
-  return url(implode('/', $parts), array('absolute' => TRUE));
+  $base_url = !empty($notify_domain) ? $notify_domain : NULL;
+  return url(implode('/', $parts), array('absolute' => TRUE, 'base_url' => $base_url));
 }
 
 /**
