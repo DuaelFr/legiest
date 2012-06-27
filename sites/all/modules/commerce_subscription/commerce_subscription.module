@@ -968,10 +968,9 @@ function commerce_subscription_create_subscription($commerce_product, $uid) {
  */
 
 function commerce_subscription_commerce_paypal_ipn_process($order, $payment_method, $ipn) {
-
-  $logs = "Order: <pre>" . print_r($order, true) . "</pre>";
-  $logs .= "Payment Method: <pre>" . print_r($payment_method, true) . "</pre>";
-  $logs .= "IPN: <pre>" . print_r($ipn, true) . "</pre>";
+  $logs = "Order: <pre>" . filter_xss(print_r($order, true)) . "</pre>";
+  $logs .= "Payment Method: <pre>" . filter_xss(print_r($payment_method, true)) . "</pre>";
+  $logs .= "IPN: <pre>" . filter_xss(print_r($ipn, true)) . "</pre>";
   watchdog("commerce_subscription IPN Process", $logs);
 	
   //No need to load the IPN from transaction any more - it's passed in.
