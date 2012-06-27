@@ -1,0 +1,14 @@
+; $Id$
+name = Role Reference
+description = Defines a field type for referencing a role from a node.
+package = Fields
+core = 7.x
+dependencies[] = field
+dependencies[] = options
+
+; Information added by drupal.org packaging script on 2011-12-16
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "rolereference"
+datestamp = "1324038409"
+
