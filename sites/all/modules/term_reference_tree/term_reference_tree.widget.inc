@@ -21,6 +21,7 @@ function term_reference_tree_field_widget_info() {
         'track_list' => 0,
         'token_display' => '',
         'parent_term_id' => '',
+        'parent_term_uuid' => '',
         'max_depth' => '',
       ),
     ),
@@ -188,7 +189,22 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['parent_term_id'],
       '#size' => 8,
       '#return_value' => 1,
-    );    
+    );
+
+    $form['parent_term_uuid'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Parent Term UUID'),
+      '#description' => t("Only show items underneath the taxonomy term with this UUID number.  Leave this field blank to not limit terms by parent."),
+      '#default_value' => $settings['parent_term_uuid'],
+      '#size' => 40,
+      '#return_value' => 1,
+      '#access' => FALSE, // Disabled by default
+    );
+    
+    if (module_exists('uuid')) {
+      $form['parent_term_id']['#access'] = FALSE;
+      $form['parent_term_uuid']['#access'] = TRUE;
+    }
   }
 
   return $form;
@@ -512,7 +528,10 @@ function term_reference_tree_field_widget_form(&$form, &$form_state, $field, $in
       $element['#select_parents'] = $settings['select_parents'];
       $element['#cascading_selection'] = $settings['cascading_selection'];
       $element['#track_list'] = $settings['track_list'];
-      $element['#parent_tid'] = $settings['parent_term_id'] || $field['settings']['allowed_values'][0]['parent'];
+      if (!empty($settings['parent_term_uuid'])) {
+        $settings['parent_term_id'] = reset(entity_get_id_by_uuid('taxonomy_term', array($settings['parent_term_uuid'])));
+      }
+      $element['#parent_tid'] = !empty($settings['parent_term_id']) ? $settings['parent_term_id'] : $field['settings']['allowed_values'][0]['parent'];
       $element['#vocabulary'] = $voc->vid;
       $element['#token_display'] = module_exists('token') ? $settings['token_display'] : '';
       break;
