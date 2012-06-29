@@ -10,25 +10,25 @@
 function config_base_menu_default_menu_custom() {
   $menus = array();
 
-  // Exported menu: main-menu
+  // Exported menu: main-menu.
   $menus['main-menu'] = array(
     'menu_name' => 'main-menu',
     'title' => 'Main menu',
     'description' => 'Ce menu contient la taxonomie de classement des produits par catégorie',
   );
-  // Exported menu: menu-footer-menu
+  // Exported menu: menu-footer-menu.
   $menus['menu-footer-menu'] = array(
     'menu_name' => 'menu-footer-menu',
     'title' => 'Footer menu',
     'description' => '',
   );
-  // Exported menu: menu-secondary-menu
+  // Exported menu: menu-secondary-menu.
   $menus['menu-secondary-menu'] = array(
     'menu_name' => 'menu-secondary-menu',
     'title' => 'Secondary menu',
     'description' => 'Ce menu contient la taxonomie de classement des produits par métier',
   );
-  // Exported menu: user-menu
+  // Exported menu: user-menu.
   $menus['user-menu'] = array(
     'menu_name' => 'user-menu',
     'title' => 'User menu',
