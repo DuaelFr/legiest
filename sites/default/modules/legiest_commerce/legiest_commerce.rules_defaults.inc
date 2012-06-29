@@ -1164,6 +1164,14 @@ function _legiest_commerce_default_rules_configuration_states() {
  */
 function _legiest_commerce_default_rules_configuration_taxes() {
   $rules = array();
+
+  
+  $variables = array(
+    'commerce_order' => array(
+      'label' => 'Order',
+      'type' => 'commerce_order'
+    ),
+  );
   
   
   // Billing address with VAT
