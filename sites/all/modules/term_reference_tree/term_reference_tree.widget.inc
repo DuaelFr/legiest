@@ -9,7 +9,7 @@ function term_reference_tree_field_widget_info() {
       'label' => 'Term reference tree',
       'field types' => array('taxonomy_term_reference'),
       'behaviors' => array(
-        'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+        'multiple values' => FIELD_BEHAVIOR_CUSTOM, 
         'default value' => FIELD_BEHAVIOR_DEFAULT,
       ),
       'settings' => array(
@@ -28,13 +28,58 @@ function term_reference_tree_field_widget_info() {
 }
 
 /**
+ * Themes the term tree display (as opposed to the select widget).
+ */
+function theme_term_tree_list($variables) {
+  $element =& $variables['element'];
+  $data =& $element['#data'];
+
+  $tree = array();
+
+  # For each selected term:
+  foreach($data as $item) {
+    # Loop if the term ID is not zero:
+    $values = array();
+    $tid = $item['tid'];
+    $original_tid = $tid;
+    while($tid != 0) {
+      # Unshift the term onto an array
+      array_unshift($values, $tid);
+      
+      # Repeat with parent term
+      $tid = _term_reference_tree_get_parent($tid);
+    }
+    
+    $current =& $tree;
+    # For each term in the above array:
+    foreach($values as $tid) {
+      # current[children][term_id] = new array
+      if (!isset($current['children'][$tid])) {
+        $current['children'][$tid] = array('selected' => FALSE);
+      }
+      
+      # If this is the last value in the array, tree[children][term_id][selected] = true
+      if ($tid == $original_tid) {
+        $current['children'][$tid]['selected'] = TRUE;
+      }
+
+      $current['children'][$tid]['tid'] = $tid;
+      $current =& $current['children'][$tid];
+    }
+  }
+  
+  return _term_reference_tree_output_list_level($element, $tree);
+}
+
+
+/**
  * Implements hook_field_widget_settings_form().
  */
 function term_reference_tree_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $settings = $widget['settings'];
   $form = array();
-
+  
   if ($widget['type'] == 'term_reference_tree') {
     $form['start_minimized'] = array(
       '#type' => 'checkbox',
@@ -43,7 +88,7 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['start_minimized'],
       '#return_value' => 1,
     );
-
+    
     $form['leaves_only'] = array(
       '#type' => 'checkbox',
       '#title' => t('Leaves only'),
@@ -73,7 +118,7 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
     if (module_exists('views')) {
       $views = views_get_all_views();
       $options = array('' => 'none');
-
+      
       foreach($views as $name => $view) {
         if ($view->base_table == 'taxonomy_term_data') {
           foreach($view->display as $display) {
@@ -115,8 +160,8 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
         '#type' => 'hidden',
         '#value' => $settings['token_display'],
       );
-    }
-
+    }    
+    
     $form['track_list'] = array(
       '#type' => 'checkbox',
       '#title' => t('Track list'),
@@ -126,7 +171,7 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['track_list'],
       '#return_value' => 1,
     );
-
+    
     $form['max_depth'] = array(
       '#type' => 'textfield',
       '#title' => t('Maximum Depth'),
@@ -134,8 +179,8 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['max_depth'],
       '#size' => 2,
       '#return_value' => 1,
-    );
-
+    );    
+    
     $form['parent_term_id'] = array(
       '#type' => 'textfield',
       '#title' => t('Parent Term ID'),
@@ -143,57 +188,10 @@ function term_reference_tree_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['parent_term_id'],
       '#size' => 8,
       '#return_value' => 1,
-    );
+    );    
   }
 
   return $form;
-}
-
-/**
- * Themes the term tree display (as opposed to the select widget).
- */
-function theme_term_tree_list($variables) {
-  $element =& $variables['element'];
-  $data =& $element['#data'];
-
-  $tree = array();
-
-  # For each selected term:
-  foreach($data as $item) {
-    # Loop if the term ID is not zero:
-    $values = array();
-    $tid = $item['tid'];
-    $original_tid = $tid;
-    while($tid != 0) {
-      # Unshift the term onto an array
-      array_unshift($values, $tid);
-
-      # Repeat with parent term
-      $tid = _term_reference_tree_get_parent($tid);
-    }
-
-    $current =& $tree;
-    # For each term in the above array:
-    foreach($values as $tid) {
-      # current[children][term_id] = new array
-      if (!isset($current['children'][$tid])) {
-        $current['children'][$tid] = array('selected' => FALSE);
-      }
-
-      # If this is the last value in the array, tree[children][term_id][selected] = true
-      if ($tid == $original_tid) {
-        $current['children'][$tid]['selected'] = TRUE;
-      }
-
-      $current['children'][$tid]['tid'] = $tid;
-      $current =& $current['children'][$tid];
-    }
-  }
-
-  $output = "<div class='term-tree-list'>";
-  $output .= _term_reference_tree_output_list_level($element, $tree);
-  $output .= "</div>";
-  return $output;
 }
 
 /**
@@ -207,11 +205,9 @@ function _term_reference_tree_output_list_level(&$element, &$tree) {
     $tokens_selected = $settings['token_display_selected'];
     $tokens_unselected = ($settings['token_display_unselected'] != '') ? $settings['token_display_unselected'] : $tokens_selected;
 
-    $taxonomy_term_info = entity_get_info('taxonomy_term');
     foreach($tree['children'] as &$item) {
-      $term = $taxonomy_term_info['load hook']($item['tid']);
-      $uri = $taxonomy_term_info['uri callback']($term);
-      $uri['options']['html'] = TRUE;
+      $term = taxonomy_term_load($item['tid']);
+      $uri = taxonomy_term_uri($term);
       $class = $item['selected'] ? 'selected' : 'unselected';
       $output .= "<li class='$class'>";
       if ($tokens_selected != '' && module_exists('token')) {
@@ -219,7 +215,7 @@ function _term_reference_tree_output_list_level(&$element, &$tree) {
         $output .= token_replace($replace, array('term' => $term), array('clear' => TRUE));
       }
       else {
-        $output .= l(entity_label('taxonomy_term', $term), $uri['path'], $uri['options']);
+        $output .= l(entity_label('taxonomy_term', $term), $uri['path'], array('html' => true));
       }
       if (isset($item['children'])) {
         $output .= _term_reference_tree_output_list_level($element, $item);
@@ -257,65 +253,32 @@ function _term_reference_tree_cascading_selection_validate($element, &$form_stat
 
 /**
  * Process the checkbox_tree widget.
- *
+ * 
  * This function processes the checkbox_tree widget.
- *
+ * 
  * @param $element
  *   The element to be drawn.$element['#field_name']
  * @param $form_state
  *   The form state.
- *
+ * 
  * @return
  *   The processed element.
  */
 function term_reference_tree_process_checkbox_tree($element, $form_state) {
-  $path = drupal_get_path('module', 'term_reference_tree');
-  $defaults = array();
-  $defaults['#attached']['js'] = array($path . '/term_reference_tree.js');
-  $defaults['#attached']['css'] = array($path . '/term_reference_tree.css');
-  $defaults['#type'] = 'checkbox_tree';
-  $defaults['#max_choices'] = 1;
-  $defaults['#max_depth'] = '';
-  $defaults['#start_minimized'] = FALSE;
-  $defaults['#leaves_only'] = FALSE;
-  $defaults['#filter_view'] = '';
-  $defaults['#select_parents'] = FALSE;
-  $defaults['#required'] = FALSE;
-  $defaults['#cascading_selection'] = FALSE;
-  $defaults['#track_list'] = FALSE;
-  $defaults['#parent_tid'] = '';
-  $defaults['#token_display'] = FALSE;
-  $defaults['#default_value'] = array();
-  $defaults += array(
-    '#value_key' => 'tid',
-    '#element_validate' => array(),
-    '#properties' => array(),
-  );
-
-  foreach($defaults as $key => $val) {
-    if(!isset($element[$key])) {
-      $element[$key] = $val;
-    }
-  }
-
-  dsm($element['#default_value']);
-  $element['#default_value'] = _term_reference_tree_flatten_default_value($element['#default_value']);
-  dsm($element['#default_value']);
-
   if (is_array($form_state)) {
     if (!empty($element['#max_choices']) && $element['#max_choices'] != '-1')
       drupal_add_js(array('term_reference_tree' => array('trees' => array($element['#id'] => array('max_choices'=>$element['#max_choices'])))), 'setting');
     $allowed = '';
-
-    if (isset($element['#filter_view']) && $element['#filter_view'] != '') {
+    
+    if ($element['#filter_view'] != '') {
       $allowed = _term_reference_tree_get_allowed_values($element['#filter_view']);
     }
-
+    
     $value = !empty($element['#default_value']) ? $element['#default_value'] : array();
 
     if (empty($element['#options'])) {
       $element['#options_tree'] = _term_reference_tree_get_term_hierarchy($element['#parent_tid'], $element['#vocabulary'], $allowed, $element['#filter_view'], '', $value);
-
+      
       $required = $element['#required'];
       if ($element['#max_choices'] == 1 && !$required) {
         array_unshift($element['#options_tree'], (object) array(
@@ -349,7 +312,7 @@ function term_reference_tree_process_checkbox_tree($element, $form_state) {
         '#max_choices' => $max_choices,
       );
     }
-  }
+  } 
 
   return $element;
 }
@@ -366,17 +329,17 @@ function term_reference_tree_process_checkbox_tree($element, $form_state) {
 function theme_checkbox_tree($variables) {
   $element = $variables['element'];
   $element['#children'] = drupal_render_children($element);
-
+  
   $attributes = array();
   if (isset($element['#id'])) {
     $attributes['id'] = $element['#id'];
   }
   $attributes['class'][] = 'term-reference-tree';
-
+  
   if (form_get_error($element)) {
     $attributes['class'][] = 'error';
   }
-
+  
   if (!empty($element['#required'])) {
     $attributes['class'][] = 'required';
   }
@@ -398,9 +361,9 @@ function theme_checkbox_tree($variables) {
   if (!empty($element['#attributes']['class'])) {
     $attributes['class'] = array_merge($attributes['class'], $element['#attributes']['class']);
   }
-  return
-      '<div' . drupal_attributes($attributes) . '>'
-    . (!empty($element['#children']) ? $element['#children'] : '')
+  return 
+      '<div' . drupal_attributes($attributes) . '>' 
+    . (!empty($element['#children']) ? $element['#children'] : '') 
     . '</div>';
 }
 
@@ -413,7 +376,7 @@ function theme_checkbox_tree_level($variables) {
   $element = $variables['element'];
   $sm = '';
   if (array_key_exists('#level_start_minimized', $element) && $element['#level_start_minimized']) {
-    $collapsed =
+    $collapsed = 
     $sm = " style='display: none;'";
   }
 
@@ -443,9 +406,9 @@ function theme_checkbox_tree_item($variables) {
   $element = $variables['element'];
   $children = element_children($element);
   $output = "";
-
+  
   $sm = $element['#level_start_minimized'] ? ' term-reference-tree-collapsed' : '';
-
+  
   if (is_array($children) && count($children) > 1) {
     $output .= "<div class='term-reference-tree-button$sm'></div>";
   }
@@ -456,7 +419,7 @@ function theme_checkbox_tree_item($variables) {
   foreach($children as $child) {
     $output .= drupal_render($element[$child]);
   }
-
+  
   return $output;
 }
 
@@ -474,13 +437,13 @@ function theme_checkbox_tree_label($variables) {
  * The display happens on the client-side.
  * Use this function to theme the element's label,
  * and the "nothing selected" message.
- *
- * @param $variables Variables available for theming.
+ * 
+ * @param $variables Variables available for theming. 
  */
 function theme_checkbox_tree_track_list($variables) {
   //Should the label be singular or plural? Depends on cardinality of term field.
   static $nothingselected;
-
+  
   if(!$nothingselected) {
     $nothingselected = t('[Nothing selected]');
     //Add the "Nothing selected" text. To style it, replace it with whatever you want.
@@ -490,24 +453,25 @@ function theme_checkbox_tree_track_list($variables) {
       'inline'
     );
   }
-
+  
   $label = format_plural(
-      $variables['element']['#max_choices'],
+      $variables['element']['#max_choices'], 
       'Selected item (click the item to uncheck it)',
       'Selected items (click an item to uncheck it)'
   );
-  $output =
+  $output = 
     '<div class="term-reference-track-list-container">
        <div class="term-reference-track-list-label">' . $label . '</div>
        <ul class="term-reference-tree-track-list"><li class="term_ref_tree_nothing_message">'.$nothingselected.'</li></ul>
      </div>';
+     
 
   return $output;
 }
 
 
 /**
- * Implements hook_field_widget_form().
+ * Implements hook_widget_field_form().
  */
 function term_reference_tree_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   $settings = $instance['widget']['settings'];
@@ -515,7 +479,7 @@ function term_reference_tree_field_widget_form(&$form, &$form_state, $field, $in
   $path = drupal_get_path('module', 'term_reference_tree');
   $value_key = key($field['columns']);
   $type = $instance['widget']['type'];
-
+  
   $default_value = array();
   foreach($items as $item) {
     $key = $item[$value_key];
@@ -538,7 +502,7 @@ function term_reference_tree_field_widget_form(&$form, &$form_state, $field, $in
     case 'term_reference_tree':
       $element['#attached']['js'] = array($path . '/term_reference_tree.js');
       $element['#attached']['css'] = array($path . '/term_reference_tree.css');
-      $element['#type'] = 'checkbox_tree';
+      $element['#type'] = 'checkbox_tree';   
       $element['#default_value'] = $multiple ? $default_value : array(reset($default_value) => reset($default_value));
       $element['#max_choices'] = $field['cardinality'];
       $element['#max_depth'] = $settings['max_depth'];
@@ -549,11 +513,11 @@ function term_reference_tree_field_widget_form(&$form, &$form_state, $field, $in
       $element['#cascading_selection'] = $settings['cascading_selection'];
       $element['#track_list'] = $settings['track_list'];
       $element['#parent_tid'] = $settings['parent_term_id'] || $field['settings']['allowed_values'][0]['parent'];
-      $element['#vocabulary'] = $voc ? $voc->vid : NULL;
+      $element['#vocabulary'] = $voc->vid;
       $element['#token_display'] = module_exists('token') ? $settings['token_display'] : '';
       break;
   }
-
+  
   $element += array(
     '#value_key' => $value_key,
     '#element_validate' => array('_term_reference_tree_widget_validate'),
@@ -566,16 +530,16 @@ function term_reference_tree_field_widget_form(&$form, &$form_state, $field, $in
 
 /**
  * Validates the term reference tree widgets.
- *
+ * 
  * This function sets the value of the tree widgets into a form that Drupal
  * can understand, and also checks if the field is required and has been
  * left empty.
- *
+ * 
  * @param $element
  *   The element to be validated.
  * @param $form_state
  *   The state of the form.
- *
+ * 
  * @return
  *   The validated element.
  */
@@ -597,7 +561,7 @@ function _term_reference_tree_widget_validate(&$element, &$form_state) {
             }
           }
         }
-      }
+      } 
     }
   }
   else {
@@ -607,10 +571,10 @@ function _term_reference_tree_widget_validate(&$element, &$form_state) {
       $child = reset($items);
       if (array_key_exists('#value', $child) && $child['#value'] !== 0) {
         array_push($value, array($element['#value_key'] => $child['#value']));
-      }
+      }       
     }
   }
-
+  
   if ($element['#required'] && empty($value)) {
     // The title is already check_plained so it's appropriate to use !.
     form_error($element, t('!name field is required.', array('!name' => $element['#title'])));
@@ -713,6 +677,7 @@ function _term_reference_tree_build_item(&$element, &$term, &$form_state, &$valu
   );
 
   if (!$element['#leaves_only'] || count($term->children) == 0) {
+    $name = "edit-" . str_replace('_', '-', $element['#field_name']);
     $e = array(
       '#type' => ($max_choices == 1) ? 'radio' : 'checkbox',
       '#title' => $term_name,
@@ -746,7 +711,7 @@ function _term_reference_tree_build_item(&$element, &$term, &$form_state, &$valu
   }
 
 
-  $container[$term->tid] = $e;
+  $container[$term->tid] = $e;  
 
   if (($depth + 1 <= $element['#max_depth'] || !$element['#max_depth']) && property_exists($term, 'children') && count($term->children) > 0) {
     $parents = $parent_tids;
@@ -754,7 +719,7 @@ function _term_reference_tree_build_item(&$element, &$term, &$form_state, &$valu
     $container[$term->tid . '-children'] = _term_reference_tree_build_level($element, $term, $form_state, $value, $max_choices, $parents, $depth+1);
     $container['#level_start_minimized'] = $container[$term->tid . '-children']['#level_start_minimized'];
   }
-
+  
   return $container;
 }
 
@@ -789,7 +754,7 @@ function _term_reference_tree_build_level(&$element, &$term, &$form_state, &$val
   if (array_key_exists('#leaves_only', $element)) {
     $leaves_only = $element['#leaves_only'];
   }
-
+  
   $container = array(
     '#type' => 'checkbox_tree_level',
     '#max_choices' => $max_choices,
@@ -799,24 +764,10 @@ function _term_reference_tree_build_level(&$element, &$term, &$form_state, &$val
   );
 
   $container['#level_start_minimized'] = $depth > 1 && $element['#start_minimized'] && !($term->children_selected);
-
+  
   foreach($term->children as $t) {
     $container[$t->tid] = _term_reference_tree_build_item($element, $t, $form_state, $value, $max_choices, $parent_tids, $container, $depth);
   }
-
+  
   return $container;
-}
-
-function _term_reference_tree_flatten_default_value($value) {
-  $result = array();
-
-  foreach($value as $key => $val) {
-    if(is_array($val)) {
-      $result += _term_reference_tree_flatten_default_value($val);
-    } else {
-      $result[$key] = $val;
-    }
-  }
-
-  return $result;
 }
