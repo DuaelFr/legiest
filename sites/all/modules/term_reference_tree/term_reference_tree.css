@@ -1,8 +1,10 @@
 .item-list .field-widget-term-reference-tree ul,
 .block .field-widget-term-reference-tree ul,
-.field-widget-term-reference-tree ul
+.field-widget-term-reference-tree ul,
+ul.term-reference-tree-level,
+.region-content ul.term-reference-tree-level
 {
-  list-style-type: none; 
+  list-style-type: none;
   margin-top: 0;
   margin-bottom: 0;
   margin-left: 0;
@@ -10,13 +12,16 @@
 
 .item-list .field-widget-term-reference-tree ul ul,
 .block .field-widget-term-reference-tree ul ul,
-.field-widget-term-reference-tree ul ul
+.field-widget-term-reference-tree ul ul,
+ul.term-reference-tree-level ul,
+.region-content ul.term-reference-tree-level ul
 {
   margin-left: 1.5em;
 }
 
 .item-list .field-widget-term-reference-tree ul .form-item,
 .block .field-widget-term-reference-tree ul .form-item,
+ul.term-reference-tree-level .form-item
 .field-widget-term-reference-tree ul .form-item {
   margin: 0;
   padding: 0;
@@ -45,24 +50,25 @@
   background-image: url('images/bullet_toggle_plus.png');
 }
 
-.field-widget-term-reference-tree .form-item {
+ul.term-reference-tree-level .form-item {
   display: inline-block;
   *display: inline;
   zoom: 1;
 }
 
-.field-widget-term-reference-tree .disabled {
+ul.term-reference-tree-level .disabled {
   opacity: .5;
 }
 
-.field-widget-term-reference-tree .parent-term {
+ul.term-reference-tree-level .parent-term {
   display: inline-block;
   *display: inline;
   zoom: 1;
   font-weight: bold;
 }
 
-.form-type-checkbox-tree .error {
+.form-type-checkbox-tree .error,
+.term-reference-tree.error {
   background-image: none;
   border: 2px solid red;
   padding: 3px;
@@ -113,14 +119,18 @@
  * Styles for display element
  */
 
-.field-widget-term-reference-tree .selected {
+.term-tree-list .selected {
   font-weight: bold;
 }
 
-.field-widget-term-reference-tree .unselected {
+.term-tree-list .unselected {
   font-weight: normal;
 }
 
-.field-widget-term-reference-tree ul {
+.term-tree-list ul {
   margin-top: 0;
+}
+
+.field-type-taxonomy-term-reference ul.links .term-tree-list ul.term li {
+  float: none;
 }
