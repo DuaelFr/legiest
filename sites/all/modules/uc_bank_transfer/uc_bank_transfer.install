@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Installing uc_bank_transfer schema
+ */
+
+/**
+ * bank transfer install schema
+ */
+function uc_bank_transfer_schema() {
+  $schema = array();
+
+  $schema['uc_payment_bank_transfer'] = array(
+    'description' => 'Stores bank transfer payment information.',
+    'fields' => array(
+      'bank_transfer_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'order_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'clear_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'order_id' => array('order_id'),
+    ),
+    'primary key' => array('bank_transfer_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * bank transfer migrate bank details to new variables
+ */
+function uc_bank_transfer_update_7100() {
+  // migrate name of account owner to new variable
+  variable_set('uc_bank_transfer_account_owner', variable_get('uc_bank_transfer_account_name', ''));
+
+  // migrate data for users using obsolete fields
+  if (variable_get('uc_bank_transfer_account_bsb') <> NULL) {
+    variable_set('uc_bank_transfer_bank_code_appellation', 'BSB');
+    variable_set('uc_bank_transfer_bank_code', variable_get('uc_bank_transfer_account_bsb'));
+  }
+  if (variable_get('uc_bank_transfer_account_clearing') <> NULL) {
+    variable_set('uc_bank_transfer_bank_code_appellation', 'Clearing number');
+    variable_set('uc_bank_transfer_bank_code', variable_get('uc_bank_transfer_account_clearing'));
+  }
+
+  return array();
+}
+
+/**
+ * bank transfer cleanup database on uninstall
+ */
+function uc_bank_transfer_uninstall() {
+  db_delete('variable')
+    ->condition('name', 'uc_bank_transfer_%', 'LIKE')
+    ->execute();
+}
