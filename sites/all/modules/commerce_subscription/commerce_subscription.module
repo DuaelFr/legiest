@@ -118,7 +118,6 @@ function commerce_subscription_enable() {
 /*
  * Implementation of hook_entity_property_info()
  */
-
 function commerce_subscription_entity_property_info() {
 
   $info = array();
@@ -280,7 +279,7 @@ function commerce_subscription_disable() {
   }
 
   // Add in the fields we made with commerce_price_create_instance();
-  $field_instances[] = field_info_instance('commerce_product', 'subscription_trial_price', 'subscription');
+  $field_instances[] = field_info_instance('commerce_product', 'subscription_trial_1_price', 'subscription');
   $field_instances[] = field_info_instance('commerce_product', 'subscription_trial_2_price', 'subscription');
 
   // Delete each instance
@@ -294,7 +293,7 @@ function commerce_subscription_disable() {
   $fields = commerce_subscription_get_default_fields();
 
   // Add in the fields we made with commerce_price_create_instance();
-  $fields[] = array('field_name' => 'subscription_trial_price');
+  $fields[] = array('field_name' => 'subscription_trial_1_price');
   $fields[] = array('field_name' => 'subscription_trial_2_price');
 
   // Delete the fields
@@ -550,19 +549,36 @@ function commerce_subscription_get_default_fields() {
 
   $fields[] = array(
     'field_name' => 'subscription_units',
+    'settings' => array(
+      'allowed_values_function' => 'commerce_subscription_units',
+    ),
+    'type' => 'list_integer',
+  );
+
+  $fields[] = array(
+    'field_name' => 'subscription_trial_1_period',
     'type' => 'number_integer',
   );
 
   $fields[] = array(
-    'field_name' => 'subscription_trial_period',
-    'type' => 'number_integer',
-    'cardinality' => 2,
+    'field_name' => 'subscription_trial_1_units',
+    'settings' => array(
+      'allowed_values_function' => 'commerce_subscription_units',
+    ),
+    'type' => 'list_integer',
   );
 
   $fields[] = array(
-    'field_name' => 'subscription_trial_units',
+    'field_name' => 'subscription_trial_2_period',
     'type' => 'number_integer',
-    'cardinality' => 2,
+  );
+
+  $fields[] = array(
+    'field_name' => 'subscription_trial_2_units',
+    'settings' => array(
+      'allowed_values_function' => 'commerce_subscription_units',
+    ),
+    'type' => 'list_integer',
   );
 
   $fields[] = array(
@@ -615,10 +631,10 @@ function commerce_subscription_set_up_field_instances() {
   // Product module contains a handy function for adding a price field instance, so we'll use it to add our trial period prices
 
   // Cost of trial period 1:
-  commerce_price_create_instance('subscription_trial_price', 'commerce_product', 'subscription', t('Trial period price'), 0, 'calculated_sell_price');
+  commerce_price_create_instance('subscription_trial_1_price', 'commerce_product', 'subscription', t('First trial period price'), 0, 'calculated_sell_price');
 
   // Cost of trial period 2:
-  commerce_price_create_instance('subscription_trial_2_price', 'commerce_product', 'subscription', t('Trial period 2 price'), 0, 'calculated_sell_price');
+  commerce_price_create_instance('subscription_trial_2_price', 'commerce_product', 'subscription', t('Second trial period price'), 0, 'calculated_sell_price');
 }
 
 function commerce_subscription_get_default_field_instances() {
@@ -647,48 +663,50 @@ function commerce_subscription_get_default_field_instances() {
     'entity_type' => 'commerce_product',
     'bundle' => 'subscription',
     'label' => t('Period units'),
-    'description' => 'The units the subscription period is expressed in. 1=Days, 2=Weeks, 3=Months, 4=Years',
     'required' => TRUE,
-    /* @todo - Nice options. Below code doesn't work.
     'widget' => array(
       'type' => 'options_select',
-      'options' => array(
-        COMMERCE_SUBSCRIPTION_DURATION_DAYS   => 'Days',
-        COMMERCE_SUBSCRIPTION_DURATION_WEEKS  => 'Weeks',
-        COMMERCE_SUBSCRIPTION_DURATION_MONTHS => 'Months',
-        COMMERCE_SUBSCRIPTION_DURATION_YEARS  => 'Years',
-      ),
     ),
-    */
   );
 
   $instances[] = array(
-    'field_name' => 'subscription_trial_period',
+    'field_name' => 'subscription_trial_1_period',
     'entity_type' => 'commerce_product',
     'bundle' => 'subscription',
-    'label' => t('Trial Period'),
-    'description' => 'If the subscription should have a trial period, enter the length in here. Units are as per "Trial period units".',
+    'label' => t('First trial period'),
+    'description' => 'If the subscription should have a first trial period, enter the length in here. Units are as per "Trial period units".',
     'required' => TRUE,
   );
 
   $instances[] = array(
-    'field_name' => 'subscription_trial_units',
+    'field_name' => 'subscription_trial_1_units',
     'entity_type' => 'commerce_product',
     'bundle' => 'subscription',
-    'label' => t('Trial period units'),
-    'description' => 'The units the subscription trial period is expressed in. 1=Days, 2=Weeks, 3=Months, 4=Years',
+    'label' => t('First trial period units'),
     'required' => TRUE,
-    /* @todo - Nice options. Below code doesn't work.
     'widget' => array(
       'type' => 'options_select',
-      'options' => array(
-        COMMERCE_SUBSCRIPTION_DURATION_DAYS   => 'Days',
-        COMMERCE_SUBSCRIPTION_DURATION_WEEKS  => 'Weeks',
-        COMMERCE_SUBSCRIPTION_DURATION_MONTHS => 'Months',
-        COMMERCE_SUBSCRIPTION_DURATION_YEARS  => 'Years',
-      ),
     ),
-    */
+  );
+
+  $instances[] = array(
+    'field_name' => 'subscription_trial_2_period',
+    'entity_type' => 'commerce_product',
+    'bundle' => 'subscription',
+    'label' => t('Second trial period'),
+    'description' => 'If the subscription should have a second trial period, enter the length in here. Units are as per "Trial period units".',
+    'required' => TRUE,
+  );
+
+  $instances[] = array(
+    'field_name' => 'subscription_trial_2_units',
+    'entity_type' => 'commerce_product',
+    'bundle' => 'subscription',
+    'label' => t('Second trial period units'),
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'options_select',
+    ),
   );
 
   $instances[] = array(
@@ -700,6 +718,9 @@ function commerce_subscription_get_default_field_instances() {
     'required' => FALSE,
     'widget' => array(
       'type' => 'options_onoff',
+      'settings' => array(
+        'display_label' => 1,
+      ),
     ),
   );
 
@@ -1149,27 +1170,27 @@ function commerce_subscription_get_price_short($product) {
 
 function commerce_subscription_get_price_long($product) {
 
-  $trial_period = $product->subscription_trial_period[LANGUAGE_NONE][0]['value'];
-  $trial_units = $product->subscription_trial_units[LANGUAGE_NONE][0]['value'];
-  $trial_price = $product->subscription_trial_price[LANGUAGE_NONE][0];
+  $trial_1_period = $product->subscription_trial_1_period[LANGUAGE_NONE][0]['value'];
+  $trial_1_units = $product->subscription_trial_1_units[LANGUAGE_NONE][0]['value'];
+  $trial_1_price = $product->subscription_trial_1_price[LANGUAGE_NONE][0];
 
-  $trial_2_period = $product->subscription_trial_period[LANGUAGE_NONE][1]['value'];
-  $trial_2_units = $product->subscription_trial_units[LANGUAGE_NONE][1]['value'];
+  $trial_2_period = $product->subscription_trial_2_period[LANGUAGE_NONE][0]['value'];
+  $trial_2_units = $product->subscription_trial_2_units[LANGUAGE_NONE][0]['value'];
   $trial_2_price = $product->subscription_trial_2_price[LANGUAGE_NONE][0];
 
   ob_start();
 
   // If there's an initial trial period
-  if ($trial_period > 0) {
+  if ($trial_1_period > 0) {
 
-    if ($trial_price['amount'] > 0) {
-      echo commerce_currency_format($trial_price['amount'], $trial_price['currency_code']);
+    if ($trial_1_price['amount'] > 0) {
+      echo commerce_currency_format($trial_1_price['amount'], $trial_1_price['currency_code']);
     }
     else {
       echo 'free';
     }
 
-    echo ' for ' . commerce_subscription_length_format($trial_period, $trial_units, TRUE);
+    echo ' for ' . commerce_subscription_length_format($trial_1_period, $trial_1_units, TRUE);
 
     // If there's a second trial period
     if ($trial_2_period > 0) {
@@ -1245,7 +1266,7 @@ function commerce_subscription_form_commerce_paypal_wps_redirect_form_alter(&$fo
         }
 
         if ($product_wrapper->subscription_trial_1_period->value() > 0) {
-          $paypal_fields['a1'] = sprintf('%0.2f',$product_wrapper->subscription_trial_price->amount->value());
+          $paypal_fields['a1'] = sprintf('%0.2f',$product_wrapper->subscription_trial_1_price->amount->value());
           $paypal_fields['p1'] = $product_wrapper->subscription_trial_1_period->value();
           $paypal_fields['t1'] = $units[$product_wrapper->subscription_trial_1_units->value()];
         }
