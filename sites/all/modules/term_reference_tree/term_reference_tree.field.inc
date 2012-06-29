@@ -66,7 +66,7 @@ function term_reference_tree_field_formatter_settings_form($field, $instance, $v
       '#token_types' => array('term'),
     );
   }
-
+  
   return $element;
 }
 

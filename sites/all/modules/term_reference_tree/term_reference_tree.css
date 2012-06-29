@@ -1,10 +1,8 @@
 .item-list .field-widget-term-reference-tree ul,
 .block .field-widget-term-reference-tree ul,
-.field-widget-term-reference-tree ul,
-ul.term-reference-tree-level,
-.region-content ul.term-reference-tree-level
+.field-widget-term-reference-tree ul
 {
-  list-style-type: none;
+  list-style-type: none; 
   margin-top: 0;
   margin-bottom: 0;
   margin-left: 0;
@@ -12,16 +10,13 @@ ul.term-reference-tree-level,
 
 .item-list .field-widget-term-reference-tree ul ul,
 .block .field-widget-term-reference-tree ul ul,
-.field-widget-term-reference-tree ul ul,
-ul.term-reference-tree-level ul,
-.region-content ul.term-reference-tree-level ul
+.field-widget-term-reference-tree ul ul
 {
   margin-left: 1.5em;
 }
 
 .item-list .field-widget-term-reference-tree ul .form-item,
 .block .field-widget-term-reference-tree ul .form-item,
-ul.term-reference-tree-level .form-item
 .field-widget-term-reference-tree ul .form-item {
   margin: 0;
   padding: 0;
@@ -50,25 +45,24 @@ ul.term-reference-tree-level .form-item
   background-image: url('images/bullet_toggle_plus.png');
 }
 
-ul.term-reference-tree-level .form-item {
+.field-widget-term-reference-tree .form-item {
   display: inline-block;
   *display: inline;
   zoom: 1;
 }
 
-ul.term-reference-tree-level .disabled {
+.field-widget-term-reference-tree .disabled {
   opacity: .5;
 }
 
-ul.term-reference-tree-level .parent-term {
+.field-widget-term-reference-tree .parent-term {
   display: inline-block;
   *display: inline;
   zoom: 1;
   font-weight: bold;
 }
 
-.form-type-checkbox-tree .error,
-.term-reference-tree.error {
+.form-type-checkbox-tree .error {
   background-image: none;
   border: 2px solid red;
   padding: 3px;
@@ -119,18 +113,14 @@ ul.term-reference-tree-level .parent-term {
  * Styles for display element
  */
 
-.term-tree-list .selected {
+.field-widget-term-reference-tree .selected {
   font-weight: bold;
 }
 
-.term-tree-list .unselected {
+.field-widget-term-reference-tree .unselected {
   font-weight: normal;
 }
 
-.term-tree-list ul {
+.field-widget-term-reference-tree ul {
   margin-top: 0;
-}
-
-.field-type-taxonomy-term-reference ul.links .term-tree-list ul.term li {
-  float: none;
 }

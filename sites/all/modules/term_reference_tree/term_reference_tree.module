@@ -35,7 +35,7 @@ function term_reference_tree_element_info() {
       '#pre_render' => array('form_pre_render_conditional_form_element'),
     ),
   );
-
+  
   return $types;
 }
 
@@ -75,11 +75,11 @@ function term_reference_tree_theme() {
  *   The vocabulary ID to restrict the child search.
  *
  * @return
- *   A nested array of the term's child objects.
+ *   A nested array of the term's child objects.  
  */
 function _term_reference_tree_get_term_hierarchy($tid, $vid, &$allowed, $filter, $label, $default = array()) {
   $terms = _term_reference_tree_get_children($tid, $vid, $default);
-
+  
   $result = array();
 
   if ($filter != '') {
@@ -89,14 +89,14 @@ function _term_reference_tree_get_term_hierarchy($tid, $vid, &$allowed, $filter,
         $children = _term_reference_tree_get_term_hierarchy($term->tid, $vid, $allowed, $filter, $label, $default);
         if (is_array($children)) {
           $term->children = $children;
-          $term->children_selected = _term_reference_tree_children_selected($term, $default);
-        }
+          $term->children_selected = _term_reference_tree_children_selected($term, $default); 
+        } 
         else {
           $term->children_selected = FALSE;
         }
         $term->TEST = $label;
         array_push($result, $term);
-      }
+      }      
     }
   }
   else {
@@ -105,8 +105,8 @@ function _term_reference_tree_get_term_hierarchy($tid, $vid, &$allowed, $filter,
         $children = _term_reference_tree_get_term_hierarchy($term->tid, $vid, $allowed, $filter, $label, $default);
         if (is_array($children)) {
           $term->children = $children;
-          $term->children_selected = _term_reference_tree_children_selected($term, $default);
-        }
+          $term->children_selected = _term_reference_tree_children_selected($term, $default);        
+        } 
         else {
           $term->children_selected = FALSE;
         }
@@ -115,7 +115,7 @@ function _term_reference_tree_get_term_hierarchy($tid, $vid, &$allowed, $filter,
       }
     }
   }
-
+  
   return $result;
 }
 
@@ -195,9 +195,9 @@ function _term_reference_tree_flatten($element, &$form_state) {
 
 /**
  * Return an array of options.
- *
+ * 
  * This function converts a list of taxonomy terms to a key/value list of options.
- *
+ * 
  * @param $terms
  *   An array of taxonomy term IDs.
  * @param $allowed
@@ -205,7 +205,7 @@ function _term_reference_tree_flatten($element, &$form_state) {
  * @param $filter
  *   A string defining the view to filter by (only used to detect whether view
  *   filtering is enabled
- *
+ * 
  * @return
  *   A key/value array of taxonomy terms (name => id)
  */
