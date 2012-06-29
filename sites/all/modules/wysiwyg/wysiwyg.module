@@ -5,6 +5,9 @@
  * Integrates client-side editors with Drupal.
  */
 
+include_once('wysiwyg.features.inc');
+
+
 /**
  * Implements hook_entity_info().
  */
