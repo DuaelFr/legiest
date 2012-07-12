@@ -138,7 +138,8 @@ function taxonomies_product_field_default_fields() {
       'bundle' => 'product_category',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.',
+      'description' => 'Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.
+Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -170,7 +171,8 @@ function taxonomies_product_field_default_fields() {
   t('Icone de la catégorie (affiché dans le menu pour les termes de premier niveau et dans la page de détail pour tous)');
   t('Image');
   t('Thématique');
-  t('Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.');
+  t('Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.
+Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.');
 
   return $fields;
 }
