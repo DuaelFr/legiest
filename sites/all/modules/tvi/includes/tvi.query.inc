@@ -9,18 +9,18 @@
  * Return a default setting object.
  */
 function tvi_default_settings($type = TVI_TYPE_TERM, $xid = 0) {
-	$settings = new stdClass();
-	
+  $settings = new stdClass();
+
   $settings->type = $type;
   $settings->xid  = $xid;
-  
+
   $settings->view_name = 0;
   $settings->display = TVI_DEFAULT_DISPLAY;
   $settings->status  = 0;
-  
+
   $settings->is_default = TRUE;
-		
-	return $settings;	
+
+  return $settings;  
 }
 
 //------------------------------------------------------------------------------
@@ -30,18 +30,17 @@ function tvi_default_settings($type = TVI_TYPE_TERM, $xid = 0) {
  * flag is set.
  */
 function tvi_load_settings($xid, $type = TVI_TYPE_TERM, $return_default = TRUE) {
-	
-  $settings = db_select('tvi_settings', 'tvi')
-          ->fields('tvi')
-          ->condition('tvi.type', $type)
-          ->condition('tvi.xid', $xid)
-          ->execute()
-          ->fetchObject();
-  
-  if (!is_object($settings)) {
-  	return ($return_default ? tvi_default_settings($type, $xid) : NULL);
+  if ($type == TVI_TYPE_VOCAB) {
+    $vocabulary = taxonomy_vocabulary_load($xid);
+    $xid = $vocabulary->machine_name;
   }
-  
+
+  $settings = variable_get('tvi_' . $type . '_' . $xid);
+
+  if (!is_object($settings)) {
+    return ($return_default ? tvi_default_settings($type, $xid) : NULL);
+  }
+
   $settings->is_default = FALSE;
   return $settings;
 }
@@ -52,51 +51,26 @@ function tvi_load_settings($xid, $type = TVI_TYPE_TERM, $return_default = TRUE) 
  * Save settings information for a taxonomy vocabulary or term to the database.
  */
 function tvi_update_settings($settings) {
-	
   if (is_array($settings)) {
-   $settings = (object)$settings;
+    $settings = (object)$settings;
   }
 
-  $count = db_select('tvi_settings', 'tvi')
-        ->fields('tvi')
-        ->condition('tvi.type', $settings->type)
-        ->condition('tvi.xid', $settings->xid)
-        ->countQuery()
-        ->execute()
-        ->fetchCol();
-
-  if($count[0] != 0) {
-    $result = db_update('tvi_settings')
-        ->condition('type', $settings->type)
-        ->condition('xid', $settings->xid)
-        ->fields(array(
-            'view_name' => $settings->view_name,
-            'display' => $settings->display,
-            'status' => $settings->status,
-          ))
-        ->execute();
-  }
-  else {
-    $result = db_insert('tvi_settings')
-        ->fields(array(
-            'type' => $settings->type,
-            'xid' => $settings->xid,
-            'view_name' => $settings->view_name,
-            'display' => $settings->display,
-            'status' => $settings->status,
-          ))
-        ->execute();
-  }
-  return $result;
+  variable_set('tvi_' . $settings->type . '_' . $settings->xid, $settings);
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Delete settings information for a taxonomy vocabulary or term in 
+ * the database.
+ */
 function tvi_remove_settings($xid, $type = TVI_TYPE_TERM) {
-  $return = db_delete('tvi_settings')
-      ->condition('type', $settings->type)
-      ->condition('xid', $settings->xid)
-      ->execute();
+  if ($type == TVI_TYPE_VOCAB) {
+    $vocabulary = taxonomy_vocabulary_load($xid);
+    $xid = $vocabulary->machine_name;
+  }
+
+  variable_del('tvi_' . $type . '_' . $xid);
 }
 
 //------------------------------------------------------------------------------
