@@ -236,6 +236,7 @@ function tvi_get_view_info($tid) {
   $info = tvi_get_term_info($tid, TVI_DATATYPE_ALL);
   $term     = isset($info->term) ? $info->term : null;
   $view     = isset($info->view) ? $info->view : null;
+  $display  = null;
   $settings = isset($info->settings) ? $info->settings : null;
 
   if (is_object($view) && is_object($settings) && $settings->status) {
