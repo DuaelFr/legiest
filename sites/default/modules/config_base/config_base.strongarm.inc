@@ -98,7 +98,7 @@ function config_base_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'site_frontpage';
-  $strongarm->value = 'node';
+  $strongarm->value = 'frontpage';
   $export['site_frontpage'] = $strongarm;
 
   $strongarm = new stdClass();

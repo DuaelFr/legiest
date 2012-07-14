@@ -5,3 +5,23 @@
  */
 
 include_once 'config_base.features.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function config_base_menu() {
+  $items = array();
+  $items['frontpage'] = array(
+    'access callback' => TRUE,
+    'page callback' => '_config_base_frontpage',
+  );
+  return $items;
+}
+
+/**
+ * Front page callback.
+ */
+function _config_base_frontpage() {
+  drupal_set_title(NULL);
+  return '';
+}
