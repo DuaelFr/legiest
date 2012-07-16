@@ -1,0 +1,16 @@
+name = Context TMP
+core = 7.x
+package = App
+version = 7.x-1.0-alpha1
+project = context_tmp
+dependencies[] = context
+dependencies[] = views
+dependencies[] = views_product_uc
+dependencies[] = views_taxonomies_product
+features[context][] = all
+features[context][] = categories
+features[context][] = front
+features[context][] = sidebar
+features[context][] = themes
+features[ctools][] = context:context:3
+features[features_api][] = api:1

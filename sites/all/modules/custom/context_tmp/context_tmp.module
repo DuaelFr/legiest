@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Context TMP feature.
+ */
+
+include_once 'context_tmp.features.inc';
