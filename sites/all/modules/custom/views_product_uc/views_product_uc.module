@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Views Product UC feature.
+ */
+
+include_once 'views_product_uc.features.inc';

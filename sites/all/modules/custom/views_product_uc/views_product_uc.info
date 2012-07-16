@@ -1,0 +1,10 @@
+name = Views Product UC
+core = 7.x
+package = App
+version = 7.x-1.0-alpha1
+project = views_product_uc
+dependencies[] = type_product_uc
+dependencies[] = views
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:1
+features[views_view][] = products
