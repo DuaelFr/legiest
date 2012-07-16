@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Config Shop UC feature.
+ */
+
+include_once 'config_shop_uc.features.inc';

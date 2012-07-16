@@ -1,0 +1,48 @@
+<?php
+/**
+ * @file
+ * Code for the Type Product feature.
+ */
+
+include_once 'taxonomies_product.features.inc';
+
+define('TAXONOMIES_PRODUCT_SESSION', 'taxonomies_category_theme_switch');
+
+/**
+ * Implements hook_init().
+ * 
+ * Save theme tid into session.
+ */
+function taxonomies_product_init() {
+  if (variable_get(TAXONOMIES_PRODUCT_SESSION . '_enabled', TRUE)) {
+    if (drupal_is_front_page()) {
+      unset($_SESSION[TAXONOMIES_PRODUCT_SESSION]);
+    }
+    elseif (arg(0) == 'taxonomy' && arg(1) == 'term' && is_numeric(arg(2))) {
+      $term = taxonomy_term_load(arg(2));
+      if ($term->vocabulary_machine_name == 'category_theme') {
+        $_SESSION[TAXONOMIES_PRODUCT_SESSION] = $term->tid;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_build().
+ * 
+ * Inject the theme argument from the session.
+ */
+function taxonomies_product_views_pre_build(&$view) {
+  if ($view->name == 'categories' && $view->current_display == 'block_all' && !empty($_SESSION[TAXONOMIES_PRODUCT_SESSION])) {
+    $view->args[] = $_SESSION[TAXONOMIES_PRODUCT_SESSION];
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function taxonomies_product_views_pre_render(&$view) {
+  if ($view->name == 'categories' && $view->current_display == 'block_all') {
+    drupal_add_js(drupal_get_path('module', 'taxonomies_product') . '/js/accordion.js');
+  }
+}
