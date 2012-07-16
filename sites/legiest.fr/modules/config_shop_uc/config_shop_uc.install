@@ -1,11 +1,29 @@
 <?php
 
+// -----------------------------------------------------------------------------
+// HOOKS
+
 /**
  * Implements hook_install().
- * 
- * Import needed countries and remove the other ones.
  */
 function config_shop_uc_install() {
+  _config_shop_install_countries();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function config_shop_uc_uninstall() {
+  _config_shop_clean_countries();
+}
+
+// -----------------------------------------------------------------------------
+// COUNTRIES
+
+/**
+ * Import and enable needed countries
+ */
+function _config_shop_install_countries() {
   $needed_countries = array(
     'france', 'monaco', 'belgium', 'switzerland',  
     'french_guiana', 'french_polynesia', 'french_southern_territories', 
