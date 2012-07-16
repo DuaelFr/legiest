@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Taxonomies Product Views feature.
+ */
+
+include_once 'taxonomies_product_views.features.inc';
