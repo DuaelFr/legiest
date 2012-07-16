@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Type Product UC feature.
+ */
+
+include_once 'type_product_uc.features.inc';
