@@ -1,0 +1,12 @@
+name = Paybox
+description = Processes payments using Paybox system.
+dependencies[] = uc_payment
+package = Ubercart - payment
+core = 7.x
+
+; Information added by drupal.org packaging script on 2012-06-02
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "uc_paybox"
+datestamp = "1338597877"
+
