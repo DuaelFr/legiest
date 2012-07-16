@@ -13,7 +13,7 @@ function context_tmp_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'all';
+  $context->name = 'all-tmp';
   $context->description = 'Toutes les pages du site';
   $context->tag = 'Layout';
   $context->conditions = array(
@@ -41,7 +41,7 @@ function context_tmp_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Layout');
   t('Toutes les pages du site');
-  $export['all'] = $context;
+  $export['all-tmp'] = $context;
 
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
@@ -94,7 +94,7 @@ function context_tmp_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'front';
+  $context->name = 'front-tmp';
   $context->description = 'Page d\'accueil du site';
   $context->tag = 'Layout';
   $context->conditions = array(
@@ -128,7 +128,7 @@ function context_tmp_context_default_contexts() {
   // Included for use with string extractors like potx.
   t('Layout');
   t('Page d\'accueil du site');
-  $export['front'] = $context;
+  $export['front-tmp'] = $context;
 
   $context = new stdClass();
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
