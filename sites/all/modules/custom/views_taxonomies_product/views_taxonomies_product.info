@@ -1,4 +1,4 @@
-name = Taxonomies Product Views
+name = Views Taxonomies Product
 core = 7.x
 package = App
 version = 7.x-1.0-alpha1
