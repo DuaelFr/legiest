@@ -8,7 +8,7 @@
    * 
    * Opens the accordion or go to the link.
    */
-  LegiestAccordion.click = function() {
+  LegiestAccordion.click = function(evt) {
 	// If already open do nothing (so go to the link)
     if (!$(this).hasClass('open')) {
       var sub = $(this).find('.category-submenu-lvl2, .category-submenu-lvl3, .category-submenu-lvl4');
@@ -20,9 +20,10 @@
         $(this).children('.views-field-view').slideDown()
                .end().addClass('open');
         // Avoid bubling
-        return false;        
+        return false;
       }
     }
+    evt.stopPropagation();
   };
 
   /**
