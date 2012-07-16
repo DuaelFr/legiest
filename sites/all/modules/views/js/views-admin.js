@@ -818,12 +818,12 @@ Drupal.behaviors.viewsRemoveIconClass.attach = function (context, settings) {
 }
 
 /**
- * Change "Expose filter" buttons into checkboxes.
+ * Change "Expose filter", "Pull value" buttons into checkboxes.
  */
 Drupal.behaviors.viewsUiCheckboxify = {};
 Drupal.behaviors.viewsUiCheckboxify.attach = function (context, settings) {
   var $ = jQuery;
-  var $buttons = $('#edit-options-expose-button-button').once('views-ui-checkboxify');
+  var $buttons = $('#edit-options-expose-button-button,#edit-options-argument-value-button-button').once('views-ui-checkboxify');
   var length = $buttons.length;
   var i;
   for (i = 0; i < length; i++) {
@@ -832,7 +832,7 @@ Drupal.behaviors.viewsUiCheckboxify.attach = function (context, settings) {
 };
 
 /**
- * Attaches an expose filter button to a checkbox that triggers its click event.
+ * Attaches an button to a checkbox that triggers its click event.
  *
  * @param button
  *   The DOM object representing the button to be checkboxified.
@@ -840,11 +840,11 @@ Drupal.behaviors.viewsUiCheckboxify.attach = function (context, settings) {
 Drupal.viewsUi.Checkboxifier = function (button) {
   var $ = jQuery;
   this.$button = $(button);
-  this.$parent = this.$button.parent('div.views-expose');
+  this.$parent = this.$button.parent('div.views-checkboxify-wrapper');
   this.$checkbox = this.$parent.find('input:checkbox');
   // Hide the button and its description.
   this.$button.hide();
-  this.$parent.find('.exposed-description').hide();
+  this.$parent.find('.views-checkboxify-description').hide();
 
   this.$checkbox.click($.proxy(this, 'clickHandler'));
 };
@@ -985,3 +985,4 @@ jQuery(function() {
   jQuery(window).bind('resize', Drupal.viewsUi.resizeModal);
   jQuery(window).bind('scroll', Drupal.viewsUi.resizeModal);
 });
+
