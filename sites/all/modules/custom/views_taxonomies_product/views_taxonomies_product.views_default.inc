@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * taxonomies_product_views.views_default.inc
+ * views_taxonomies_product.views_default.inc
  */
 
 /**
  * Implements hook_views_default_views().
  */
-function taxonomies_product_views_views_default_views() {
+function views_taxonomies_product_views_default_views() {
   $export = array();
 
   $view = new view;

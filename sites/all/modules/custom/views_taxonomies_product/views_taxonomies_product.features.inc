@@ -1,12 +1,12 @@
 <?php
 /**
  * @file
- * taxonomies_product_views.features.inc
+ * views_taxonomies_product.features.inc
  */
 
 /**
  * Implements hook_views_api().
  */
-function taxonomies_product_views_views_api() {
+function views_taxonomies_product_views_api() {
   return array("version" => "3.0");
 }

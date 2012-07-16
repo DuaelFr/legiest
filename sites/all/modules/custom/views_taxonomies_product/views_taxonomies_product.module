@@ -4,4 +4,4 @@
  * Code for the Taxonomies Product Views feature.
  */
 
-include_once 'taxonomies_product_views.features.inc';
+include_once 'views_taxonomies_product.features.inc';
