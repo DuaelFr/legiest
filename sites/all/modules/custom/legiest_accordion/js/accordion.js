@@ -10,7 +10,7 @@
    */
   LegiestAccordion.click = function(evt) {
 	// If already open do nothing (so go to the link)
-    if (!$(this).hasClass('open')) {
+    if (!$(this).hasClass('open') && !$(this).hasClass('active')) {
       var sub = $(this).find('.category-submenu-lvl2, .category-submenu-lvl3, .category-submenu-lvl4');
       if (sub.length > 1 || sub.html().trim() != '') {
         // Close menus

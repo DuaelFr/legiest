@@ -1,0 +1,44 @@
+<?php
+/**
+ * @file
+ * Code for the Legiest Accordion module.
+ */
+
+define('LEGIEST_ACCORDION_SESSION', 'taxonomies_category_theme_switch');
+
+/**
+ * Implements hook_init().
+ * 
+ * Save theme tid into session.
+ */
+function legiest_accordion_init() {
+  if (drupal_is_front_page()) {
+    unset($_SESSION[LEGIEST_ACCORDION_SESSION]);
+  }
+  elseif (arg(0) == 'taxonomy' && arg(1) == 'term' && is_numeric(arg(2))) {
+    $term = taxonomy_term_load(arg(2));
+    if ($term->vocabulary_machine_name == 'category_theme') {
+      $_SESSION[LEGIEST_ACCORDION_SESSION] = $term->tid;
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_build().
+ * 
+ * Inject the theme argument from the session.
+ */
+function legiest_accordion_views_pre_build(&$view) {
+  if ($view->name == 'categories' && $view->current_display == 'block_all' && !empty($_SESSION[LEGIEST_ACCORDION_SESSION])) {
+    $view->args[] = $_SESSION[LEGIEST_ACCORDION_SESSION];
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function legiest_accordion_views_pre_render(&$view) {
+  if ($view->name == 'categories' && $view->current_display == 'block_all') {
+    drupal_add_js(drupal_get_path('module', 'legiest_accordion') . '/js/accordion.js');
+  }
+}
