@@ -492,27 +492,6 @@ function config_shop_uc_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'uc_image_convention';
-  $strongarm->value = 'uc_product_image';
-  $export['uc_image_convention'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'uc_image_product';
-  $strongarm->value = 'uc_product_image';
-  $export['uc_image_product'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'uc_image_product_convention';
-  $strongarm->value = 'uc_product_image';
-  $export['uc_image_product_convention'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
   $strongarm->name = 'uc_length_format_cm';
   $strongarm->value = '!value cm';
   $export['uc_length_format_cm'] = $strongarm;
