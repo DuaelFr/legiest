@@ -10,6 +10,69 @@
 function taxonomies_product_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'taxonomy_term-product_category-field_hidden'.
+  $fields['taxonomy_term-product_category-field_hidden'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_hidden',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => 'no',
+          1 => 'yes',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_boolean',
+    ),
+    'field_instance' => array(
+      'bundle' => 'product_category',
+      'default_value' => array(
+        0 => array(
+          'value' => 0,
+        ),
+      ),
+      'deleted' => '0',
+      'description' => 'Si coché, le terme et ses enfants n\'apparaîtront pas dans le menu. Si appliqué sur une élément de premier niveau, il n\'y aura aucun moyen, hors recherche, de trouver le contenu de la catégorie.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => 2,
+        ),
+      ),
+      'entity_type' => 'taxonomy_term',
+      'field_name' => 'field_hidden',
+      'label' => 'Caché',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(
+          'display_label' => 1,
+        ),
+        'type' => 'options_onoff',
+        'weight' => '2',
+      ),
+    ),
+  );
+
   // Exported field: 'taxonomy_term-product_category-field_picture'.
   $fields['taxonomy_term-product_category-field_picture'] = array(
     'field_config' => array(
@@ -95,7 +158,7 @@ function taxonomies_product_field_default_fields() {
           'progress_indicator' => 'throbber',
         ),
         'type' => 'image_image',
-        'weight' => '2',
+        'weight' => '3',
       ),
     ),
   );
@@ -126,7 +189,7 @@ function taxonomies_product_field_default_fields() {
       'settings' => array(
         'allowed_values' => array(
           0 => array(
-            'vocabulary' => 'product_theme',
+            'vocabulary' => 'category_theme',
             'parent' => '0',
           ),
         ),
@@ -168,8 +231,10 @@ Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Caché');
   t('Icone de la catégorie (affiché dans le menu pour les termes de premier niveau et dans la page de détail pour tous)');
   t('Image');
+  t('Si coché, le terme et ses enfants n\'apparaîtront pas dans le menu. Si appliqué sur une élément de premier niveau, il n\'y aura aucun moyen, hors recherche, de trouver le contenu de la catégorie.');
   t('Thématique');
   t('Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.
 Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.');

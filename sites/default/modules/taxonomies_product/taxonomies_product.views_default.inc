@@ -42,6 +42,12 @@ function taxonomies_product_views_default_views() {
   $handler->display->display_options['relationships']['parent']['table'] = 'taxonomy_term_hierarchy';
   $handler->display->display_options['relationships']['parent']['field'] = 'parent';
   $handler->display->display_options['relationships']['parent']['required'] = 0;
+  /* Relation: Terme de taxonomie : Thématique (field_theme) */
+  $handler->display->display_options['relationships']['field_theme_tid']['id'] = 'field_theme_tid';
+  $handler->display->display_options['relationships']['field_theme_tid']['table'] = 'field_data_field_theme';
+  $handler->display->display_options['relationships']['field_theme_tid']['field'] = 'field_theme_tid';
+  $handler->display->display_options['relationships']['field_theme_tid']['label'] = 'Thème';
+  $handler->display->display_options['relationships']['field_theme_tid']['required'] = 0;
   /* Champ: Champ : Image */
   $handler->display->display_options['fields']['field_picture']['id'] = 'field_picture';
   $handler->display->display_options['fields']['field_picture']['table'] = 'field_data_field_picture';
@@ -68,7 +74,7 @@ function taxonomies_product_views_default_views() {
   $handler->display->display_options['fields']['field_picture']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_picture']['settings'] = array(
     'image_style' => 'category_image_menu',
-    'image_link' => '',
+    'image_link' => 'content',
   );
   $handler->display->display_options['fields']['field_picture']['field_api_classes'] = 0;
   /* Champ: Terme de taxonomie : Nom */
@@ -140,54 +146,29 @@ function taxonomies_product_views_default_views() {
   $handler->display->display_options['sorts']['weight']['id'] = 'weight';
   $handler->display->display_options['sorts']['weight']['table'] = 'taxonomy_term_data';
   $handler->display->display_options['sorts']['weight']['field'] = 'weight';
-  /* Critère de filtrage: Vocabulaire de taxonomie : Nom système */
-  $handler->display->display_options['filters']['machine_name']['id'] = 'machine_name';
-  $handler->display->display_options['filters']['machine_name']['table'] = 'taxonomy_vocabulary';
-  $handler->display->display_options['filters']['machine_name']['field'] = 'machine_name';
-  $handler->display->display_options['filters']['machine_name']['value'] = array(
-    'product_category' => 'product_category',
+  /* Filtre contextuel: Global : Vide */
+  $handler->display->display_options['arguments']['null']['id'] = 'null';
+  $handler->display->display_options['arguments']['null']['table'] = 'views';
+  $handler->display->display_options['arguments']['null']['field'] = 'null';
+  $handler->display->display_options['arguments']['null']['title_enable'] = 1;
+  $handler->display->display_options['arguments']['null']['title'] = 'Nos produits %1';
+  $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['null']['specify_validation'] = 1;
+  $handler->display->display_options['arguments']['null']['validate']['type'] = 'taxonomy_term';
+  $handler->display->display_options['arguments']['null']['validate_options']['vocabularies'] = array(
+    'category_theme' => 'category_theme',
   );
-  /* Critère de filtrage: Terme de taxonomie : Terme */
-  $handler->display->display_options['filters']['tid']['id'] = 'tid';
-  $handler->display->display_options['filters']['tid']['table'] = 'taxonomy_term_data';
-  $handler->display->display_options['filters']['tid']['field'] = 'tid';
-  $handler->display->display_options['filters']['tid']['relationship'] = 'parent';
-  $handler->display->display_options['filters']['tid']['operator'] = 'empty';
-  $handler->display->display_options['filters']['tid']['type'] = 'select';
-  $handler->display->display_options['filters']['tid']['vocabulary'] = 'product_category';
-  /* Critère de filtrage: Terme de taxonomie : Thématique (field_theme) */
-  $handler->display->display_options['filters']['field_theme_tid']['id'] = 'field_theme_tid';
-  $handler->display->display_options['filters']['field_theme_tid']['table'] = 'field_data_field_theme';
-  $handler->display->display_options['filters']['field_theme_tid']['field'] = 'field_theme_tid';
-  $handler->display->display_options['filters']['field_theme_tid']['operator'] = 'empty';
-  $handler->display->display_options['filters']['field_theme_tid']['reduce_duplicates'] = 0;
-  $handler->display->display_options['filters']['field_theme_tid']['type'] = 'select';
-  $handler->display->display_options['filters']['field_theme_tid']['vocabulary'] = 'product_theme';
-
-  /* Display: Menu Spe (Bloc) */
-  $handler = $view->new_display('block', 'Menu Spe (Bloc)', 'block_spe');
-  $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Filtre contextuel: Terme de taxonomie : Thématique (field_theme) */
-  $handler->display->display_options['arguments']['field_theme_tid']['id'] = 'field_theme_tid';
-  $handler->display->display_options['arguments']['field_theme_tid']['table'] = 'field_data_field_theme';
-  $handler->display->display_options['arguments']['field_theme_tid']['field'] = 'field_theme_tid';
-  $handler->display->display_options['arguments']['field_theme_tid']['default_action'] = 'not found';
-  $handler->display->display_options['arguments']['field_theme_tid']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Nos produits %1';
-  $handler->display->display_options['arguments']['field_theme_tid']['default_argument_type'] = 'php';
-  $handler->display->display_options['arguments']['field_theme_tid']['default_argument_skip_url'] = 0;
-  $handler->display->display_options['arguments']['field_theme_tid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_theme_tid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_theme_tid']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['arguments']['field_theme_tid']['specify_validation'] = 1;
-  $handler->display->display_options['arguments']['field_theme_tid']['validate']['type'] = 'taxonomy_term';
-  $handler->display->display_options['arguments']['field_theme_tid']['validate_options']['vocabularies'] = array(
-    'product_theme' => 'product_theme',
+  $handler->display->display_options['arguments']['null']['validate_options']['transform'] = 0;
+  $handler->display->display_options['arguments']['null']['validate']['fail'] = 'ignore';
+  $handler->display->display_options['arguments']['null']['must_not_be'] = 0;
+  $handler->display->display_options['filter_groups']['groups'] = array(
+    1 => 'AND',
+    2 => 'OR',
   );
-  $handler->display->display_options['arguments']['field_theme_tid']['validate_options']['transform'] = 0;
-  $handler->display->display_options['arguments']['field_theme_tid']['break_phrase'] = 0;
-  $handler->display->display_options['arguments']['field_theme_tid']['not'] = 0;
-  $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Critère de filtrage: Vocabulaire de taxonomie : Nom système */
   $handler->display->display_options['filters']['machine_name']['id'] = 'machine_name';
   $handler->display->display_options['filters']['machine_name']['table'] = 'taxonomy_vocabulary';
@@ -196,6 +177,14 @@ function taxonomies_product_views_default_views() {
     'product_category' => 'product_category',
   );
   $handler->display->display_options['filters']['machine_name']['group'] = 1;
+  /* Critère de filtrage: Terme de taxonomie : Caché (field_hidden) */
+  $handler->display->display_options['filters']['field_hidden_value']['id'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['table'] = 'field_data_field_hidden';
+  $handler->display->display_options['filters']['field_hidden_value']['field'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['value'] = array(
+    0 => '0',
+  );
+  $handler->display->display_options['filters']['field_hidden_value']['group'] = 1;
   /* Critère de filtrage: Terme de taxonomie : Terme */
   $handler->display->display_options['filters']['tid']['id'] = 'tid';
   $handler->display->display_options['filters']['tid']['table'] = 'taxonomy_term_data';
@@ -205,6 +194,29 @@ function taxonomies_product_views_default_views() {
   $handler->display->display_options['filters']['tid']['group'] = 1;
   $handler->display->display_options['filters']['tid']['type'] = 'select';
   $handler->display->display_options['filters']['tid']['vocabulary'] = 'product_category';
+  /* Critère de filtrage: Terme de taxonomie : Terme */
+  $handler->display->display_options['filters']['tid_3']['id'] = 'tid_3';
+  $handler->display->display_options['filters']['tid_3']['table'] = 'taxonomy_term_data';
+  $handler->display->display_options['filters']['tid_3']['field'] = 'tid';
+  $handler->display->display_options['filters']['tid_3']['relationship'] = 'field_theme_tid';
+  $handler->display->display_options['filters']['tid_3']['operator'] = 'empty';
+  $handler->display->display_options['filters']['tid_3']['group'] = 2;
+  $handler->display->display_options['filters']['tid_3']['reduce_duplicates'] = 0;
+  $handler->display->display_options['filters']['tid_3']['type'] = 'select';
+  $handler->display->display_options['filters']['tid_3']['vocabulary'] = 'category_theme';
+  /* Critère de filtrage: Terme de taxonomie : Terme */
+  $handler->display->display_options['filters']['tid_1']['id'] = 'tid_1';
+  $handler->display->display_options['filters']['tid_1']['table'] = 'taxonomy_term_data';
+  $handler->display->display_options['filters']['tid_1']['field'] = 'tid';
+  $handler->display->display_options['filters']['tid_1']['relationship'] = 'field_theme_tid';
+  $handler->display->display_options['filters']['tid_1']['value'] = '';
+  $handler->display->display_options['filters']['tid_1']['group'] = 2;
+  $handler->display->display_options['filters']['tid_1']['pull_value'] = TRUE;
+  $handler->display->display_options['filters']['tid_1']['argument_value'] = array(
+    'value' => 'null',
+  );
+  $handler->display->display_options['filters']['tid_1']['reduce_duplicates'] = 0;
+  $handler->display->display_options['filters']['tid_1']['vocabulary'] = 'category_theme';
 
   /* Display: Menu All (Bloc) */
   $handler = $view->new_display('block', 'Menu All (Bloc)', 'block_all');
@@ -303,6 +315,13 @@ function taxonomies_product_views_default_views() {
     'product_category' => 'product_category',
   );
   $handler->display->display_options['filters']['machine_name']['group'] = 1;
+  /* Critère de filtrage: Terme de taxonomie : Caché (field_hidden) */
+  $handler->display->display_options['filters']['field_hidden_value']['id'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['table'] = 'field_data_field_hidden';
+  $handler->display->display_options['filters']['field_hidden_value']['field'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['value'] = array(
+    0 => '0',
+  );
 
   /* Display: Embed lvl3 (Bloc) */
   $handler = $view->new_display('block', 'Embed lvl3 (Bloc)', 'sub_block_lvl3');
@@ -398,6 +417,13 @@ function taxonomies_product_views_default_views() {
     'product_category' => 'product_category',
   );
   $handler->display->display_options['filters']['machine_name']['group'] = 1;
+  /* Critère de filtrage: Terme de taxonomie : Caché (field_hidden) */
+  $handler->display->display_options['filters']['field_hidden_value']['id'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['table'] = 'field_data_field_hidden';
+  $handler->display->display_options['filters']['field_hidden_value']['field'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['value'] = array(
+    0 => '0',
+  );
 
   /* Display: Embed lvl4 (Bloc) */
   $handler = $view->new_display('block', 'Embed lvl4 (Bloc)', 'sub_block_lvl4');
@@ -479,6 +505,13 @@ function taxonomies_product_views_default_views() {
     'product_category' => 'product_category',
   );
   $handler->display->display_options['filters']['machine_name']['group'] = 1;
+  /* Critère de filtrage: Terme de taxonomie : Caché (field_hidden) */
+  $handler->display->display_options['filters']['field_hidden_value']['id'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['table'] = 'field_data_field_hidden';
+  $handler->display->display_options['filters']['field_hidden_value']['field'] = 'field_hidden_value';
+  $handler->display->display_options['filters']['field_hidden_value']['value'] = array(
+    0 => '0',
+  );
   $translatables['categories'] = array(
     t('Master'),
     t('Nos produits'),
@@ -489,8 +522,8 @@ function taxonomies_product_views_default_views() {
     t('Asc'),
     t('Desc'),
     t('Parent'),
+    t('Thème'),
     t('.'),
-    t('Menu Spe (Bloc)'),
     t('Tout'),
     t('Nos produits %1'),
     t('Menu All (Bloc)'),

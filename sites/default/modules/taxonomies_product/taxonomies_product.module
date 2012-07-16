@@ -6,7 +6,7 @@
 
 include_once 'taxonomies_product.features.inc';
 
-define('TAXONOMIES_PRODUCT_SESSION', 'taxonomies_product_theme_switch');
+define('TAXONOMIES_PRODUCT_SESSION', 'taxonomies_category_theme_switch');
 
 /**
  * Implements hook_init().
@@ -20,7 +20,7 @@ function taxonomies_product_init() {
     }
     elseif (arg(0) == 'taxonomy' && arg(1) == 'term' && is_numeric(arg(2))) {
       $term = taxonomy_term_load(arg(2));
-      if ($term->vocabulary_machine_name == 'product_theme') {
+      if ($term->vocabulary_machine_name == 'category_theme') {
         $_SESSION[TAXONOMIES_PRODUCT_SESSION] = $term->tid;
       }
     }
@@ -33,7 +33,7 @@ function taxonomies_product_init() {
  * Inject the theme argument from the session.
  */
 function taxonomies_product_views_pre_build(&$view) {
-  if ($view->name == 'categories' && $view->current_display == 'block_spe' && !empty($_SESSION[TAXONOMIES_PRODUCT_SESSION])) {
+  if ($view->name == 'categories' && $view->current_display == 'block_all' && !empty($_SESSION[TAXONOMIES_PRODUCT_SESSION])) {
     $view->args[] = $_SESSION[TAXONOMIES_PRODUCT_SESSION];
   }
 }
