@@ -131,8 +131,7 @@ function wysiwyg_ckeditor_themes($editor, $profile) {
  * @see http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html#.stylesSet
  */
 function wysiwyg_ckeditor_settings_form(&$form, &$form_state) {
-  $editor = wysiwyg_get_editor($form['editor']['#value']);
-  if (version_compare($editor['installed version'], '3.2.1', '>=')) {
+  if (version_compare($form_state['wysiwyg']['editor']['installed version'], '3.2.1', '>=')) {
     // Replace CSS classes element description to explain the advanced syntax.
     $form['css']['css_classes']['#description'] = t('Optionally define CSS classes for the "Font style" dropdown list.<br />Enter one class on each line in the format: !format. Example: !example<br />If left blank, CSS classes are automatically imported from loaded stylesheet(s).', array(
       '!format' => '<code>[label]=[element].[class]</code>',
