@@ -47,4 +47,3 @@ features[variable][] = taxonomy_menu_vocab_menu_category_theme
 features[variable][] = taxonomy_menu_vocab_menu_product_category
 features[variable][] = taxonomy_menu_vocab_parent_category_theme
 features[variable][] = taxonomy_menu_vocab_parent_product_category
-features[views_view][] = categories
