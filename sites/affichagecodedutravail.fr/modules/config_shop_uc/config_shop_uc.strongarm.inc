@@ -444,7 +444,7 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_file_base_dir';
-  $strongarm->value = 'sites/default/uc_files';
+  $strongarm->value = 'sites/affichagecodedutravail.fr/uc_files';
   $export['uc_file_base_dir'] = $strongarm;
 
   $strongarm = new stdClass();
