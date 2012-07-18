@@ -1,0 +1,187 @@
+<?php
+/**
+ * @file
+ * UC Legiest module installation
+ */
+
+/**
+ * Implements hook_install().
+ */
+function uc_legiest_install() {
+  _uc_legiest_install_shipping_rates();
+  _uc_legiest_install_tax_rates();
+  
+  // Move this module after uc_flatrate
+  $weight = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', 'uc_flatrate')
+    ->execute()
+    ->fetchField();
+  db_update('system')
+    ->fields(array('weight' => $weight+5))
+    ->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function uc_legiest_uninstall() {
+  _uc_legiest_clean_shipping_rates();
+  _uc_legiest_clean_tax_rates();
+}
+
+// -----------------------------------------------------------------------------
+// SHIPPING RATES
+
+/**
+ * Get shipping rates for install/uninstall.
+ */
+function _uc_legiest_get_shipping_rates() {
+  return array(
+    // France
+    'france' => array(
+      'title' => 'France (moins de 99 €)',
+      'rate' => 6.50,
+    ),
+    'free_shipping' => array(
+      'title' => 'Franco de port (plus de 99 €)',
+      'rate' => 0,
+    ),
+    // Area 1
+    'area1_0_100' => array(
+      'title' => 'Zone 1 - 0g -> 100g',
+      'rate' => 12.50,
+    ),
+    'area1_100_500' => array(
+      'title' => 'Zone 1 - 100g -> 500g',
+      'rate' => 17.00,
+    ),
+    'area1_500_1000' => array(
+      'title' => 'Zone 1 - 500g -> 1kg',
+      'rate' => 22.00,
+    ),
+    'area1_1000_2000' => array(
+      'title' => 'Zone 1 - 1kg -> 2kg',
+      'rate' => 27.00,
+    ),
+    'area1_2000_10000' => array(
+      'title' => 'Zone 1 - 2kg -> 10kg',
+      'rate' => 32.00,
+    ),
+    'area1_10000+' => array(
+      'title' => 'Zone 1 - 10kg et plus',
+      'rate' => 41.50,
+    ),
+    // Area 2
+    'area2_0_100' => array(
+      'title' => 'Zone 2 - 0g -> 100g',
+      'rate' => 14.50,
+    ),
+    'area2_100_500' => array(
+      'title' => 'Zone 2 - 100g -> 500g',
+      'rate' => 20.00,
+    ),
+    'area2_500_1000' => array(
+      'title' => 'Zone 2 - 500g -> 1kg',
+      'rate' => 32.00,
+    ),
+    'area2_1000_2000' => array(
+      'title' => 'Zone 2 - 1kg -> 2kg',
+      'rate' => 44.00,
+    ),
+    'area2_2000_10000' => array(
+      'title' => 'Zone 2 - 2kg -> 10kg',
+      'rate' => 57.00,
+    ),
+    'area2_10000+' => array(
+      'title' => 'Zone 2 - 10kg et plus',
+      'rate' => 63.50,
+    ),
+  );
+}
+
+/**
+ * Add shipping rates into the database.
+ */
+function _uc_legiest_install_shipping_rates() {
+  $rates = _uc_legiest_get_shipping_rates();
+
+  foreach ($rates as $key => $rate) {
+    $method = array(
+      'title' => $key,
+      'label' => $rate['title'],
+      'base_rate' => $rate['rate'],
+      'product_rate' => 0,
+    );
+    drupal_write_record('uc_flatrate_methods', $method);
+  }
+
+  // Ensure Rules picks up the new condition.
+  entity_flush_caches();
+}
+
+/**
+ * Clean shipping rates.
+ */
+function _uc_legiest_clean_shipping_rates() {
+  $rates = array_keys(_uc_legiest_get_shipping_rates());
+  
+  db_delete('uc_flatrate_methods')
+    ->condition('title', $rates, 'IN')
+    ->execute();
+}
+
+// -----------------------------------------------------------------------------
+// TAX RATES
+
+/**
+ * Get tax rates for install/uninstall.
+ */
+function _uc_legiest_get_tax_rates() {
+  return array(
+    // France
+    'TVA' => array(
+      'rate' => 0.196,
+      'text' => 'TTC',
+    ),
+  );
+}
+
+/**
+ * Add tax rates into the database.
+ */
+function _uc_legiest_install_tax_rates() {
+  $rates = _uc_legiest_get_tax_rates();
+  
+  foreach ($rates as $key => $rate) {
+    $rate = (object) array(
+      'name' => $key,
+      'rate' => $rate['rate'],
+      'taxed_product_types' => array(
+        'product' => 'product', 
+        'product_convention' => 'product_convention', 
+        'product_file' => 'product_file',
+      ),
+      'taxed_line_items' => array(),
+      'weight' => 0,
+      'shippable' => 0,
+      'display_include' => 1,
+      'inclusion_text' => $rate['text'],
+    );
+    uc_taxes_rate_save($rate);    
+  }
+}
+
+/**
+ * Clean tax rates.
+ */
+function _uc_legiest_clean_tax_rates() {
+  $to_del = array_keys(_uc_legiest_get_tax_rates());
+  $rates = uc_taxes_rate_load();
+  
+  foreach ($rates as $rate) {
+    if (in_array($rate->name, $to_del)) {
+      uc_taxes_rate_delete($rate->id);
+    }
+  }
+}
