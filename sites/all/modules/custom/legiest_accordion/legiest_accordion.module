@@ -12,7 +12,7 @@ define('LEGIEST_ACCORDION_SESSION', 'taxonomies_category_theme_switch');
  * Save theme tid into session.
  */
 function legiest_accordion_init() {
-  if (drupal_is_front_page()) {
+  if (drupal_is_front_page() && !empty($_SESSION[LEGIEST_ACCORDION_SESSION])) {
     unset($_SESSION[LEGIEST_ACCORDION_SESSION]);
   }
   elseif (arg(0) == 'taxonomy' && arg(1) == 'term' && is_numeric(arg(2))) {
