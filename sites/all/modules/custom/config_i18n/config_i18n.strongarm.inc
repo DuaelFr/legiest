@@ -63,11 +63,11 @@ function config_i18n_strongarm() {
     'direction' => '0',
     'enabled' => '1',
     'plurals' => '2',
-    'formula' => '($n!=1)',
+    'formula' => '($n>1)',
     'domain' => '',
     'prefix' => 'fr',
     'weight' => '-10',
-    'javascript' => 'U4sTsJBWsuHOb4qR0LPH_rC0oMQmCDVSQkkVYrRelno',
+    'javascript' => 'hvU2w65rDYpUWPSbi35WRL12YXeKhvYHkJyVAmwft7Q',
   );
   $export['language_default'] = $strongarm;
 
