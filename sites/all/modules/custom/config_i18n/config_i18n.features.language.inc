@@ -33,7 +33,7 @@ function config_i18n_locale_default_languages() {
     'plurals' => '2',
     'formula' => '($n>1)',
     'domain' => '',
-    'prefix' => 'fr',
+    'prefix' => '',
     'weight' => '-10',
   );
   return $languages;
