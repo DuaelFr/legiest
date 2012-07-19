@@ -151,7 +151,7 @@ function views_taxonomies_product_views_default_views() {
   $handler->display->display_options['arguments']['null']['table'] = 'views';
   $handler->display->display_options['arguments']['null']['field'] = 'null';
   $handler->display->display_options['arguments']['null']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['null']['title'] = 'Nos produits %1';
+  $handler->display->display_options['arguments']['null']['title'] = 'Nos produits <span>%1</span>';
   $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['null']['default_argument_skip_url'] = 0;
   $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
@@ -578,7 +578,7 @@ function views_taxonomies_product_views_default_views() {
   $handler->display->display_options['arguments']['parent']['field'] = 'parent';
   $handler->display->display_options['arguments']['parent']['default_action'] = 'default';
   $handler->display->display_options['arguments']['parent']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['parent']['title'] = 'Sous-catégories %1';
+  $handler->display->display_options['arguments']['parent']['title'] = 'Sous-catégories <span>%1</span>';
   $handler->display->display_options['arguments']['parent']['default_argument_type'] = 'taxonomy_tid';
   $handler->display->display_options['arguments']['parent']['default_argument_options']['term_page'] = 1;
   $handler->display->display_options['arguments']['parent']['default_argument_options']['node'] = 0;
@@ -669,7 +669,7 @@ function views_taxonomies_product_views_default_views() {
   $handler->display->display_options['arguments']['null']['field'] = 'null';
   $handler->display->display_options['arguments']['null']['default_action'] = 'default';
   $handler->display->display_options['arguments']['null']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['null']['title'] = 'Sous-catégories %1';
+  $handler->display->display_options['arguments']['null']['title'] = 'Sous-catégories <span>%1</span>';
   $handler->display->display_options['arguments']['null']['default_argument_type'] = 'taxonomy_tid';
   $handler->display->display_options['arguments']['null']['default_argument_options']['term_page'] = 1;
   $handler->display->display_options['arguments']['null']['default_argument_options']['node'] = 0;
@@ -698,13 +698,13 @@ function views_taxonomies_product_views_default_views() {
     t('Thème'),
     t('.'),
     t('Tout'),
-    t('Nos produits %1'),
+    t('Nos produits <span>%1</span>'),
     t('Menu All (Bloc)'),
     t('Embed lvl2 (Bloc)'),
     t('Embed lvl3 (Bloc)'),
     t('Embed lvl4 (Bloc)'),
     t('Subcats Catégorie (Bloc)'),
-    t('Sous-catégories %1'),
+    t('Sous-catégories <span>%1</span>'),
     t('Subcats Thématique (Bloc)'),
   );
   $export['categories'] = $view;
