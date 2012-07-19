@@ -126,7 +126,7 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['arguments']['term_node_tid_depth']['field'] = 'term_node_tid_depth';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_action'] = 'default';
   $handler->display->display_options['arguments']['term_node_tid_depth']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['term_node_tid_depth']['title'] = 'Les incontournables %1';
+  $handler->display->display_options['arguments']['term_node_tid_depth']['title'] = 'Les incontournables <span>%1</span>';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_type'] = 'taxonomy_tid';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_options']['term_page'] = 1;
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_options']['node'] = 0;
@@ -179,7 +179,7 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['arguments']['field_theme_tid']['relationship'] = 'field_product_category_tid';
   $handler->display->display_options['arguments']['field_theme_tid']['default_action'] = 'default';
   $handler->display->display_options['arguments']['field_theme_tid']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Les incontournables %1';
+  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Les incontournables <span>%1</span>';
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_type'] = 'taxonomy_tid';
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_options']['term_page'] = 1;
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_options']['node'] = 0;
@@ -243,7 +243,7 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['arguments']['term_node_tid_depth']['field'] = 'term_node_tid_depth';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_action'] = 'default';
   $handler->display->display_options['arguments']['term_node_tid_depth']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['term_node_tid_depth']['title'] = 'Nouveaux produits %1';
+  $handler->display->display_options['arguments']['term_node_tid_depth']['title'] = 'Nouveaux produits <span>%1</span>';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_type'] = 'taxonomy_tid';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_options']['term_page'] = 1;
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_options']['node'] = 0;
@@ -296,7 +296,7 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['arguments']['field_theme_tid']['relationship'] = 'field_product_category_tid';
   $handler->display->display_options['arguments']['field_theme_tid']['default_action'] = 'default';
   $handler->display->display_options['arguments']['field_theme_tid']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Nouveaux produits %1';
+  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Nouveaux produits <span>%1</span>';
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_type'] = 'taxonomy_tid';
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_options']['term_page'] = 1;
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_options']['node'] = 0;
@@ -343,7 +343,7 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['arguments']['term_node_tid_depth']['field'] = 'term_node_tid_depth';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_action'] = 'empty';
   $handler->display->display_options['arguments']['term_node_tid_depth']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['term_node_tid_depth']['title'] = 'Nos produits %1';
+  $handler->display->display_options['arguments']['term_node_tid_depth']['title'] = 'Nos produits <span>%1</span>';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['term_node_tid_depth']['default_argument_skip_url'] = 0;
   $handler->display->display_options['arguments']['term_node_tid_depth']['summary']['number_of_records'] = '0';
@@ -399,7 +399,7 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['arguments']['field_theme_tid']['relationship'] = 'field_product_category_tid';
   $handler->display->display_options['arguments']['field_theme_tid']['default_action'] = 'empty';
   $handler->display->display_options['arguments']['field_theme_tid']['title_enable'] = 1;
-  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Nos produits %1';
+  $handler->display->display_options['arguments']['field_theme_tid']['title'] = 'Nos produits <span>%1</span>';
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['field_theme_tid']['default_argument_skip_url'] = 0;
   $handler->display->display_options['arguments']['field_theme_tid']['summary']['number_of_records'] = '0';
@@ -432,20 +432,20 @@ function views_product_uc_views_default_views() {
     t('file d\'attente'),
     t('Incontournables Catégorie (Bloc)'),
     t('Tout'),
-    t('Les incontournables %1'),
+    t('Les incontournables <span>%1</span>'),
     t('Incontournables Thématique (Bloc)'),
     t('category'),
     t('Nouveaux (Bloc)'),
     t('Nouveaux produits'),
     t('Nouveaux Catégorie (Bloc)'),
-    t('Nouveaux produits %1'),
+    t('Nouveaux produits <span>%1</span>'),
     t('Nouveaux Thématique (Bloc)'),
     t('Produits Catégorie (Page)'),
     t('Titre'),
     t('<h2 class="block-title">Tous les produits %1</h2>'),
     t('Vide'),
     t('Il n\'y a aucun produit dans cette catégorie.'),
-    t('Nos produits %1'),
+    t('Nos produits <span>%1</span>'),
     t('Produits Thématique (Page)'),
   );
   $export['products'] = $view;
