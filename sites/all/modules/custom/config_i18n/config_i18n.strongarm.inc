@@ -65,7 +65,7 @@ function config_i18n_strongarm() {
     'plurals' => '2',
     'formula' => '($n>1)',
     'domain' => '',
-    'prefix' => 'fr',
+    'prefix' => '',
     'weight' => '-10',
     'javascript' => 'hvU2w65rDYpUWPSbi35WRL12YXeKhvYHkJyVAmwft7Q',
   );
