@@ -201,8 +201,9 @@ function taxonomies_product_field_default_fields() {
       'bundle' => 'product_category',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.
-Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.',
+      'description' => 'Thématique (métier) à laquelle appartient la catégorie.
+Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.
+Si l\'une de vos catégories liée à une thématique possède une ou plusieurs sous-catégories, ces dernières devront également être rattachées à la même thématique.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -236,8 +237,9 @@ Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale
   t('Image');
   t('Si coché, le terme et ses enfants n\'apparaîtront pas dans le menu. Si appliqué sur une élément de premier niveau, il n\'y aura aucun moyen, hors recherche, de trouver le contenu de la catégorie.');
   t('Thématique');
-  t('Thématique (métier) à laquelle appartient la catégorie. Utile uniquement pour les catégories de premier niveau.
-Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.');
+  t('Thématique (métier) à laquelle appartient la catégorie.
+Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.
+Si l\'une de vos catégories liée à une thématique possède une ou plusieurs sous-catégories, ces dernières devront également être rattachées à la même thématique.');
 
   return $fields;
 }
