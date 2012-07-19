@@ -6,6 +6,7 @@ version = 7.x-1.0-alpha1
 project = views_taxonomies_product
 dependencies[] = taxonomies_product
 dependencies[] = views
+dependencies[] = views_field_view
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[views_view][] = categories
