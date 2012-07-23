@@ -4,3 +4,11 @@ sites/*/settings*.php
 # Ignore paths that contain user-generated content.
 sites/*/files
 sites/*/private
+
+# Ignore tmp files.
+tmp/*
+
+# Ignore Eclipse hidden files
+.buildpath
+.project
+.settings/*
