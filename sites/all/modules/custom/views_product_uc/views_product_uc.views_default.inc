@@ -35,8 +35,43 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = 'Éléments par page';
   $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all_label'] = '- Tout -';
   $handler->display->display_options['pager']['options']['expose']['offset_label'] = 'Décalage';
-  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['style_plugin'] = 'grid';
+  $handler->display->display_options['style_options']['columns'] = '1';
+  $handler->display->display_options['style_options']['fill_single_line'] = 1;
   $handler->display->display_options['row_plugin'] = 'fields';
+  /* Champ: Contenu : Image */
+  $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
+  $handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
+  $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
+  $handler->display->display_options['fields']['uc_product_image']['label'] = '';
+  $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['uc_product_image']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['uc_product_image']['settings'] = array(
+    'image_style' => 'produits-liste',
+    'image_link' => 'content',
+  );
+  $handler->display->display_options['fields']['uc_product_image']['group_rows'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['uc_product_image']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['delta_first_last'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['field_api_classes'] = 0;
   /* Champ: Contenu : Titre */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -53,6 +88,78 @@ function views_product_uc_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Champ: Nœud : Lien */
+  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['table'] = 'views_entity_node';
+  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['label'] = '';
+  $handler->display->display_options['fields']['view_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['view_node']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['view_node']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['view_node']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['view_node']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['view_node']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['view_node']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['view_node']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['view_node']['text'] = 'Détails du produit';
+  /* Champ: Produit : Sell price */
+  $handler->display->display_options['fields']['sell_price']['id'] = 'sell_price';
+  $handler->display->display_options['fields']['sell_price']['table'] = 'uc_products';
+  $handler->display->display_options['fields']['sell_price']['field'] = 'sell_price';
+  $handler->display->display_options['fields']['sell_price']['label'] = '';
+  $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['sell_price']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['sell_price']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['sell_price']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['sell_price']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['sell_price']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['sell_price']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['sell_price']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['sell_price']['set_precision'] = 0;
+  $handler->display->display_options['fields']['sell_price']['precision'] = '0';
+  $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
+  /* Champ: Produit : Buy it now button */
+  $handler->display->display_options['fields']['buyitnowbutton']['id'] = 'buyitnowbutton';
+  $handler->display->display_options['fields']['buyitnowbutton']['table'] = 'uc_products';
+  $handler->display->display_options['fields']['buyitnowbutton']['field'] = 'buyitnowbutton';
+  $handler->display->display_options['fields']['buyitnowbutton']['label'] = '';
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['buyitnowbutton']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['buyitnowbutton']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['buyitnowbutton']['hide_alter_empty'] = 1;
   /* Critère de tri: Contenu : Épinglé (en haut des listes) */
   $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
   $handler->display->display_options['sorts']['sticky']['table'] = 'node';
@@ -427,6 +534,9 @@ function views_product_uc_views_default_views() {
     t('Éléments par page'),
     t('- Tout -'),
     t('Décalage'),
+    t('Détails du produit'),
+    t('.'),
+    t(','),
     t('Incontournables (Bloc)'),
     t('Les incontournables'),
     t('file d\'attente'),
