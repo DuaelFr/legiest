@@ -596,6 +596,10 @@ zone-content-wrapper {
   margin: 0 10px;
   /*padding-top: 50px; pour placer le fil d'ariane (chercher une meilleure solution) */
 }
+#block-boxes-legiest-edito {
+  margin-top: 20px;
+}
+
 .view-news table.views-view-grid {
 	border: none;
 }

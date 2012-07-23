@@ -45,6 +45,21 @@ function contextes_default_box() {
   $box = new stdClass();
   $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
   $box->api_version = 1;
+  $box->delta = 'legiest_edito';
+  $box->plugin_key = 'simple';
+  $box->title = '<none>';
+  $box->description = 'Texte éditorial de la page d\'accueil';
+  $box->options = array(
+    'body' => array(
+      'value' => '<p><strong>Editorial</strong></p><p>Suspendisse sem mi, commodo iaculis pellentesque nec, accumsan sed metus. Duis molestie leo eget tortor pharetra pulvinar. Morbi tincidunt erat et metus facilisis tristique. Morbi aliquet risus id diam auctor molestie. Vestibulum pellentesque, enim eu rutrum faucibus, eros eros semper sem, et imperdiet enim neque sit amet erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet lacus eget nibh molestie ultrices.</p>',
+      'format' => 'full_html',
+    ),
+  );
+  $export['legiest_edito'] = $box;
+
+  $box = new stdClass();
+  $box->disabled = FALSE; /* Edit this to true to make a default box disabled initially */
+  $box->api_version = 1;
   $box->delta = 'legiest_phone';
   $box->plugin_key = 'simple';
   $box->title = '<none>';

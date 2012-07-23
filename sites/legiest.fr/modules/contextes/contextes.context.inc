@@ -167,9 +167,9 @@ function contextes_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'views-products-block_new' => array(
-          'module' => 'views',
-          'delta' => 'products-block_new',
+        'boxes-legiest_edito' => array(
+          'module' => 'boxes',
+          'delta' => 'legiest_edito',
           'region' => 'content',
           'weight' => '-10',
         ),
@@ -178,6 +178,12 @@ function contextes_context_default_contexts() {
           'delta' => 'products-block_highlight',
           'region' => 'content',
           'weight' => '-9',
+        ),
+        'views-products-block_new' => array(
+          'module' => 'views',
+          'delta' => 'products-block_new',
+          'region' => 'content',
+          'weight' => '-8',
         ),
       ),
     ),
