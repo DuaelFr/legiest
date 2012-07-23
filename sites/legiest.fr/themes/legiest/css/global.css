@@ -28,15 +28,15 @@
 	text-decoration: none;
   text-transform: uppercase;
 }
-#block-system-user-menu {
+#block-menu-menu-espace-clients {
   float: right;
 }
-#block-system-user-menu ul.menu li {
+#block-menu-menu-espace-clients ul.menu li {
 	list-style-type: none;
   list-style-image: none;
   float: left;
 }
-#block-system-user-menu ul.menu li.last {
+#block-menu-menu-espace-clients ul.menu li.last {
   width: 130px;
   height: 32px;
   margin: 0;
@@ -47,15 +47,15 @@
   text-align: center;
   text-transform: uppercase;
 }
-#block-system-user-menu ul.menu li a {
+#block-menu-menu-espace-clients ul.menu li a {
   text-decoration: none;
 }
-#block-system-user-menu ul.menu li.first a:hover,
-#block-system-user-menu ul.menu li.first a:focus {
+#block-menu-menu-espace-clients ul.menu li.first a:hover,
+#block-menu-menu-espace-clients ul.menu li.first a:focus {
   color: #C91A28;
   text-decoration: underline;
 }
-#block-system-user-menu ul.menu li.last a {
+#block-menu-menu-espace-clients ul.menu li.last a {
 	color: white;
   font-size: 0.85em;
   font-weight: bold;
@@ -122,34 +122,36 @@ h6.site-slogan {
   color: #5475B8;
   margin-left: 25px;
 }
+#block-uc-cart-cart {
+  background-image: url('../images/panier_legiest.png');
+  background-repeat: no-repeat;
+  background-position: 0px 42px;
+}
 #block-uc-cart-cart .block-inner {
 	padding-top: 38px;
 }
-/*
-#block-commerce-cart-cart {
-	float: left;
-	width: 100px;
-	padding-left: 50px;
-	margin-top: 38px;
-  background-image: url('../images/panier_legiest.png');
-  background-repeat: no-repeat;
-  background-position: 0px 7px;
-  z-index: -10px;
+#block-uc-cart-cart {
+	float: right;
+	width: 150px;
 }
-#block-commerce-cart-cart h2 {
+#block-uc-cart-cart h2 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.9em;
 	text-transform: uppercase;
   color: #263753;
   margin-top: 6px;
+  margin-left: 45px;
   letter-spacing: 0.02em;
 }
-#block-commerce-cart-cart .cart-empty-block {
+#block-uc-cart-cart .cart-block-summary {
+  display: none;
+}
+#block-uc-cart-cart .uc-cart-empty {
   font-size: 0.8em;
-  margin-top: -4px;
+  margin-top: -5px;
+  margin-left: 45px;
   color: #5475B8;
 }
-*/
 
 /******************** ZONE MENU WRAPPER **********************/
 #zone-menu-wrapper {
@@ -353,7 +355,6 @@ zone-content-wrapper {
 
 /***** REGION SIDEBAR FIRST *****/
 #region-sidebar-first {
-	background-color: white;
 	margin: 0;
 	width: 230px;
 }
@@ -363,6 +364,7 @@ zone-content-wrapper {
 
 
 #block-views-categories-block-all {
+	background-color: white;
 }
 
 
@@ -516,12 +518,12 @@ zone-content-wrapper {
   background-image: none;
 }
 
-
 #block-boxes-contact-legiest {
 	height: 107px;
 	background-image: url('../images/femme_tel.png');
 	background-repeat: no-repeat;
 	background-position: 100% 0;
+	background-color: white;
 }
 #boxes-box-contact_legiest .boxes-box-content {
 	padding-top: 55px;
@@ -536,9 +538,11 @@ zone-content-wrapper {
 	font-size: 1.4em;
   color: #DC0526;
 }
+
 #block-views-news-block-1 {
-	margin-top: 40px;
-	margin-bottom: 20px;
+	background-color: white;
+	margin-top: 20px;
+	padding-bottom: 15px;
 }
 #block-views-news-block-1 h2.block-title {
   font-family: Arial, Helvetica, sans-serif;
