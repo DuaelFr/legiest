@@ -54,6 +54,10 @@ css[global.css][name] = Your custom global styles
 css[global.css][description] = This file holds all the globally active custom CSS of your theme.
 css[global.css][options][weight] = 10
 
+; SCRIPTS
+scripts[] = js/jquery.corner.js
+scripts[] = js/legiest_corner.js
+
 ; THEME SETTINGS (DEFAULTS)
 
 settings[alpha_grid] = 'alpha_default'
