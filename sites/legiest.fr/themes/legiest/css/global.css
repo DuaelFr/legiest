@@ -735,6 +735,85 @@ h1#page-title {
   font-size: 0.90em;
 }
 
+.node-product .field-name-uc-product-image,
+.node-product-file .field-name-uc-product-image,
+.node-product-convention .field-name-uc-product-image {
+  float: left;
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+.node-product .group_product_details,
+.node-product-file .group_product_details,
+.node-product-convention .group_product_details {
+  float: right;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  padding: 15px;
+  width: 300px;
+  height: 200px;
+  border: 1px solid #ddd;
+}
+.node-product .display-price,
+.node-product-file .display-price,
+.node-product-convention .display-price {
+  float: none;
+  text-align: right;
+  color: #B90216;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.node-product .add-to-cart,
+.node-product-file .add-to-cart,
+.node-product-convention .add-to-cart {
+  margin-top: 50px;
+  float: right;
+  text-align: right;
+}
+.node-product-file .add-to-cart {
+  margin-top: 90px;
+}
+.node-product .add-to-cart label,
+.node-product-file .add-to-cart label,
+.node-product-convention .add-to-cart label {
+  float: left;
+  margin-top: 2px;
+  width: 80px;
+}
+.node-product .add-to-cart .form-type-uc-quantity input,
+.node-product-file .add-to-cart .form-type-uc-quantity input,
+.node-product-convention .add-to-cart .form-type-uc-quantity input {
+  border: 1px solid #ddd;
+}
+.node-product .dimensions,
+.node-product .weight {
+  color: #666;
+}
+.node-product input.node-add-to-cart,
+.node-product-file input.node-add-to-cart,
+.node-product-convention input.node-add-to-cart {
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  color: #B90216;
+  font-size: 0.90em;
+  margin: 0;
+  padding: 0 0 0 30px;
+  background-image: url('../images/ajout_panier_legiest.png');
+  background-repeat: no-repeat;
+}
+.node-product .field-name-body,
+.node-product-file .field-name-body,
+.node-product-convention .field-name-body {
+  clear: both;
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.node-product-convention .field-name-field-cc-ape .field-label,
+.node-product-convention .field-name-field-cc-activity .field-label {
+  float: left;
+}
+
 
 /******************** ZONE FOOTER WRAPPER **********************/
 #zone-footer-wrapper {
