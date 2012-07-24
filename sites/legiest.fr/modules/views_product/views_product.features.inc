@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * views_product_legiest.features.inc
+ * views_product.features.inc
  */
 
 /**
  * Implements hook_ctools_plugin_api().
  */
-function views_product_legiest_ctools_plugin_api() {
+function views_product_ctools_plugin_api() {
   list($module, $api) = func_get_args();
   if ($module == "ds" && $api == "ds") {
     return array("version" => "1");
@@ -21,7 +21,7 @@ function views_product_legiest_ctools_plugin_api() {
 /**
  * Implements hook_image_default_styles().
  */
-function views_product_legiest_image_default_styles() {
+function views_product_image_default_styles() {
   $styles = array();
 
   // Exported image style: produit-fiche.

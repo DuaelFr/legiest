@@ -1,8 +1,8 @@
-name = Views Product Legiest
+name = Views Product
 core = 7.x
 package = App
 version = 7.x-1.0-alpha1
-project = views_product_legiest
+project = views_product
 dependencies[] = ctools
 dependencies[] = ds
 dependencies[] = field_group

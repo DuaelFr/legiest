@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * views_product_legiest.ds.inc
+ * views_product.ds.inc
  */
 
 /**
  * Implements hook_ds_layout_settings_info().
  */
-function views_product_legiest_ds_layout_settings_info() {
+function views_product_ds_layout_settings_info() {
   $export = array();
 
   $ds_layout = new stdClass();

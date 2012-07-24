@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * views_product_legiest.field_group.inc
+ * views_product.field_group.inc
  */
 
 /**
  * Implements hook_field_group_info().
  */
-function views_product_legiest_field_group_info() {
+function views_product_field_group_info() {
   $export = array();
 
   $field_group = new stdClass();
