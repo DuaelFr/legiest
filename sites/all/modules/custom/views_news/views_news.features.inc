@@ -53,7 +53,7 @@ function views_news_fe_nodequeue_export_fields() {
 
   // Exported nodequeues: actus_bloc_accueil
   $nodequeues['actus_bloc_accueil'] = array(
-    'qid' => '4',
+    'qid' => '2',
     'name' => 'actus_bloc_accueil',
     'title' => 'Actus bloc accueil',
     'subqueue_title' => '',
