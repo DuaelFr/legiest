@@ -10,3 +10,70 @@
  * for your subtheme grows. Please read the README.txt in the /preprocess and /process subfolders
  * for more information on this topic.
  */
+/**
+ * Themes the shopping cart block title.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - title: The text to use for the title of the block.
+ *   - icon_class: Class to use for the cart icon image or FALSE if the icon is
+ *     disabled.
+ *   - collapsible: TRUE or FALSE indicating whether or not the cart block is
+ *     collapsible.
+ *   - collapsed: TRUE or FALSE indicating whether or not the cart block is
+ *     collapsed.
+ *
+ * @ingroup themeable
+ */
+function legiest_uc_cart_block_title($variables) {
+  $title = $variables['title'];
+
+  $output = '';
+  
+  $output .= l($title, 'cart', array(
+    'attributes' => array(
+      'title' => t('Show/hide shopping cart contents.'),
+      'class' => array('cart-block-title-bar'),
+    ),
+  ));
+
+  return $output;
+}
+
+/**
+ * Themes the shopping cart block content.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - help_text: Text to place in the small help text area beneath the cart
+ *     block title or FALSE if disabled.
+ *   - items: An associative array of cart item information containing:
+ *     - qty: Quantity in cart.
+ *     - title: Item title.
+ *     - price: Item price.
+ *     - desc: Item description.
+ *   - item_count: The number of items in the shopping cart.
+ *   - item_text: A textual representation of the number of items in the
+ *     shopping cart.
+ *   - total: The unformatted total of all the products in the shopping cart.
+ *   - summary_links: An array of links used in the cart summary.
+ *   - collapsed: TRUE or FALSE indicating whether or not the cart block is
+ *     collapsed.
+ *
+ * @ingroup themeable
+ */
+function legiest_uc_cart_block_content($variables) {
+  $item_count = $variables['item_count'];
+  $item_text = $variables['item_text'];
+
+  $output = '';
+  
+  if ($item_count > 0) {
+    $output .= l($item_text, 'cart', array('html' => TRUE));
+  }
+  else {
+    $output .= t('Panier vide');
+  }
+
+  return $output;
+}

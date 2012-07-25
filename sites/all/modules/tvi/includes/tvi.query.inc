@@ -39,7 +39,8 @@ function tvi_load_settings($xid, $type = TVI_TYPE_TERM, $return_default = TRUE) 
     $xid = reset(entity_get_uuid_by_id('taxonomy_term', array($xid)));
   }
 
-  $settings = (object) variable_get('tvi_' . $type . '_' . $xid);
+  $settings = variable_get('tvi_' . $type . '_' . $xid);
+  $settings = is_array($settings) ? (object) $settings : $settings;
 
   if (!is_object($settings)) {
     return ($return_default ? tvi_default_settings($type, $xid) : NULL);
