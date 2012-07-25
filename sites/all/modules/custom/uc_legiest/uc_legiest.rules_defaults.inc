@@ -116,9 +116,11 @@ function uc_legiest_default_rules_configuration_alter(&$configs) {
   }
   
   // Disable uc_file_renewal for override
-  $rule = $configs['uc_file_renewal'];
-  $rule->label .= ' [DO NOT ENABLE]';
-  $rule->active = FALSE;
+  if (!empty($configs['uc_file_renewal'])) {
+    $rule = $configs['uc_file_renewal'];
+    $rule->label .= ' [DO NOT ENABLE]';
+    $rule->active = FALSE;
+  }
 }
 
 
