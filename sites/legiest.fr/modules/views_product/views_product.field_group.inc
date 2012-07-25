@@ -87,7 +87,7 @@ function views_product_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Détails',
-    'weight' => '5',
+    'weight' => '1',
     'children' => array(
       0 => 'display_price',
       1 => 'weight',

@@ -61,6 +61,21 @@ function type_product_uc_strongarm() {
       'teaser' => array(
         'custom_settings' => TRUE,
       ),
+      'full' => array(
+        'custom_settings' => TRUE,
+      ),
+      'rss' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_index' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_result' => array(
+        'custom_settings' => FALSE,
+      ),
+      'token' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -74,10 +89,26 @@ function type_product_uc_strongarm() {
             'weight' => 0,
             'visible' => FALSE,
           ),
+          'default' => array(
+            'weight' => '8',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '8',
+            'visible' => FALSE,
+          ),
         ),
         'list_price' => array(
           'teaser' => array(
             'weight' => 0,
+            'visible' => FALSE,
+          ),
+          'default' => array(
+            'weight' => '9',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '9',
             'visible' => FALSE,
           ),
         ),
@@ -86,17 +117,71 @@ function type_product_uc_strongarm() {
             'weight' => 0,
             'visible' => FALSE,
           ),
+          'default' => array(
+            'weight' => '11',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '11',
+            'visible' => FALSE,
+          ),
         ),
         'weight' => array(
           'teaser' => array(
             'weight' => 0,
             'visible' => FALSE,
           ),
+          'default' => array(
+            'weight' => '3',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '3',
+            'visible' => TRUE,
+          ),
         ),
         'dimensions' => array(
           'teaser' => array(
             'weight' => 0,
             'visible' => FALSE,
+          ),
+          'default' => array(
+            'weight' => '2',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '2',
+            'visible' => TRUE,
+          ),
+        ),
+        'display_price' => array(
+          'default' => array(
+            'weight' => '1',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '1',
+            'visible' => TRUE,
+          ),
+        ),
+        'sell_price' => array(
+          'default' => array(
+            'weight' => '12',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '12',
+            'visible' => FALSE,
+          ),
+        ),
+        'add_to_cart' => array(
+          'default' => array(
+            'weight' => '4',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '4',
+            'visible' => TRUE,
           ),
         ),
       ),
@@ -109,14 +194,114 @@ function type_product_uc_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'field_bundle_settings_node__product_convention';
   $strongarm->value = array(
-    'view_modes' => array(),
+    'view_modes' => array(
+      'full' => array(
+        'custom_settings' => TRUE,
+      ),
+      'teaser' => array(
+        'custom_settings' => TRUE,
+      ),
+      'rss' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_index' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_result' => array(
+        'custom_settings' => FALSE,
+      ),
+      'token' => array(
+        'custom_settings' => FALSE,
+      ),
+    ),
     'extra_fields' => array(
       'form' => array(
         'title' => array(
           'weight' => '0',
         ),
       ),
-      'display' => array(),
+      'display' => array(
+        'display_price' => array(
+          'default' => array(
+            'weight' => '-1',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '-1',
+            'visible' => TRUE,
+          ),
+        ),
+        'model' => array(
+          'default' => array(
+            'weight' => '0',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '8',
+            'visible' => FALSE,
+          ),
+        ),
+        'list_price' => array(
+          'default' => array(
+            'weight' => '2',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '9',
+            'visible' => FALSE,
+          ),
+        ),
+        'cost' => array(
+          'default' => array(
+            'weight' => '3',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '11',
+            'visible' => FALSE,
+          ),
+        ),
+        'sell_price' => array(
+          'default' => array(
+            'weight' => '4',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '12',
+            'visible' => FALSE,
+          ),
+        ),
+        'weight' => array(
+          'default' => array(
+            'weight' => '5',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '13',
+            'visible' => FALSE,
+          ),
+        ),
+        'dimensions' => array(
+          'default' => array(
+            'weight' => '6',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '14',
+            'visible' => FALSE,
+          ),
+        ),
+        'add_to_cart' => array(
+          'default' => array(
+            'weight' => '10',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '10',
+            'visible' => TRUE,
+          ),
+        ),
+      ),
     ),
   );
   $export['field_bundle_settings_node__product_convention'] = $strongarm;
@@ -126,14 +311,114 @@ function type_product_uc_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'field_bundle_settings_node__product_file';
   $strongarm->value = array(
-    'view_modes' => array(),
+    'view_modes' => array(
+      'teaser' => array(
+        'custom_settings' => TRUE,
+      ),
+      'full' => array(
+        'custom_settings' => TRUE,
+      ),
+      'rss' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_index' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_result' => array(
+        'custom_settings' => FALSE,
+      ),
+      'token' => array(
+        'custom_settings' => FALSE,
+      ),
+    ),
     'extra_fields' => array(
       'form' => array(
         'title' => array(
           'weight' => '0',
         ),
       ),
-      'display' => array(),
+      'display' => array(
+        'display_price' => array(
+          'default' => array(
+            'weight' => '1',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '1',
+            'visible' => TRUE,
+          ),
+        ),
+        'model' => array(
+          'default' => array(
+            'weight' => '8',
+            'visible' => FALSE,
+          ),
+          'full' => array(
+            'weight' => '8',
+            'visible' => FALSE,
+          ),
+        ),
+        'list_price' => array(
+          'default' => array(
+            'weight' => '9',
+            'visible' => FALSE,
+          ),
+          'full' => array(
+            'weight' => '9',
+            'visible' => FALSE,
+          ),
+        ),
+        'cost' => array(
+          'default' => array(
+            'weight' => '11',
+            'visible' => FALSE,
+          ),
+          'full' => array(
+            'weight' => '11',
+            'visible' => FALSE,
+          ),
+        ),
+        'sell_price' => array(
+          'default' => array(
+            'weight' => '12',
+            'visible' => FALSE,
+          ),
+          'full' => array(
+            'weight' => '12',
+            'visible' => FALSE,
+          ),
+        ),
+        'weight' => array(
+          'default' => array(
+            'weight' => '13',
+            'visible' => FALSE,
+          ),
+          'full' => array(
+            'weight' => '13',
+            'visible' => FALSE,
+          ),
+        ),
+        'dimensions' => array(
+          'default' => array(
+            'weight' => '14',
+            'visible' => FALSE,
+          ),
+          'full' => array(
+            'weight' => '14',
+            'visible' => FALSE,
+          ),
+        ),
+        'add_to_cart' => array(
+          'default' => array(
+            'weight' => '2',
+            'visible' => TRUE,
+          ),
+          'full' => array(
+            'weight' => '2',
+            'visible' => TRUE,
+          ),
+        ),
+      ),
     ),
   );
   $export['field_bundle_settings_node__product_file'] = $strongarm;
