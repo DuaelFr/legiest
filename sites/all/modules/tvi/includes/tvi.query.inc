@@ -39,7 +39,7 @@ function tvi_load_settings($xid, $type = TVI_TYPE_TERM, $return_default = TRUE) 
     $xid = reset(entity_get_uuid_by_id('taxonomy_term', array($xid)));
   }
 
-  $settings = variable_get('tvi_' . $type . '_' . $xid);
+  $settings = (object) variable_get('tvi_' . $type . '_' . $xid);
 
   if (!is_object($settings)) {
     return ($return_default ? tvi_default_settings($type, $xid) : NULL);
@@ -55,11 +55,11 @@ function tvi_load_settings($xid, $type = TVI_TYPE_TERM, $return_default = TRUE) 
  * Save settings information for a taxonomy vocabulary or term to the database.
  */
 function tvi_update_settings($settings) {
-  if (is_array($settings)) {
-    $settings = (object)$settings;
+  if (is_object($settings)) {
+    $settings = (array) $settings;
   }
 
-  variable_set('tvi_' . $settings->type . '_' . $settings->xid, $settings);
+  variable_set('tvi_' . $settings['type'] . '_' . $settings['xid'], $settings);
 }
 
 //------------------------------------------------------------------------------
