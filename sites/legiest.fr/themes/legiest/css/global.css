@@ -592,7 +592,7 @@ zone-content-wrapper {
 
 h1#page-title {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 2em;
+  font-size: 1.8em;
   /*letter-spacing: 0.01em;*/
   color: #4B77B4;
 }
@@ -612,6 +612,7 @@ h1#page-title {
   color: #DC0526;
 }
 
+/*#region-content section.block-views,*/
 #block-views-products-block-new h2.block-title,
 #block-views-products-block-highlight h2.block-title {
   color: #4B77B4;
@@ -622,18 +623,36 @@ h1#page-title {
   border-bottom: 1px solid #345b81;
   margin-bottom: 20px;
 }
+#block-system-main,
+#region-content section {
+  margin-bottom: 20px;
+}
+#block-system-main h2.block-title,
+#region-content section h2.block-title {
+  color: #4B77B4;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 1.5em;
+  letter-spacing: 0.01em;
+  margin-left: 10px;
+  border-bottom: 1px solid #345b81;
+  margin-bottom: 20px;
+}
 #block-views-products-block-new .content,
 #block-views-products-block-highlight .content {
   margin-left: 10px;
 }
 #block-views-products-block-new table.views-view-grid,
-#block-views-products-block-highlight table.views-view-grid {
+#block-views-products-block-highlight table.views-view-grid,
+.view-display-id-block_highlight_category table.views-view-grid,
+.view-display-id-page_category table.views-view-grid {
   border: none;
   border-collapse: separate;
   margin-bottom: 0;
 }
 #block-views-products-block-new table.views-view-grid td,
-#block-views-products-block-highlight table.views-view-grid td {
+#block-views-products-block-highlight table.views-view-grid td,
+.view-display-id-block_highlight_category table.views-view-grid td,
+.view-display-id-page_category table.views-view-grid td {
 	padding: 7px 10px 7px 5px;
 	background-image: url('../images/fond_liste_legiest.png');
 	background-position: 0 100%;
@@ -641,12 +660,16 @@ h1#page-title {
 }
 
 #block-views-products-block-new .views-field-uc-product-image,
-#block-views-products-block-highlight .views-field-uc-product-image {
+#block-views-products-block-highlight .views-field-uc-product-image,
+.view-display-id-block_highlight_category .views-field-uc-product-image,
+.view-display-id-page_category .views-field-uc-product-image {
   float: left;
   margin-right: 20px;
 }
 #block-views-products-block-new .views-field-title,
-#block-views-products-block-highlight .views-field-title {
+#block-views-products-block-highlight .views-field-title,
+.view-display-id-block_highlight_category .views-field-title,
+.view-display-id-page_category .views-field-title {
   font-family: Arial,Helvetica,sans-serif;
   font-size: 1.2em;
   font-weight: bold;
@@ -654,33 +677,45 @@ h1#page-title {
   padding-top: 10px;
 }
 #block-views-products-block-new .views-field-title a,
-#block-views-products-block-highlight .views-field-title a {
+#block-views-products-block-highlight .views-field-title a,
+.view-display-id-block_highlight_category .views-field-title a,
+.view-display-id-page_category .views-field-title a {
   text-decoration: none;
   color: #000;
 }
 #block-views-products-block-new .views-field-title a:hover,
-#block-views-products-block-highlight .views-field-title a:hover {
+#block-views-products-block-highlight .views-field-title a:hover,
+.view-display-id-block_highlight_category .views-field-title a:hover,
+.view-display-id-page_category .views-field-title a:hover {
   text-decoration: underline;
 }
 #block-views-products-block-new .views-field-view-node a,
-#block-views-products-block-highlight .views-field-view-node a {
+#block-views-products-block-highlight .views-field-view-node a,
+.view-display-id-block_highlight_category .views-field-view-node a,
+.view-display-id-page_category .views-field-view-node a {
   text-decoration: none;
   font-size: 0.9em;
   color: #343C6A;
 }
 #block-views-products-block-new .views-field-view-node a:hover,
-#block-views-products-block-highlight .views-field-view-node a:hover {
+#block-views-products-block-highlight .views-field-view-node a:hover,
+.view-display-id-block_highlight_category .views-field-view-node a:hover,
+.view-display-id-page_category .views-field-view-node a:hover {
   text-decoration: underline;
 }
 #block-views-products-block-new .views-field-sell-price,
-#block-views-products-block-highlight .views-field-sell-price {
+#block-views-products-block-highlight .views-field-sell-price,
+.view-display-id-block_highlight_category .views-field-sell-price,
+.view-display-id-page_category .views-field-sell-price {
   float: left;
   color: #B90216;
   font-size: 1.5em;
   font-weight: bold;
 }
 #block-views-products-block-new .views-field-buyitnowbutton,
-#block-views-products-block-highlight .views-field-buyitnowbutton {
+#block-views-products-block-highlight .views-field-buyitnowbutton,
+.view-display-id-block_highlight_category .views-field-buyitnowbutton,
+.view-display-id-page_category .views-field-buyitnowbutton {
   float: right;
   padding-left: 25px;
   padding-right: 30px;
@@ -688,12 +723,16 @@ h1#page-title {
   background-repeat: no-repeat;
 }
 #block-views-products-block-new .views-field-buyitnowbutton .form-actions,
-#block-views-products-block-highlight .views-field-buyitnowbutton .form-actions {
+#block-views-products-block-highlight .views-field-buyitnowbutton .form-actions,
+.view-display-id-block_highlight_category .views-field-buyitnowbutton .form-actions,
+.view-display-id-page_category .views-field-buyitnowbutton .form-actions {
   margin-top: 3px;
   margin-bottom: 0; 
 }
 #block-views-products-block-new .views-field-buyitnowbutton input.list-add-to-cart,
-#block-views-products-block-highlight .views-field-buyitnowbutton input.list-add-to-cart {
+#block-views-products-block-highlight .views-field-buyitnowbutton input.list-add-to-cart,
+.view-display-id-block_highlight_category .views-field-buyitnowbutton input.list-add-to-cart,
+.view-display-id-page_category .views-field-buyitnowbutton input.list-add-to-cart {
   border: none;
   background: none;
   text-transform: uppercase;
@@ -774,12 +813,10 @@ h1#page-title {
   margin-top: 20px;
   padding: 15px;
 }
-
 .node-product-convention .field-name-field-cc-ape .field-label,
 .node-product-convention .field-name-field-cc-activity .field-label {
   float: left;
 }
-
 
 /******************** ZONE FOOTER WRAPPER **********************/
 #zone-footer-wrapper {
