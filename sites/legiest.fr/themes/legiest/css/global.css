@@ -364,12 +364,9 @@ zone-content-wrapper {
   margin: 0;
 }
 
-
 #block-views-categories-block-all {
 	background-color: white;
 }
-
-
 #block-views-categories-block-all .block-inner {
 }
 #block-views-categories-block-all h2.block-title {
@@ -382,12 +379,9 @@ zone-content-wrapper {
 #block-views-categories-block-all h2.block-title span {
 	font-size: 0.7em;
 }
-
 #block-views-categories-block-all .block-inner .content {
   padding-right: 10px;
 }
-
-
 #block-views-categories-block-all .item-list li.views-row {
   margin: 0;
   border-top: 1px solid #F2F2F2;
@@ -396,131 +390,103 @@ zone-content-wrapper {
   border-bottom: 1px solid #F2F2F2;
 }
 #block-views-categories-block-all .item-list div.views-field-view li.views-row {
-  border-top: none;
+  border-top: none;  
 }
 #block-views-categories-block-all .item-list div.views-field-view li.views-row-last {
   border-bottom: none;
 }
-
+#block-views-categories-block-all .item-list li.views-row .views-field-field-picture,
+#block-views-categories-block-all .item-list li.views-row .views-field-field-hover-image {
+  float: left;
+  margin-left: 15px;
+}
+#block-views-categories-block-all .item-list li.views-row .views-field-field-picture .field-content,
+#block-views-categories-block-all .item-list li.views-row .views-field-field-hover-image .field-content {
+  display: table-cell;
+  height: 45px;
+  vertical-align: middle;
+}
+#block-views-categories-block-all .item-list li.views-row .views-field-field-hover-image {
+  display: none;
+}
+#block-views-categories-block-all .item-list li.views-row:hover .views-field-field-picture,
+#block-views-categories-block-all .item-list li.views-row.active .views-field-field-picture {
+  display: none;
+}
+#block-views-categories-block-all .item-list li.views-row:hover .views-field-field-hover-image,
+#block-views-categories-block-all .item-list li.views-row.active .views-field-field-hover-image {
+  display: block;
+}
+#block-views-categories-block-all .item-list li.views-row .views-field-name {
+  margin-left: 55px;
+  line-height: 110%;
+}
+#block-views-categories-block-all .item-list li li li.views-row .views-field-name {
+  margin-left: 70px;
+}
+#block-views-categories-block-all .item-list li li li li.views-row .views-field-name {
+  margin-left: 85px;
+}
 #block-views-categories-block-all .item-list li.views-row .views-field-name a {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.8em;
+  font-size: 0.95em;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   text-decoration: none;
   color: #4B77B4;
   display: table-cell;
-  vertical-align: middle;
   height: 45px;
-  padding-left: 55px;
+  vertical-align: middle;
 }
-#block-views-categories-block-all .item-list li.views-row .views-field-name a:hover {
+#block-views-categories-block-all .item-list li.views-row:hover .views-field-name a {
   color: #DC0526;
 }
-#block-views-categories-block-all .item-list li.active .views-field-name a {
-  color: #DC0526;
-}
-#block-views-categories-block-all .item-list li.views-row div.views-field-view {
-  padding-left: 55px;
-}
-#block-views-categories-block-all .item-list li.active div.views-field-view .views-field-name a {
+#block-views-categories-block-all .item-list li.views-row:hover div.views-field-view .views-field-name a {
   color: #4B77B4;
 }
-
-#block-views-categories-block-all .item-list li.active div.views-field-view li.active .views-field-name a {
+#block-views-categories-block-all .item-list li.views-row div.views-field-view li.views-row:hover .views-field-name a {
   color: #DC0526;
 }
+#block-views-categories-block-all .item-list li.views-row div.views-field-view li.views-row:hover div.views-field-view .views-field-name a {
+  color: #4B77B4;
+}
+#block-views-categories-block-all .item-list li.views-row div.views-field-view li.views-row:hover div.views-field-view li.views-row:hover .views-field-name a {
+  color: #DC0526;
+}
+#block-views-categories-block-all .item-list li.views-row div.views-field-view li.views-row:hover div.views-field-view li.views-row:hover div.views-field-view .views-field-name a {
+  color: #4B77B4;
+}
+#block-views-categories-block-all .item-list li.views-row div.views-field-view li.views-row:hover div.views-field-view li.views-row:hover div.views-field-view li.views-row:hover .views-field-name a {
+  color: #DC0526;
+}
+
 #block-views-categories-block-all .item-list li.views-row div.views-field-view .views-field-name a {
   text-transform: none;
-  font-size: 1em;
+  font-size: 0.95em;
   height: auto;
   line-height: 100%;
   padding: 3px 0;
 }
-
-#block-views-categories-block-all li.tid-5 a {
-  background-image: url('../images/picto-legiest1-bleu.png');
-  background-repeat: no-repeat;
-  background-position: 10px 8px;
+#block-views-categories-block-all .item-list li.active .views-field-name a {
+  color: #DC0526;
 }
-#block-views-categories-block-all li.tid-5.active a,
-#block-views-categories-block-all li.tid-5 a:hover {
-  background-image: url('../images/picto-legiest1-rouge.png');
+#block-views-categories-block-all .item-list li.active div.views-field-view .views-field-name a {
+  color: #4B77B4;
 }
-
-#block-views-categories-block-all li.tid-5 div.views-field-view a,
-#block-views-categories-block-all li.tid-5 div.views-field-view a:hover {
-  background-image: none;
+#block-views-categories-block-all .item-list li.active div.views-field-view li.active .views-field-name a {
+  color: #DC0526;
 }
-#block-views-categories-block-all li.tid-6 a {
-  background-image: url('../images/picto-legiest2-bleu.png');
-  background-repeat: no-repeat;
-  background-position: 10px 8px;
+#block-views-categories-block-all .item-list li.active div.views-field-view li.active div.views-field-view .views-field-name a {
+  color: #4B77B4;
 }
-#block-views-categories-block-all li.tid-6.active a,
-#block-views-categories-block-all li.tid-6 a:hover {
-  background-image: url('../images/picto-legiest2-rouge.png');
+#block-views-categories-block-all .item-list li.active div.views-field-view li.active div.views-field-view li.active .views-field-name a {
+  color: #DC0526;
 }
-
-#block-views-categories-block-all li.tid-6 div.views-field-view a,
-#block-views-categories-block-all li.tid-6 div.views-field-view a:hover {
-  background-image: none;
+#block-views-categories-block-all .item-list li.active div.views-field-view li.active div.views-field-view li.active div.views-field-view .views-field-name a {
+  color: #4B77B4;
 }
-#block-views-categories-block-all li.tid-8 a {
-  background-image: url('../images/picto-legiest4-bleu.png');
-  background-repeat: no-repeat;
-  background-position: 10px 8px;
-}
-#block-views-categories-block-all li.tid-8.active a,
-#block-views-categories-block-all li.tid-8 a:hover {
-  background-image: url('../images/picto-legiest4-rouge.png');
-}
-
-#block-views-categories-block-all li.tid-8 div.views-field-view a,
-#block-views-categories-block-all li.tid-8 div.views-field-view a:hover {
-  background-image: none;
-}
-#block-views-categories-block-all li.tid-7 a {
-  background-image: url('../images/picto-legiest5-bleu.png');
-  background-repeat: no-repeat;
-  background-position: 10px 8px;
-}
-#block-views-categories-block-all li.tid-7.active a,
-#block-views-categories-block-all li.tid-7 a:hover {
-  background-image: url('../images/picto-legiest5-rouge.png');
-}
-
-#block-views-categories-block-all li.tid-7 div.views-field-view a,
-#block-views-categories-block-all li.tid-7 div.views-field-view a:hover {
-  background-image: none;
-}
-#block-views-categories-block-all li.tid-9 a {
-  background-image: url('../images/picto-legiest3-bleu.png');
-  background-repeat: no-repeat;
-  background-position: 10px 8px;
-}
-#block-views-categories-block-all li.tid-9.active a,
-#block-views-categories-block-all li.tid-9 a:hover {
-  background-image: url('../images/picto-legiest3-rouge.png');
-}
-
-#block-views-categories-block-all li.tid-9 div.views-field-view a,
-#block-views-categories-block-all li.tid-9 div.views-field-view a:hover {
-  background-image: none;
-}
-#block-views-categories-block-all li.tid-10 a {
-  background-image: url('../images/picto-legiest7-bleu.png');
-  background-repeat: no-repeat;
-  background-position: 10px 8px;
-}
-#block-views-categories-block-all li.tid-10.active a,
-#block-views-categories-block-all li.tid-10 a:hover {
-  background-image: url('../images/picto-legiest7-rouge.png');
-}
-
-#block-views-categories-block-all li.tid-10 div.views-field-view a,
-#block-views-categories-block-all li.tid-10 div.views-field-view a:hover {
-  background-image: none;
+#block-views-categories-block-all .item-list li.active div.views-field-view li.active div.views-field-view li.active div.views-field-view li.active .views-field-name a {
+  color: #DC0526;
 }
 
 #block-boxes-contact-legiest {
