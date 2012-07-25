@@ -15,6 +15,28 @@ function uc_legiest_default_rules_configuration() {
 
   $rules += _uc_legiest_default_rules_configuration_shipping_area();
   $rules += _uc_legiest_default_rules_configuration_shipping_weight();
+  $rules += _uc_legiest_default_rules_configuration_states();
+  
+  // Override uc_file_renewal
+  $rule = rules_reaction_rule();
+  $rule->label = t('(UC Legiest) Renew purchased files');
+  $rule->active = TRUE;
+  $rule->event('uc_order_status_update')
+    ->condition(
+      rules_or()
+        ->condition('data_is', array(
+          'data:select' => 'updated-order:order-status',
+          'value' => 'payment_received',
+        ))
+        ->condition('data_is', array(
+          'data:select' => 'updated-order:order-status',
+          'value' => 'special_processing',
+        ))
+    )
+    ->action('uc_file_order_renew', array(
+      'order:select' => 'updated_order',
+    ));
+  $rules['uc_legiest_file_renewal'] = $rule;
   
   return $rules;
 }
@@ -92,6 +114,11 @@ function uc_legiest_default_rules_configuration_alter(&$configs) {
         ));
     }
   }
+  
+  // Disable uc_file_renewal for override
+  $rule = $configs['uc_file_renewal'];
+  $rule->label .= ' [DO NOT ENABLE]';
+  $rule->active = FALSE;
 }
 
 
@@ -312,343 +339,186 @@ function _uc_legiest_default_rules_configuration_shipping_weight() {
   return $rules;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Define rules and components related to states and transitions
  */
 function _uc_legiest_default_rules_configuration_states() {
   $rules = array();
 
-
-  //---------------------------
-  // Automatic transition rules
-
-  // Transition auto "Vérification : Expédier" => "Vérification : Vérifier"
-  // Si aucun produit physique
-  $rule = rules_reaction_rule();
-  $rule->label = t('(UC Legiest) Jump forward over shipping step');
-  $rule->active = TRUE;
-  $rule->event('uc_order_update')
-    ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'checkout_shipping',
-    ))
-    ->condition(
-      rules_or()
-        ->condition('data_is', array(
-          'data:select' => 'commerce-order-unchanged:status',
-          'op' => '==',
-          'value' => 'checkout_shipping',
-        ))
-        ->condition('data_is', array(
-          'data:select' => 'commerce-order-unchanged:status',
-          'op' => '==',
-          'value' => 'checkout_review',
-        ))
-        ->negate()
-    )
-    ->condition(rules_condition('commerce_physical_rules_order_is_shippable', array(
-      'uc_order:select' => 'uc_order',
-    ))->negate())
-    ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'checkout_review',
-    ))
-    ->action('redirect', array(
-      'url' => 'checkout/[commerce-order:order-id]/review',
-    ));
-  $rules['uc_legiest_jump_forward_shipping'] = $rule;
-
-
-  // Transition auto "Vérification : Expédier" => "Vérification : Procéder au paiement"
-  // Si aucun produit physique et action utilisateur
-  $rule = rules_reaction_rule();
-  $rule->label = t('(UC Legiest) Jump backward over shipping step');
-  $rule->active = TRUE;
-  $rule->event('uc_order_update')
-    ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'checkout_shipping',
-    ))
-    ->condition('data_is', array(
-      'data:select' => 'commerce-order-unchanged:status',
-      'op' => '==',
-      'value' => 'checkout_review',
-    ))
-    ->condition(rules_condition('commerce_physical_rules_order_is_shippable', array(
-      'uc_order:select' => 'uc_order',
-    ))->negate())
-    ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'checkout_checkout',
-    ))
-    ->action('redirect', array(
-      'url' => 'checkout/[commerce-order:order-id]',
-    ));
-  $rules['uc_legiest_jump_backward_shipping'] = $rule;
-
-  
   //----------------------------------
   // States transition component rules
 
   $variables = array(
-    'uc_order' => array(
+    'order' => array(
       'label' => 'Order',
       'type' => 'uc_order'
     ),
-    'uc_order_unchanged' => array(
-      'label' => 'Order before changes',
+    'updated_order' => array(
+      'label' => 'Order',
       'type' => 'uc_order'
     ),
   );
 
-  // Transition auto "En cours de traitement" => "Terminé"
-  // Si aucun produit physique
+  // Déclenché quand état commande "En attente"
+  // Change statut si méthode de paiement "Virement Administratif" et utilisateur possède un rôle adéquat
   $rule = rule($variables);
-  $rule->label = t('(UC Legiest) Order no shipping');
+  $rule->label = t('(UC Legiest) Order pending to special_processing if client special and virt_admin payment');
   $rule->active = TRUE;
   $rule
     ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'processing',
+      'data:select' => 'updated-order:payment-method',
+      'value' => 'virt_admin',
     ))
-    ->condition(rules_condition('commerce_physical_rules_order_is_shippable', array(
-      'uc_order:select' => 'uc_order',
-    ))->negate())
+    ->condition('uc_legiest_rules_condition_user_special', array(
+      'user:select' => 'updated-order:customer',
+    ))
     ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'completed',
-    ))
-    ->action('drupal_message', array(
-      'message' => 'Automatic transition from processing to completed',
+      'order:select' => 'updated_order',
+      'order_status' => 'special_processing',
     ));
-  $rules['uc_legiest_order_no_shipping'] = $rule;
+  $rules['uc_legiest_order_virt_admin_client_special'] = $rule;
 
-  // Transition auto "En attente" => "En cours de traitement"
-  // Si reste à payer 0
+  // Déclenché quand état commande "En attente"
+  // Envoie un mail à l'admin si méthode de paiement "Virement Administratif" et utilisateur ne possède un rôle adéquat
   $rule = rule($variables);
-  $rule->label = t('(UC Legiest) Order paid');
+  $rule->label = t('(UC Legiest) Mail admin for order to be manually validated');
   $rule->active = TRUE;
   $rule
     ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'pending',
-    ))
-    ->condition('commerce_payment_order_balance_comparison', array(
-      'uc_order:select' => 'uc_order',
-      'op' => '<=',
-      'value' => '0',
+      'data:select' => 'updated-order:payment-method',
+      'value' => 'virt_admin',
     ))
     ->condition(rules_condition('uc_legiest_rules_condition_user_special', array(
-      'user:select' => 'commerce-order:owner',
+      'user:select' => 'updated-order:customer',
     ))->negate())
-    ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'processing',
+    ->action('mail', array(
+      'to' => variable_get('uc_legiest_admin_mail', variable_get('site_mail')),
+      'subject' => 'Commande publique en attente de validation',
+      'message' => 'Une nouvelle commande publique d\'un utilisateur inconnu a été passée sur le site.<br \>Elle est accessible à l\'adresse [order:admin-url].',
+      'from' => variable_get('site_mail'),
     ))
     ->action('drupal_message', array(
-      'message' => 'Automatic transition from pending to processing',
+      'message' => 'Votre commande a été mise en attente car vous n\'êtes pas encore connu de nos services, elle sera validée par un administrateur dès qu\'il sera en mesure de certifier que vous êtes bien un organisme public français.',
+    ));
+  $rules['uc_legiest_order_virt_admin_client_not_special'] = $rule;
+
+  // Déclenché quand état commande "En attente"
+  // Change statut si méthode de paiement autre que "Virement Administratif" et reste à payer 0
+  $rule = rule($variables);
+  $rule->label = t('(UC Legiest) Order pending to processing if nothing to pay');
+  $rule->active = TRUE;
+  $rule
+    ->condition('uc_payment_condition_order_balance', array(
+      'order:select' => 'updated_order',
+      'balance_comparison' => 'less_equal',
+    ))
+    ->action('uc_order_update_status', array(
+      'order:select' => 'updated_order',
+      'order_status' => 'processing',
     ));
   $rules['uc_legiest_order_paid'] = $rule;
 
-  // Transition auto "En attente : Administration" => "Terminé"
-  // Si reste à payer 0
-  $rule = rule($variables);
-  $rule->label = t('(UC Legiest) Order paid special');
-  $rule->active = TRUE;
-  $rule
-    ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'pending_special',
-    ))
-    ->condition('commerce_payment_order_balance_comparison', array(
-      'uc_order:select' => 'uc_order',
-      'op' => '<=',
-      'value' => '0',
-    ))
-    ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'completed',
-    ))
-    ->action('drupal_message', array(
-      'message' => 'Automatic transition from pending_special to completed',
-    ));
-  $rules['uc_legiest_order_paid_special'] = $rule;
-
-  // Transition auto "En cours de traitement : Administration" => "En attente : administration"
-  // Si aucun produit physique
-  $rule = rule($variables);
-  $rule->label = t('(UC Legiest) Order no shipping special');
-  $rule->active = TRUE;
-  $rule
-    ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'processing_special',
-    ))
-    ->condition(rules_condition('commerce_physical_rules_order_is_shippable', array(
-      'uc_order:select' => 'uc_order',
-    ))->negate())
-    ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'pending_special',
-    ))
-    ->action('drupal_message', array(
-      'message' => 'Automatic transition from processing_special to pending_special',
-    ));
-  $rules['uc_legiest_order_no_shipping_special'] = $rule;
-
-  // Transition auto "En attente" => "En cours de traitement : administration"
-  // Si client possède la permission "use special order states"
-  $rule = rule($variables);
-  $rule->label = t('(UC Legiest) Alternative order process');
-  $rule->active = TRUE;
-  $rule
-    ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'pending',
-    ))
-    ->condition('uc_legiest_rules_condition_user_special', array(
-      'user:select' => 'commerce-order:owner',
-    ))
-    ->action('uc_order_update_status', array(
-      'uc_order:select' => 'uc_order',
-      'order_status' => 'processing_special',
-    ))
-    ->action('drupal_message', array(
-      'message' => 'Automatic transition from pending to processing_special',
-    ));
-  $rules['uc_legiest_order_client_special'] = $rule;
-
-  
   //---------------------
   // States trigger rules 
 
-  // Declencheur commande "En attente"
+  // Declencheur commande pending
   $rule = rules_reaction_rule();
   $rule->label = t('(UC Legiest) Order becomes pending');
   $rule->active = TRUE;
-  $rule->event('uc_order_update')
+  $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
+      'data:select' => 'order:order-status',
       'value' => 'pending',
     ))
-    ->action('component_uc_legiest_order_client_special', array(
-      'uc_order:select' => 'uc_order',
-      'uc_order_unchanged:select' => 'uc_order_unchanged',
+    ->action('component_uc_legiest_order_virt_admin_client_special', array(
+      'order:select' => 'order',
+      'updated_order:select' => 'updated_order',
+    ))
+    ->action('component_uc_legiest_order_virt_admin_client_not_special', array(
+      'order:select' => 'order',
+      'updated_order:select' => 'updated_order',
     ))
     ->action('component_uc_legiest_order_paid', array(
-      'uc_order:select' => 'uc_order',
-      'uc_order_unchanged:select' => 'uc_order_unchanged',
+      'order:select' => 'order',
+      'updated_order:select' => 'updated_order',
     ));
   $rules['uc_legiest_order_becomes_pending'] = $rule;
 
-  // Declencheur commande "En cours de traitement"
+  // Declencheur commande processing
+  // Change statut si aucun produit à expédier
   $rule = rules_reaction_rule();
   $rule->label = t('(UC Legiest) Order becomes processing');
   $rule->active = TRUE;
-  $rule->event('uc_order_update')
+  $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
+      'data:select' => 'order:order-status',
       'value' => 'processing',
     ))
-    ->action('component_uc_legiest_order_no_shipping', array(
-      'uc_order:select' => 'uc_order',
-      'uc_order_unchanged:select' => 'uc_order_unchanged',
+    ->condition(rules_condition('uc_order_condition_is_shippable', array(
+      'order:select' => 'updated_order',
+    ))->negate())
+    ->action('uc_order_update_status', array(
+      'order:select' => 'updated_order',
+      'order_status' => 'completed',
     ));
   $rules['uc_legiest_order_becomes_processing'] = $rule;
 
-  // Declencheur commande "En cours de traitement : Administration"
+  // Declencheur commande payment_received
+  // Change statut automatiquement
   $rule = rules_reaction_rule();
-  $rule->label = t('(UC Legiest) Order becomes processing_special');
+  $rule->label = t('(UC Legiest) Order status payment_received to processing');
   $rule->active = TRUE;
-  $rule->event('uc_order_update')
+  $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'processing_special',
+      'data:select' => 'order:order-status',
+      'value' => 'payment_received',
     ))
-    ->action('component_uc_legiest_order_no_shipping_special', array(
-      'uc_order:select' => 'uc_order',
-      'uc_order_unchanged:select' => 'uc_order_unchanged',
+    ->action('uc_order_update_status', array(
+      'order:select' => 'updated_order',
+      'order_status' => 'processing',
+    ));
+  $rules['uc_legiest_order_becomes_payment_received'] = $rule;
+
+  // Declencheur commande special_processing
+  // Change statut si aucun produit à expédier
+  $rule = rules_reaction_rule();
+  $rule->label = t('(UC Legiest) Order becomes special_processing');
+  $rule->active = TRUE;
+  $rule->event('uc_order_status_update')
+    ->condition('data_is', array(
+      'data:select' => 'order:order-status',
+      'value' => 'special_processing',
+    ))
+    ->condition('uc_order_condition_is_shippable', array(
+      'order:select' => 'updated_order',
+    ))
+    ->action('uc_order_update_status', array(
+      'order:select' => 'updated_order',
+      'order_status' => 'special_pending',
     ));
   $rules['uc_legiest_order_becomes_processing_special'] = $rule;
 
-  // Declencheur commande "En attente : Administration"
+  // Declencheur commande special_pending
+  // Change statut si paiement complété
   $rule = rules_reaction_rule();
-  $rule->label = t('(UC Legiest) Order becomes pending_special');
+  $rule->label = t('(UC Legiest) Order becomes special_pending');
   $rule->active = TRUE;
-  $rule->event('uc_order_update')
+  $rule->event('uc_order_status_update')
+    ->event('uc_payment_entered')
     ->condition('data_is', array(
-      'data:select' => 'commerce-order:status',
-      'value' => 'pending_special',
+      'data:select' => 'order:order-status',
+      'value' => 'special_pending',
     ))
-    ->action('component_uc_legiest_order_paid_special', array(
-      'uc_order:select' => 'uc_order',
-      'uc_order_unchanged:select' => 'uc_order_unchanged',
+    ->condition('uc_payment_condition_order_balance', array(
+      'order:select' => 'order',
+      'balance_comparison' => 'less_equal',
+    ))
+    ->action('uc_order_update_status', array(
+      'order:select' => 'order',
+      'order_status' => 'completed',
     ));
   $rules['uc_legiest_order_becomes_pending_special'] = $rule;
 
-  return $rules;
-}
-
-
-/**
- * Define rules and components related to taxes
- */
-function _uc_legiest_default_rules_configuration_taxes() {
-  $rules = array();
-
-  
-  $variables = array(
-    'uc_order' => array(
-      'label' => 'Order',
-      'type' => 'uc_order'
-    ),
-  );
-  
-  
-  // Billing address with VAT
-  $rule = rules_or($variables);
-  $rule->label = t('(UC Legiest) Condition Billing region with VAT');
-  $rule->active = TRUE;
-  $rule
-    ->condition('uc_order_compare_address', array(
-      'uc_order:select' => 'uc_order',
-      'address_field' => 'commerce_customer_billing|commerce_customer_address',
-      'address_component' => 'country',
-      'value' => 'FR', // France
-    ));
-  $rules['uc_legiest_condition_billing_with_vat'] = $rule;
-
-  // Declencheur commande "En attente : Administration"
-  $rule = rules_reaction_rule();
-  $rule->label = t('(UC Legiest) Apply tax "tva_standard"');
-  $rule->active = TRUE;
-  $rule->event('commerce_product_calculate_sell_price')
-    ->condition('component_uc_legiest_condition_billing_with_vat', array(
-      'uc_order:select' => 'commerce-line-item:order',
-    ))
-    ->action('commerce_tax_rate_apply', array(
-      'commerce_line_item:select' => 'commerce_line_item',
-      'tax_rate_name' => 'tva_standard',
-      'applied_tax:var' => 'applied_tax',
-      'applied_tax:label' => 'Taxe appliquée',
-    ));
-  $rules['uc_legiest_apply_tax_tva_standard'] = $rule;
 
   return $rules;
 }
