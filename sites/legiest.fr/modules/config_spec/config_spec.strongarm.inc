@@ -13,6 +13,27 @@ function config_spec_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'custom_search_image_path';
+  $strongarm->value = '/sites/legiest.fr/themes/legiest/images/loupe.png';
+  $export['custom_search_image_path'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'custom_search_label_visibility';
+  $strongarm->value = 0;
+  $export['custom_search_label_visibility'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'custom_search_text';
+  $strongarm->value = 'Rechercher';
+  $export['custom_search_text'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'file_private_path';
   $strongarm->value = 'sites/legiest.fr/private';
   $export['file_private_path'] = $strongarm;
