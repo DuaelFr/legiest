@@ -8,6 +8,7 @@ dependencies[] = uc_bank_transfer
 dependencies[] = uc_cart
 dependencies[] = uc_file
 dependencies[] = uc_flatrate
+dependencies[] = uc_legiest
 dependencies[] = uc_order
 dependencies[] = uc_payment
 dependencies[] = uc_payment_pack
