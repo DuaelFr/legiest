@@ -85,14 +85,14 @@ function _taxonomy_menu_get_node_terms($node) {
   $result = db_query("SELECT field_name FROM {field_config} WHERE type = 'taxonomy_term_reference'");
   foreach ($result as $field) {
     $field_name = $field->field_name;
-
+    
     if (isset($node->$field_name)) {
       $tid_field = $node->$field_name;
       // Loop through all the languages.
-
+      
       foreach ($tid_field as $tid_field_languages) {
         // Loop through all the tids
-
+        
         foreach ($tid_field_languages as $tid) {
           $tids[] = $tid['tid'];
         }
@@ -137,7 +137,7 @@ function _taxonomy_menu_delete_item($vid, $tid) {
 function _taxonomy_menu_get_terms($vid) {
   $result = db_select('taxonomy_term_data', 'td')
     ->condition('vid', $vid)
-    ->fields('td', array('tid'))
+    ->addField('td', 'tid')
     ->execute();
   return $result->fetchAll();
 }
@@ -149,15 +149,14 @@ function _taxonomy_menu_get_terms($vid) {
  *
  * @param $tid
  */
-function _taxonomy_menu_term_count($tid) {
-  $result = db_select('taxonomy_index', 'tn');
+/*function _taxonomy_menu_term_count($tid) {
+  $result = db_select('term_node', 'tn');
   $result->condition('tid', $tid);
   $result->join('node', 'n', 'n.nid = tn.nid AND n.status = 1');
   $result->addExpression('COUNT(n.nid)', 'term_count');
-  $temp = $result->execute();
-  $temp = $temp->fetchObject();
-  return $temp->term_count;
-}
+  $result->execute();
+  return $result->fetchField();
+}*/
 
 /**
  * Get tid for a given mlid
@@ -195,7 +194,7 @@ function _taxonomy_menu_get_vid_by_tid($tids) {
   if ($tids) {
     $result = db_select('term_data')
       ->condition('tid', $tids, 'IN')
-      ->fields('term_data', array('vid'))
+      ->addField('vid')
       ->distinct()
       ->execute();
     $vids = array();
