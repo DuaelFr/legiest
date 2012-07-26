@@ -16,6 +16,12 @@ function config_base_menu_default_menu_custom() {
     'title' => 'Main menu',
     'description' => 'Ce menu contient la taxonomie de classement des produits par catégorie',
   );
+  // Exported menu: menu-espace-clients.
+  $menus['menu-espace-clients'] = array(
+    'menu_name' => 'menu-espace-clients',
+    'title' => 'Espace clients',
+    'description' => '',
+  );
   // Exported menu: menu-footer-menu.
   $menus['menu-footer-menu'] = array(
     'menu_name' => 'menu-footer-menu',
@@ -38,6 +44,7 @@ function config_base_menu_default_menu_custom() {
   // Included for use with string extractors like potx.
   t('Ce menu contient la taxonomie de classement des produits par catégorie');
   t('Ce menu contient la taxonomie de classement des produits par métier');
+  t('Espace clients');
   t('Footer menu');
   t('Main menu');
   t('Secondary menu');
