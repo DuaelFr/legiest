@@ -30,17 +30,12 @@ Drupal.wysiwyg.editor.attach.nicedit = function(context, params, settings) {
  *
  * See Drupal.wysiwyg.editor.detach.none() for a full description of this hook.
  */
-Drupal.wysiwyg.editor.detach.nicedit = function (context, params, trigger) {
+Drupal.wysiwyg.editor.detach.nicedit = function(context, params) {
   if (typeof params != 'undefined') {
     var instance = nicEditors.findEditor(params.field);
     if (instance) {
-      if (trigger == 'serialize') {
-        instance.saveContent();
-      }
-      else {
-        instance.ne.removeInstance(params.field);
-        instance.ne.removePanel();
-      }
+      instance.ne.removeInstance(params.field);
+      instance.ne.removePanel();
     }
   }
   else {
@@ -48,17 +43,10 @@ Drupal.wysiwyg.editor.detach.nicedit = function (context, params, trigger) {
       // Save contents of all editors back into textareas.
       var instances = nicEditors.editors[e].nicInstances;
       for (var i = 0; i < instances.length; i++) {
-        if (trigger == 'serialize') {
-          instances[i].saveContent();
-        }
-        else {
-          instances[i].remove();
-        }
+        instances[i].remove();
       }
       // Remove all editor instances.
-      if (trigger != 'serialize') {
-        nicEditors.editors[e].nicInstances = [];
-      }
+      nicEditors.editors[e].nicInstances = [];
     }
   }
 };
@@ -74,7 +62,7 @@ Drupal.wysiwyg.editor.instance.nicedit = {
     // IE.
     if (document.selection) {
       editingArea.focus();
-      sel.createRange().pasteHTML(content);
+      sel.createRange().text = content;
     }
     else {
       // Convert selection to a range.
@@ -101,14 +89,6 @@ Drupal.wysiwyg.editor.instance.nicedit = {
       // Only fragment children are inserted.
       range.insertNode(fragment);
     }
-  },
-
-  setContent: function (content) {
-    nicEditors.findEditor(this.field).setContent(content);
-  },
-
-  getContent: function () {
-    return nicEditors.findEditor(this.field).getContent();
   }
 };
 

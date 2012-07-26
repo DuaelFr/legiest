@@ -18,8 +18,7 @@ To submit bug reports and feature suggestions, or to track changes:
 
 -- INSTALLATION --
 
-* Install as usual, see
-  http://drupal.org/documentation/install/modules-themes/modules-7
+* Install as usual, see http://drupal.org/node/70151 for further information.
 
 * Go to Administration » Configuration » Content authoring » Wysiwyg,
   and follow the displayed installation instructions to download and install one
