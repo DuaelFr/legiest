@@ -140,11 +140,23 @@ function config_editors_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'imce_roles_profiles';
   $strongarm->value = array(
+    198987059 => array(
+      'weight' => '0',
+      'public_pid' => '2',
+      'private_pid' => '2',
+    ),
+    225994711 => array(
+      'weight' => '0',
+      'public_pid' => 0,
+      'private_pid' => 0,
+    ),
     2 => array(
+      'weight' => 11,
       'public_pid' => 0,
       'private_pid' => 0,
     ),
     1 => array(
+      'weight' => 12,
       'public_pid' => 0,
       'private_pid' => 0,
     ),
