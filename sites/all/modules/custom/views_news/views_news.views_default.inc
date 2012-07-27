@@ -144,8 +144,6 @@ function views_news_views_default_views() {
   $handler->display->display_options['relationships']['nodequeue_rel']['limit'] = 1;
   $handler->display->display_options['relationships']['nodequeue_rel']['names'] = array(
     'actus_accueil' => 'actus_accueil',
-    'product_highlight' => 0,
-    'product_new' => 0,
     'actus_bloc_accueil' => 0,
   );
   $handler->display->display_options['defaults']['fields'] = FALSE;
@@ -306,8 +304,6 @@ function views_news_views_default_views() {
   $handler->display->display_options['relationships']['nodequeue_rel']['names'] = array(
     'actus_bloc_accueil' => 'actus_bloc_accueil',
     'actus_accueil' => 0,
-    'product_highlight' => 0,
-    'product_new' => 0,
   );
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Champ: Contenu : Titre */

@@ -1,6 +1,85 @@
 <?php
 
 /**
+ * Implements hook_menu().
+ */
+function uc_legiest_menu() {
+  $items['admin/store/orders/%uc_order/receive_virt_admin'] = array(
+    'title' => 'Recevoir un virement administratif',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_legiest_receive_virt_admin_form', 3),
+    'access arguments' => array('view all orders'),
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_legiest.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function uc_legiest_theme() {
+  return array(
+    'uc_legiest_receive_virt_admin_form' => array(
+      'render element' => 'form',
+      'file' => 'uc_legiest.admin.inc',
+    ),
+    'uc_legiest_bank_details' => array(
+      'variables' => array('oid' => NULL),
+    ),
+  );
+}
+
+/**
+ * Theme output displayed in checkout review, etc.
+ */
+function theme_uc_legiest_bank_details($variables) {
+  $oid = $variables['oid'];
+  $output = uc_legiest_bank_details_bank_details($oid);
+  return $output;
+}
+
+/**
+ * Implementation of uc_legiest_bank_details($oid).
+ *
+ * $oid = order ID
+ */
+function uc_legiest_bank_details_bank_details($oid) {
+  if (variable_get('uc_legiest_account_owner', '') <> '') {
+    $bank_info[] = t('Propriétaire du compte') . ': ' . variable_get('uc_legiest_account_owner', '');
+  }
+  if (variable_get('uc_legiest_account_number', '') <> '') {
+    $bank_info[] = t('Numéro de compte') . ': ' . variable_get('uc_legiest_account_number', '');
+  }
+  if (variable_get('uc_legiest_account_iban', '') <> '') {
+    $bank_info[] = t('IBAN') . ': ' . variable_get('uc_legiest_account_iban', '');
+  }
+  if (variable_get('uc_legiest_bank_code', '') <> '') {
+    $bank_info[] = variable_get('uc_legiest_bank_code_appellation', 'Code banque') . ': ' . variable_get('uc_legiest_bank_code', '');
+  }
+  if (variable_get('uc_legiest_account_swift', '') <> '') {
+    $bank_info[] = t('SWIFT') . ': ' . variable_get('uc_legiest_account_swift', '');
+  }
+  if (variable_get('uc_legiest_account_bank', '') <> '') {
+    $bank_info[] = t('Nom de la banque') . ': ' . variable_get('uc_legiest_account_bank', '');
+  }
+  if (variable_get('uc_legiest_account_branch', '') <> '') {
+    $bank_info[] = t('Nom de l\'agence') . ': ' . variable_get('uc_legiest_account_branch', '');
+  }
+  if (variable_get('uc_legiest_subject_oid', FALSE)) {
+    isset($bank_info) ? ($bank_info[] = '<br />' . t('Libellé du paiement') . ': ' . t('numéro de commande') . ' ' . $oid) : ($bank_info[] = t('Libellé du paiement') . ': ' . t('numéro de commande') . ' ' . $oid);
+  }
+  if (variable_get('uc_legiest_policy', '') <> '') {
+    isset($bank_info) ? ($bank_info[] = '<br />' . variable_get('uc_legiest_policy', '')) : ($bank_info[] = variable_get('uc_legiest_policy', ''));
+  }
+
+  isset($bank_info) ? ($bank_details = implode('<br />', $bank_info)) : ($bank_details = '');
+
+  return $bank_details;
+}
+
+
+/**
  * Implements hook_commerce_order_status_info().
  */
 function uc_legiest_commerce_order_status_info() {
@@ -20,6 +99,19 @@ function uc_legiest_commerce_order_status_info() {
   );
   
   return $order_statuses;
+}
+
+/**
+ * Implements hook_uc_order_state().
+ */
+function uc_legiest_uc_order_state() {
+  $states['special'] = array(
+    'title' => t('Special'),
+    'weight' => 10,
+    'scope' => 'specific',
+  );
+
+  return $states;
 }
 
 /**
@@ -49,4 +141,112 @@ function uc_legiest_permission() {
       'description' => t('Allow the user to be delivered before paying (for administrations)'),
     ),
   );
+}
+
+/**
+ * Implements hook_uc_payment_method().
+ */
+function uc_legiest_uc_payment_method() {
+  $methods[] = array(
+    'id' => 'virt_admin',
+    'name' => t('Virement administratif'),
+    'title' => variable_get('uc_legiest_method_title', 'Virement administratif'),
+    'desc' => t('Régler par virement administratif. Réservé aux Organismes Publics français.'),
+    'callback' => 'uc_payment_method_virt_admin',
+    'weight' => 1,
+    'checkout' => TRUE,
+    'no_gateway' => TRUE,
+  );
+  return $methods;
+}
+
+/**
+ * Handle the Virement administratif payment method.
+ */
+function uc_payment_method_virt_admin($op, &$order) {
+  switch ($op) {
+    case 'cart-details':
+      $build['instructions'] = array(
+        '#markup' => t('Envoyer le règlement à') . ':<br />' . theme('uc_legiest_bank_details', array('oid' => $order->order_id)),
+      );
+      return $build;
+
+    case 'cart-review':
+      $review[] = array(
+        'title' => t('To'),
+        'data' => theme('uc_legiest_bank_details', array('oid' => $order->order_id)),
+      );
+      return $review;
+
+    case 'order-view':
+      if (!variable_get('uc_payment_tracking', TRUE)) {
+        return '';
+      }
+      $result = db_query("SELECT clear_date FROM {uc_payment_virt_admin} WHERE order_id = :id ", array(':id' => $order->order_id));
+      if ($clear_date = $result->fetchField()) {
+        $output = t('Date d\'encaissement :') . ' ' . format_date($clear_date, 'custom', variable_get('uc_date_format_default', 'd/m/Y'));
+      }
+      else {
+        $output = l(t('Enregistrer un Virement Administratif'), 'admin/store/orders/' . $order->order_id . '/receive_virt_admin');
+      }
+      $output .= '<br />';
+      return array('#markup' => $output);
+
+    case 'customer-view':
+      if (!variable_get('uc_payment_tracking', TRUE)) {
+        return '';
+      }
+      $result = db_query("SELECT clear_date FROM {uc_payment_virt_admin} WHERE order_id = :id ", array(':id' => $order->order_id));
+      $output = t('Status: pending');
+      if ($clear_date = $result->fetchField()) {
+        $output = t('Virement Administratif reçu') . '<br />'
+                . t('Date d\'encaissement estimée :') . '<br />' . format_date($clear_date, 'custom', variable_get('uc_date_format_default', 'd/m/Y'));
+      }
+      return array('#markup' => $output);
+
+    case 'settings':
+      // help text
+      $form['uc_legiest_help_text'] = array(
+        '#markup' => '<div class="help">' . t('<h4><strong>Installation instructions</strong></h4><p>For better customer experience please use the token [order-payment-bank-details] to display the bank details on the invoice. You can find an example invoice template doing this in the uc_bank_transfer module folder.</p>') . '</div>',
+      );
+      // settings
+      $form['uc_legiest_method_title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Payment method title'),
+        '#description' => t('Provide specific description for the payment method on the order checkout page.'),
+        '#default_value' => variable_get('uc_legiest_method_title', 'Virement Administratif'),
+      );
+
+      $form['uc_dd_bank'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Bank details'),
+        '#description' => t('Enter the bank account details to display to customers who choose this payment method during checkout.
+          Details left empty will not be shown. You can also choose to leave all bank details empty and create your own output using the payment instructions.
+          '),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      $form['uc_dd_bank']['uc_legiest_account_owner'] = uc_textfield(t('Account owner'), variable_get('uc_legiest_account_owner', ''), FALSE, t('Name associated with bank account.'), 128);
+      $form['uc_dd_bank']['uc_legiest_account_number'] = uc_textfield(t('Account number'), variable_get('uc_legiest_account_number', ''), FALSE, NULL, 128);
+      $form['uc_dd_bank']['uc_legiest_account_iban'] = uc_textfield(t('IBAN'), variable_get('uc_legiest_account_iban', ''), FALSE, t('International Bank Account Number'), 128);
+      $form['uc_dd_bank']['uc_legiest_bank_code_appellation'] = uc_textfield(t('Bank code appellation'), variable_get('uc_legiest_bank_code_appellation', 'Bank code'), FALSE, t('Appellation of bank code - depending on where your bank is located you should set this to: "BSB" (AU), "Sort code" (UK), "Bank code" (DE), "Clearing number" (CH), "Routing transit number" (US) or "Bank transit number" (CA)'), 128);
+      $form['uc_dd_bank']['uc_legiest_bank_code'] = uc_textfield(t('Bank code'), variable_get('uc_legiest_bank_code', ''), FALSE, t('Actual bank code, will be shown with appellation set above'), 128);
+      $form['uc_dd_bank']['uc_legiest_account_swift'] = uc_textfield(t('SWIFT'), variable_get('uc_legiest_account_swift', ''), FALSE, t('SWIFT-Code (aka BIC = Bank Identifier Code)'), 128);
+      $form['uc_dd_bank']['uc_legiest_account_bank'] = uc_textfield(t('Banking institution'), variable_get('uc_legiest_account_bank', ''), FALSE);
+      $form['uc_dd_bank']['uc_legiest_account_branch'] = uc_textfield(t('Branch office'), variable_get('uc_legiest_account_branch', ''), FALSE);
+
+      $form['uc_legiest_subject_oid'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Display "Reason for payment: order number <i>[order ID]</i>"'),
+        '#default_value' => variable_get('uc_legiest_subject_oid', FALSE),
+      );
+      $form['uc_legiest_policy'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Payment instructions'),
+        '#description' => t('Instructions for customers on the checkout page. Use &lt;br /&gt; for line break.'),
+        '#default_value' => variable_get('uc_legiest_policy', ''),
+        '#rows' => 3,
+      );
+      return $form;
+  }
 }

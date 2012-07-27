@@ -12,4 +12,12 @@ function config_spec_enable() {
   theme_enable(array(CONFIG_SPEC_DEFAULT_THEME));
   theme_disable(array('bartik'));
   variable_set('theme_default', CONFIG_SPEC_DEFAULT_THEME);
+
+  // Disable default blocks
+  db_update('block')
+    ->fields(array(
+      'status' => 0,
+    ))
+    ->condition('theme', CONFIG_SPEC_DEFAULT_THEME)
+    ->execute();
 }

@@ -10,6 +10,7 @@
 function uc_legiest_install() {
   _uc_legiest_install_shipping_rates();
   _uc_legiest_install_tax_rates();
+  _uc_legiest_install_statuses();
   
   // Move this module after uc_flatrate
   $weight = db_select('system', 's')
@@ -28,6 +29,46 @@ function uc_legiest_install() {
 function uc_legiest_uninstall() {
   _uc_legiest_clean_shipping_rates();
   _uc_legiest_clean_tax_rates();
+  _uc_legiest_clean_statuses();
+  
+  db_delete('variable')
+    ->condition('name', 'uc_legiest_%', 'LIKE')
+    ->execute();
+}
+
+/**
+ * Virement administratif install schema
+ */
+function uc_legiest_schema() {
+  $schema = array();
+
+  $schema['uc_payment_virt_admin'] = array(
+    'description' => 'Stores virement administratif payment information.',
+    'fields' => array(
+      'virt_admin_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'order_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'clear_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'order_id' => array('order_id'),
+    ),
+    'primary key' => array('virt_admin_id'),
+  );
+
+  return $schema;
 }
 
 // -----------------------------------------------------------------------------
@@ -184,4 +225,70 @@ function _uc_legiest_clean_tax_rates() {
       uc_taxes_rate_delete($rate->id);
     }
   }
+}
+
+
+// -----------------------------------------------------------------------------
+// STATUSES
+
+/**
+ * Get statuses for install/uninstall.
+ */
+function _uc_legiest_get_statuses() {
+  return array(
+    // France
+    'TVA' => array(
+      'rate' => 0.196,
+      'text' => 'TTC',
+    ),
+  );
+}
+
+/**
+ * Add tax rates into the database.
+ */
+function _uc_legiest_install_statuses() {
+  $t = get_t();
+
+  db_merge('uc_order_statuses')
+    ->key(array('order_status_id' => 'special_processing'))
+    ->insertFields(array(
+      'order_status_id' => 'special_processing',
+      'title' => $t('Special processing'),
+      'state' => 'special',
+      'weight' => 7,
+      'locked' => 1,
+    ))
+    ->updateFields(array(
+      'state' => 'special',
+      'locked' => 1,
+    ))
+    ->execute();
+
+  db_merge('uc_order_statuses')
+    ->key(array('order_status_id' => 'special_pending'))
+    ->insertFields(array(
+      'order_status_id' => 'special_pending',
+      'title' => $t('Special pending'),
+      'state' => 'special',
+      'weight' => 8,
+      'locked' => 1,
+    ))
+    ->updateFields(array(
+      'state' => 'special',
+      'locked' => 1,
+    ))
+    ->execute();
+}
+
+/**
+ * Clean statuses.
+ */
+function _uc_legiest_clean_statuses() {
+  db_update('uc_order_statuses')
+    ->fields(array(
+      'locked' => 0,
+    ))
+    ->condition('order_status_id', array('special_processing', 'special_pending'), 'IN')
+    ->execute();
 }

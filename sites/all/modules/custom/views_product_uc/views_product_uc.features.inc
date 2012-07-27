@@ -19,7 +19,7 @@ function views_product_uc_fe_nodequeue_export_fields() {
 
   // Exported nodequeues: product_highlight
   $nodequeues['product_highlight'] = array(
-    'qid' => '2',
+    'qid' => '3',
     'name' => 'product_highlight',
     'title' => 'Les incontournables',
     'subqueue_title' => '',
@@ -45,7 +45,7 @@ function views_product_uc_fe_nodequeue_export_fields() {
 
   // Exported nodequeues: product_new
   $nodequeues['product_new'] = array(
-    'qid' => '3',
+    'qid' => '4',
     'name' => 'product_new',
     'title' => 'Nouveaux produits',
     'subqueue_title' => '',
