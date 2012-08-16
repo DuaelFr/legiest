@@ -87,7 +87,7 @@ function hook_field_group_formatter_info() {
     'form' => array(
       'fieldset' => array(
         'label' => t('Fieldset'),
-        'description' => t('This fieldgroup renders the inner content in a fieldset with the titel as legend.'),
+        'description' => t('This fieldgroup renders the inner content in a fieldset with the title as legend.'),
         'format_types' => array('open', 'collapsible', 'collapsed'),
         'instance_settings' => array('classes' => ''),
         'default_formatter' => 'collapsible',
@@ -96,7 +96,7 @@ function hook_field_group_formatter_info() {
     'display' => array(
       'div' => array(
         'label' => t('Div'),
-        'description' => t('This fieldgroup renders the inner content in a simple div with the titel as legend.'),
+        'description' => t('This fieldgroup renders the inner content in a simple div with the title as legend.'),
         'format_types' => array('open', 'collapsible', 'collapsed'),
         'instance_settings' => array('effect' => 'none', 'speed' => 'fast', 'classes' => ''),
         'default_formatter' => 'collapsible',
@@ -427,6 +427,17 @@ function field_group_info_groups($entity_type = NULL, $bundle = NULL, $view_mode
  */
 function field_group_read_groups($params = array()) {
   // This function loads the requested groups through ctools export api.
+}
+
+/**
+ * Hides field groups including children in a render array.
+ *
+ * @param array $element
+ *   A render array. Can be a form, node, user, ...
+ * @param array $group_names
+ *   An array of field group names that should be hidden.
+ */
+function field_group_hide_field_groups(&$element, $group_names) {
 }
 
 /**
