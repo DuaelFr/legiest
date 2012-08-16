@@ -18,8 +18,6 @@ function field_group_field_ui_form_params($form, $display_overview) {
   $params->admin_path = _field_ui_bundle_admin_path($params->entity_type, $params->bundle);
   $params->display_overview = $display_overview;
 
-  $formatters = field_group_formatter_info();
-
   if ($display_overview) {
     $params->region_callback = 'field_group_display_overview_row_region';
     $params->mode = $form['#view_mode'];
@@ -301,6 +299,41 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
   // Create the settings for fieldgroup as vertical tabs (merged with DS).
   field_group_field_ui_create_vertical_tabs($form, $form_state, $params);
 
+  // Show a warning if the user has not set up required containers
+  if ($form['#groups']) {
+
+    $parent_requirements = array(
+      'multipage' => array(
+        'parent' => 'multipage-group',
+        'message' => 'Each Multipage element needs to have a parent Multipage group element.',
+      ),
+      'htab' => array(
+        'parent' => 'htabs',
+        'message' => 'Each Horizontal tab element needs to have a parent Horizontal tabs group element.',
+      ),
+      'accordion-item' => array(
+        'parent' => 'accordion',
+        'message' => 'Each Accordion item element needs to have a parent Accordion group element.',
+      ),
+    );
+
+    // On display overview tabs need to be checked.
+    if ($display_overview) {
+      $parent_requirements['tab'] = array(
+        'parent' => 'tabs',
+        'message' => 'Each Vertical tab element needs to have a parent Vertical tabs group element.',
+      );
+    }
+
+    foreach ($form['#groups'] as $group_name) {
+      $group_check = field_group_load_field_group($group_name, $params->entity_type, $params->bundle, $params->mode);
+      if (isset($parent_requirements[$group_check->format_type])) {
+        if (!$group_check->parent_name || field_group_load_field_group($group_check->parent_name, $params->entity_type, $params->bundle, $params->mode)->format_type != $parent_requirements[$group_check->format_type]['parent']) {
+          drupal_set_message(t($parent_requirements[$group_check->format_type]['message']), 'warning', FALSE);
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -517,10 +550,6 @@ function field_group_field_overview_validate($form, &$form_state) {
 
   // Validate if any information was provided in the 'add new group' row.
   if (array_filter(array($group['label'], $group['group_name']))) {
-    // Missing label.
-    if (!$group['label']) {
-      form_set_error('fields][_add_new_group][label', t('Add new group: you need to provide a label.'));
-    }
 
     // Missing group name.
     if (!$group['group_name']) {
@@ -767,8 +796,45 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
   $form['additional_settings']['field_group']['fieldgroup_submit'] = array(
     '#type' => 'submit',
     '#value' => t('Clone'),
+    '#validate' => array('field_group_field_ui_clone_field_groups_validate'),
     '#submit' => array('field_group_field_ui_clone_field_groups')
   );
+
+}
+
+/**
+ * Validate handler to validate saving existing fieldgroups from one view mode or form to another.
+ */
+function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
+
+  $source_mode = $form_state['#source_mode'] = $form_state['values']['additional_settings']['fieldgroup_clone'] == '0' ? 'form' : $form_state['values']['additional_settings']['fieldgroup_clone'];
+  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type));
+
+  $form_state['#source_groups'] = array();
+  if (!empty($groups_to_clone) && isset($groups_to_clone[$form_state['field_group_params']->entity_type], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode])) {
+    $form_state['#source_groups'] = $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode];
+  }
+
+  // Check for types are not known in current mode.
+  if ($form_state['field_group_params']->mode != 'form') {
+    $non_existing_types = array('multipage', 'multipage-group');
+  }
+  else {
+    $non_existing_types = array('div');
+  }
+
+  foreach ($form_state['#source_groups'] as $key => $group) {
+    if (in_array($group->format_type, $non_existing_types)) {
+      unset($form_state['#source_groups'][$key]);
+      drupal_set_message(t('Skipping @group because this type does not exist in current mode', array('@group' => $group->label)), 'warning');
+    }
+  }
+
+  if (empty($form_state['#source_groups'])) {
+    // Report error found with selection.
+    form_set_error('additional_settings][fieldgroup_clone', t('No field groups were found in selected view mode.'));
+    return;
+  }
 
 }
 
@@ -777,16 +843,13 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
  */
 function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
-  $source_mode = $form_state['values']['additional_settings']['fieldgroup_clone'] == 0 ? 'form' : $form_state['values']['additional_settings']['fieldgroup_clone'];
-  $groups_to_clone = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type));
-  $source_groups = $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode];
+  $source_mode = $form_state['#source_mode'];
+  $groups_to_clone = $form_state['#groups_to_clone'];
 
   $fields = array_keys($form_state['values']['fields']);
+  if (!empty($form_state['#source_groups'])) {
 
-  if (!empty($source_groups)) {
-
-    foreach ($source_groups as $source_group) {
-
+    foreach ($form_state['#source_groups'] as $source_group) {
       if (in_array($source_group->group_name, $fields)) {
         drupal_set_message(t('Fieldgroup @group is not cloned since a group already exists with the same name.', array('@group' => $source_group->group_name)), 'warning');
         continue;
@@ -797,6 +860,7 @@ function field_group_field_ui_clone_field_groups($form, &$form_state) {
       $source_group->mode = $form_state['field_group_params']->mode;
       $source_group->identifier = $source_group->group_name . '|' . $source_group->entity_type . '|' . $source_group->bundle . '|' . $form_state['field_group_params']->mode;
       $source_group->disabled = FALSE;
+      $source_group->children = array();
       unset($source_group->export_type, $source_group->type, $source_group->table);
 
       // Save and enable it in ctools.
