@@ -10,7 +10,7 @@
 function type_news_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-news-body'
+  // Exported field: 'node-news-body'.
   $fields['node-news-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -33,6 +33,7 @@ function type_news_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -49,7 +50,14 @@ function type_news_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 0,
+          'weight' => '0',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -83,7 +91,7 @@ function type_news_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-news-field_picture'
+  // Exported field: 'node-news-field_picture'.
   $fields['node-news-field_picture'] = array(
     'field_config' => array(
       'active' => '1',
@@ -104,6 +112,7 @@ function type_news_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -125,7 +134,17 @@ function type_news_field_default_fields() {
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => 1,
+          'weight' => '1',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'actus-fiche',
+          ),
+          'type' => 'image',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
