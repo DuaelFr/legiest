@@ -121,6 +121,13 @@ function uc_legiest_default_rules_configuration_alter(&$configs) {
     $rule->label .= ' [DO NOT ENABLE]';
     $rule->active = FALSE;
   }
+  
+  // Disable uc_checkout_complete_paid to avoid collision
+  if (!empty($configs['uc_checkout_complete_paid'])) {
+    $rule = $configs['uc_checkout_complete_paid'];
+    $rule->label .= ' [DO NOT ENABLE]';
+    $rule->active = FALSE;
+  }
 }
 
 
@@ -429,7 +436,7 @@ function _uc_legiest_default_rules_configuration_states() {
   $rule->active = TRUE;
   $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'order:order-status',
+      'data:select' => 'updated-order:order-status',
       'value' => 'pending',
     ))
     ->action('component_uc_legiest_order_virt_admin_client_special', array(
@@ -453,7 +460,7 @@ function _uc_legiest_default_rules_configuration_states() {
   $rule->active = TRUE;
   $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'order:order-status',
+      'data:select' => 'updated-order:order-status',
       'value' => 'processing',
     ))
     ->condition(rules_condition('uc_order_condition_is_shippable', array(
@@ -472,7 +479,7 @@ function _uc_legiest_default_rules_configuration_states() {
   $rule->active = TRUE;
   $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'order:order-status',
+      'data:select' => 'updated-order:order-status',
       'value' => 'payment_received',
     ))
     ->action('uc_order_update_status', array(
@@ -488,7 +495,7 @@ function _uc_legiest_default_rules_configuration_states() {
   $rule->active = TRUE;
   $rule->event('uc_order_status_update')
     ->condition('data_is', array(
-      'data:select' => 'order:order-status',
+      'data:select' => 'updated-order:order-status',
       'value' => 'special_processing',
     ))
     ->condition('uc_order_condition_is_shippable', array(
@@ -501,12 +508,31 @@ function _uc_legiest_default_rules_configuration_states() {
   $rules['uc_legiest_order_becomes_processing_special'] = $rule;
 
   // Declencheur commande special_pending
-  // Change statut si paiement complété
+  // Change statut si paiement déjà complété
   $rule = rules_reaction_rule();
   $rule->label = t('(UC Legiest) Order becomes special_pending');
   $rule->active = TRUE;
   $rule->event('uc_order_status_update')
-    ->event('uc_payment_entered')
+    ->condition('data_is', array(
+      'data:select' => 'updated-order:order-status',
+      'value' => 'special_pending',
+    ))
+    ->condition('uc_payment_condition_order_balance', array(
+      'order:select' => 'order',
+      'balance_comparison' => 'less_equal',
+    ))
+    ->action('uc_order_update_status', array(
+      'order:select' => 'order',
+      'order_status' => 'completed',
+    ));
+  $rules['uc_legiest_order_becomes_pending_special'] = $rule;
+
+  // Declencheur commande special_pending
+  // Change statut si paiement complété
+  $rule = rules_reaction_rule();
+  $rule->label = t('(UC Legiest) Order special_pending is paid');
+  $rule->active = TRUE;
+  $rule->event('uc_payment_entered')
     ->condition('data_is', array(
       'data:select' => 'order:order-status',
       'value' => 'special_pending',
@@ -519,7 +545,7 @@ function _uc_legiest_default_rules_configuration_states() {
       'order:select' => 'order',
       'order_status' => 'completed',
     ));
-  $rules['uc_legiest_order_becomes_pending_special'] = $rule;
+  $rules['uc_legiest_order_pending_special_is_paid'] = $rule;
 
 
   return $rules;
