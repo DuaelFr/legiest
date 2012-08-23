@@ -105,13 +105,31 @@ function uc_legiest_commerce_order_status_info() {
  * Implements hook_uc_order_state().
  */
 function uc_legiest_uc_order_state() {
+  // Add a new special state
   $states['special'] = array(
     'title' => t('Special'),
     'weight' => 10,
+    'scope' => 'general',
+  );
+  // Override default completed state to change its scope
+  $states['completed'] = array(
+    'title' => t('Completed'),
+    'weight' => 20,
     'scope' => 'specific',
   );
 
   return $states;
+}
+
+/**
+ * Implements hook_views_pre_view().
+ */
+function uc_legiest_views_pre_build(&$view) {
+  if ($view->name == 'uc_customers') {
+    $display = $view->display[$view->current_display];
+    $filter = $display->handler->handlers['filter']['order_status'];
+    $filter->value['completed'] = 'completed';
+  }
 }
 
 /**
