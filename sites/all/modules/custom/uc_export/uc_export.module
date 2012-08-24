@@ -34,13 +34,13 @@ function uc_export_menu() {
   $menu['admin/store/export'] = array(
     'title' => 'Export',
     'description' => '',
-    'access arguments' => array('administer store exports'),
+    'access arguments' => array(UC_EXPORT_PERMISSION),
     'page callback' => '_uc_export_home',
   );
   $menu['admin/store/export/settings'] = array(
     'title' => 'Settings',
     'description' => 'Paramètres du module',
-    'access arguments' => array('administer store exports'),
+    'access arguments' => array(UC_EXPORT_PERMISSION),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('uc_export_settings_form'),
   );
@@ -48,7 +48,7 @@ function uc_export_menu() {
     'title callback' => '_uc_export_page_title',
     'title arguments' => array(3),
     'description' => '',
-    'access arguments' => array('administer store exports'),
+    'access arguments' => array(UC_EXPORT_PERMISSION),
     'page callback' => '_uc_export_page',
     'page arguments' => array(3),
   );
@@ -56,14 +56,14 @@ function uc_export_menu() {
     'title callback' => '_uc_export_page_title',
     'title arguments' => array(3),
     'description' => '',
-    'access arguments' => array('administer store exports'),
+    'access arguments' => array(UC_EXPORT_PERMISSION),
     'page callback' => '_uc_export_page',
     'page arguments' => array(3),
   );
   $menu['admin/store/export/%/force'] = array(
     'title' => 'Forcer un export',
     'description' => '',
-    'access arguments' => array('administer store exports'),
+    'access arguments' => array(UC_EXPORT_PERMISSION),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('uc_export_force_confirm_form', 3),
     'type' => MENU_CALLBACK,
@@ -72,7 +72,7 @@ function uc_export_menu() {
   $menu['admin/store/export/%/delete/%'] = array(
     'title' => 'Supprimer un export',
     'description' => '',
-    'access arguments' => array('administer store exports'),
+    'access arguments' => array(UC_EXPORT_PERMISSION),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('uc_export_delete_confirm_form', 3, 5),
     'type' => MENU_CALLBACK,
