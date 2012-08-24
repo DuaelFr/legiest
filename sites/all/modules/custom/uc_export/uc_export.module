@@ -283,7 +283,7 @@ function uc_export_execute($type, $force = FALSE) {
       'date'  => $now,
       'type'  => $type,
       'file'  => $file,
-      'count' => count($data) - 1,
+      'count' => count($data) - intval(variable_get(UC_EXPORT_HEADERS_VAR, TRUE)),
     );
     drupal_mail('uc_export', 'mail_export', $mail, language_default(), $params);
   }
@@ -295,8 +295,8 @@ function uc_export_execute($type, $force = FALSE) {
          'Export type @type is over.<br />- @total_time seconds<br />- @count items', 
            array(
              '@type' => check_plain($type),
-              '@total_time' => round($end - $start, 2),
-             '@count' => count($data) - 1,
+             '@total_time' => round($end - $start, 2),
+             '@count' => count($data) - intval(variable_get(UC_EXPORT_HEADERS_VAR, TRUE)),
            ), 
            WATCHDOG_INFO);
 }
