@@ -6,6 +6,7 @@ project = config_shop_uc
 dependencies[] = strongarm
 dependencies[] = uc_bank_transfer
 dependencies[] = uc_cart
+dependencies[] = uc_export
 dependencies[] = uc_file
 dependencies[] = uc_flatrate
 dependencies[] = uc_legiest
