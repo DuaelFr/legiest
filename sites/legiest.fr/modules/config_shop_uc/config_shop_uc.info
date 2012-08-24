@@ -16,6 +16,7 @@ dependencies[] = uc_payment_pack
 dependencies[] = uc_paypal
 dependencies[] = uc_product
 dependencies[] = uc_quote
+dependencies[] = uc_reflate
 dependencies[] = uc_reports
 dependencies[] = uc_shipping
 dependencies[] = uc_stock
