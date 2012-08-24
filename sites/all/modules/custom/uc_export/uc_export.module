@@ -171,6 +171,16 @@ function uc_export_mail($key, &$message, $params) {
   }
 }
 
+/**
+ * Implements hook_cron().
+ */
+function uc_cron() {
+  if (date(H) > 1 && date(H) < 4) {
+    uc_export_execute('shipping');
+    uc_export_execute('clients');
+  }
+}
+
 
 // -----------------------------------------------------------------------------
 // TOOLS
@@ -226,7 +236,8 @@ function uc_export_execute($type, $force = FALSE) {
   // If not forced
   if (!$force) {
     // The interval is not over
-    if (time() < $last + $interval) {
+    // We remove 10 minute in the test to allow small variations
+    if (time() < $last + $interval - 600) {
       return;
     }
   }
