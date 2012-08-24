@@ -254,8 +254,7 @@ function uc_export_execute($type, $force = FALSE) {
   }
   
   // Set the last export time in the future to avoid multiple exports at the same time
-// @TODO RE-ENABLE THIS
-//  variable_set(UC_EXPORT_LAST_EXPORT_VAR . '_' . $type, mktime(0, 0, 0, 1, 1, date('Y')+1));
+  variable_set(UC_EXPORT_LAST_EXPORT_VAR . '_' . $type, mktime(0, 0, 0, 1, 1, date('Y')+1));
   
   // Execute specific export and retreive data
   $data = call_user_func($func);
