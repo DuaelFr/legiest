@@ -220,7 +220,7 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_cap_cart_form_weight';
-  $strongarm->value = '0';
+  $strongarm->value = '-10';
   $export['uc_cap_cart_form_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -234,7 +234,7 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_cap_quotes_weight';
-  $strongarm->value = '5';
+  $strongarm->value = '-7';
   $export['uc_cap_quotes_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -718,7 +718,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_billing_weight';
-  $strongarm->value = '4';
+  $strongarm->value = '-6';
   $export['uc_pane_billing_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -732,7 +732,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_cart_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-10';
   $export['uc_pane_cart_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -746,7 +746,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_comments_weight';
-  $strongarm->value = '7';
+  $strongarm->value = '-2';
   $export['uc_pane_comments_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -760,7 +760,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_customer_weight';
-  $strongarm->value = '2';
+  $strongarm->value = '-8';
   $export['uc_pane_customer_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -774,7 +774,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_delivery_weight';
-  $strongarm->value = '3';
+  $strongarm->value = '-7';
   $export['uc_pane_delivery_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -788,7 +788,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_payment_weight';
-  $strongarm->value = '6';
+  $strongarm->value = '-3';
   $export['uc_pane_payment_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -802,7 +802,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_quotes_weight';
-  $strongarm->value = '5';
+  $strongarm->value = '-5';
   $export['uc_pane_quotes_weight'] = $strongarm;
 
   $strongarm = new stdClass();
