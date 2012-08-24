@@ -1,0 +1,288 @@
+<?php
+/**
+ * @file
+ * Allow administrator to manage automatic reflations.
+ */
+
+define('UC_REFLATE_MAIL_VAR', 'uc_reflate_email');
+define('UC_REFLATE_INTERVAL_VAR', 'uc_reflate_interval');
+define('UC_REFLATE_LAST_RUN_VAR', 'uc_reflate_last_run');
+
+define('UC_REFLATE_PERMISSION', 'administer store reflations');
+
+/**
+ * Implements hook_permission().
+ */
+function uc_reflate_permission() {
+  $perm = array();
+  
+  $perm[UC_REFLATE_PERMISSION] = array(
+    'title' => 'Administer store reflations',
+    'description' => '',
+  );
+  
+  return $perm;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function uc_reflate_menu() {
+  $menu = array();
+  
+  $menu['admin/store/reflate'] = array(
+    'title' => 'Relances',
+    'description' => '',
+    'access arguments' => array(UC_REFLATE_PERMISSION),
+    'page callback' => '_uc_reflate_home',
+  );
+  $menu['admin/store/reflate/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Paramètres du module',
+    'access arguments' => array(UC_REFLATE_PERMISSION),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_reflate_settings_form'),
+  );
+  $menu['admin/store/reflate/force'] = array(
+    'title' => 'Forcer une relance',
+    'description' => '',
+    'access arguments' => array(UC_REFLATE_PERMISSION),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_reflate_force_confirm_form'),
+  );
+  
+  return $menu;
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function uc_reflate_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if (preg_match('#^admin/store/reflate#', $root_path)) {
+    $menu = menu_get_item('admin/store/reflate');
+    $content = system_admin_menu_block($menu);
+    if (empty($data['tabs'])) { $data['tabs'] = array(); }
+    if (empty($data['tabs'][0])) { $data['tabs'][0] = array('count' => 0, 'output' => array()); }
+    foreach ($content as $item) {
+      $data['tabs'][0]['count']++;
+      $data['tabs'][0]['output'][] = array(
+        '#theme' => 'menu_local_task',
+        '#link' => $item,
+        '#active' => $item['router_path'] == $root_path,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function uc_reflate_mail($key, &$message, $params) {
+  $site_name = uc_reflate_get_source();
+  if ($key == 'report') {
+    $date = $params['date'];
+    $count = $params['count'];
+    
+    $message['subject'] = '[' . $site_name . '] Relance terminée';
+    $message['body'] = array();
+    $message['body'][] = 'Une nouvelle relance ' 
+            . ' s\'est terminée sur le site ' . $site_name 
+            . ' le ' . date('d/m/Y', $date) . ' à ' . date('H:i', $date);
+    $message['body'][] = '';
+    $message['body'][] = 'Cette dernière concernait ' . format_plural($count, '@count commande', '@count commandes');
+  }
+  elseif ($key == 'reflate') {
+    $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+    $message['subject'] = '[' . $site_name . '] Relance de commande';
+    $message['from'] = uc_store_email_from();
+    $message['body'][] = theme('uc_order', array('order' => $params['order'], 'op' => 'admin-mail', 'template' => variable_get('uc_cust_order_invoice_template', 'customer')));
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function uc_reflate_cron() {
+  if (date(H) > 1 && date(H) < 4) {
+    uc_reflate_execute();
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// TOOLS
+
+/**
+ * Get uc_export source site. 
+ */
+function uc_reflate_get_source() {
+  return strpos($GLOBALS['base_url'], 'legiest') !== FALSE ?
+         'Legiest' : 'AffichageCodeDuTravail';  
+}
+
+/**
+ * Process a reflation.
+ */
+function uc_reflate_execute($force = FALSE) {
+  $start = microtime(TRUE);
+
+  // Check if a new reflation is needed or forced
+  $last = variable_get(UC_REFLATE_LAST_RUN_VAR, 0);
+  $interval = 24 * 60 * 60; // 1 day
+  // If not forced
+  if (!$force) {
+    // The interval is not over
+    // We remove 10 minute in the test to allow small variations
+    if (time() < $last + $interval - 600) {
+      return;
+    }
+  }
+  // Used to avoid multiple reflations at the same time
+  if (time() < $last) {
+    return;
+  }
+  
+  // Set the last reflation time in the future to avoid multiple reflations at the same time
+  variable_set(UC_REFLATE_LAST_RUN_VAR, mktime(0, 0, 0, 1, 1, date('Y')+1));
+
+  // Keep the current time
+  $now = REQUEST_TIME;
+
+  // Get reflatable orders
+  $to_reflate = db_select('uc_orders', 'o')
+    ->fields('o', array('order_id'))
+    ->condition('order_status', array('pending', 'special_pending'), 'IN')
+    ->condition('modified', $now - (variable_get(UC_REFLATE_INTERVAL_VAR, 30) * 24 * 60 * 60), '<=')
+    ->execute()
+    ->fetchCol();
+  $orders = uc_order_load_multiple($to_reflate);
+  
+  // Send reflation mails
+  foreach ($orders as $order) {
+    drupal_mail('uc_reflate', 'reflate', $order->primary_email, language_default(), array('order' => $order));
+    db_update('uc_orders')
+      ->fields(array(
+        'modified' => $now,
+      ))
+      ->condition('order_id', $order->order_id)
+      ->execute();
+    uc_order_log_changes($order->order_id, array('Relance par email.'));
+  }
+  
+  // Save the current time as the last reflate
+  variable_set(UC_REFLATE_LAST_RUN_VAR, $now);
+
+  // Send the report by email
+  $mail = variable_get(UC_REFLATE_MAIL_VAR);
+  if (!empty($mail)) {
+    $params = array(
+      'date'  => $now,
+      'count' => count($data),
+    );
+    drupal_mail('uc_reflate', 'report', $mail, language_default(), $params);
+  }
+
+  // Report succes in watchdog
+  $end = microtime(TRUE);
+  drupal_set_message('La relance s\'est déroulée avec succès.', 'status');
+  watchdog('uc_reflate', 
+         'Reflation is over.<br />- @total_time seconds<br />- @count mails', 
+           array(
+             '@total_time' => round($end - $start, 2),
+             '@count' => count($data),
+           ), 
+           WATCHDOG_INFO);
+}
+
+// -----------------------------------------------------------------------------
+// FORMS
+
+/**
+ * Confirmation form to force a reflation.
+ *
+ * @see uc_reflate_force_confirm_form_submit()
+ * @ingroup forms
+ */
+function uc_reflate_force_confirm_form($form, &$form_state) {
+  return confirm_form($form, t('Êtes vous certain de vouloir forcer la relance ?', array()), 'admin/store/reflate', 'Attention, cela peut ralentir fortement votre site durant plusieurs minutes.', t('Forcer'));
+}
+
+/**
+ * Form submission handler for uc_reflate_force_confirm_form().
+ *
+ * @see uc_reflate_force_confirm_form()
+ */
+function uc_reflate_force_confirm_form_submit($form, &$form_state) {
+  uc_reflate_execute(TRUE);
+
+  $form_state['redirect'] = 'admin/store/reflate';
+}
+
+/**
+ * Implements hook_form().
+ */
+function uc_reflate_settings_form() {
+  $form = array();
+  
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => 'E-Mail',
+    '#description' => 'Adresse à laquelle sont envoyés les rapports.',
+    '#default_value' => variable_get(UC_REFLATE_MAIL_VAR, ''),
+    '#required' => TRUE,
+  );
+  $form['interval'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Intervale',
+    '#description' => 'Nombre de jours entre deux relances.',
+    '#default_value' => variable_get(UC_REFLATE_INTERVAL_VAR, 30),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  
+  return $form;
+}
+
+/**
+ * Implements hook_form_validate().
+ */
+function uc_reflate_settings_form_validate($form, &$form_state) {
+  if ($form_state['values']['interval'] && intval($form_state['values']['interval']) <= 0) {
+    form_set_error('interval', t('L\'intervale doit être un nombre entier positif.'));
+  }
+  if ($form_state['values']['mail'] && !valid_email_address($form_state['values']['mail'])) {
+    form_set_error('mail', t('The e-mail address you specified is not valid.'));
+  }
+}
+
+/**
+ * Implements hook_form_submit().
+ */
+function uc_reflate_settings_form_submit($form, &$form_state) {
+  variable_set(UC_REFLATE_MAIL_VAR, $form_state['values']['mail']);
+  variable_set(UC_REFLATE_INTERVAL_VAR, $form_state['values']['interval']);
+  drupal_set_message('Les nouveaux paramètres ont été enregistrés.', 'status');
+}
+
+
+// -----------------------------------------------------------------------------
+// MENU CALLBACKS
+
+/**
+ * Menu admin/store/reflate page callback.
+ */
+function _uc_reflate_home() {
+  $menu = menu_get_item('admin/store/reflate');
+  $content = system_admin_menu_block($menu);
+
+  $build['menu'] = array(
+    '#theme' => 'admin_block_content',
+    '#content' => $content,
+    '#weight' => 5,
+  );
+
+  return $build;
+}
