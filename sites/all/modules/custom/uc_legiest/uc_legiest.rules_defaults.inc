@@ -109,7 +109,7 @@ function uc_legiest_default_rules_configuration_alter(&$configs) {
     $rule->label = '(UC Legiest) Autorule for tax rate "' . $rate->name . '"';
     
     if ($rate->name == 'TVA') {
-      $rule->condition('component_uc_legiest_condition_shipping_france', array(
+      $rule->condition('component_uc_legiest_condition_billing_france', array(
           'order:select' => 'order',
         ));
     }
@@ -151,6 +151,20 @@ function _uc_legiest_default_rules_configuration_shipping_area() {
     ),
   );
   
+  // Billing address is in france
+  $rule = rules_or($variables);
+  $rule->label = t('(UC Legiest) Condition Billing France');
+  $rule->active = TRUE;
+  $rule
+    ->condition('uc_order_condition_billing_country', array(
+      'order:select' => 'order',
+      'countries' => array(
+        '250' => '250', // France
+      ),
+    ));
+  $rules['uc_legiest_condition_billing_france'] = $rule;
+
+
   // Shipping address is in france
   $rule = rules_or($variables);
   $rule->label = t('(UC Legiest) Condition Shipping France');
