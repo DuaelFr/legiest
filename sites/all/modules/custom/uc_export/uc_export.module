@@ -371,6 +371,9 @@ function _uc_export_execute_shipping() {
     }
     $data[] = $tmp;
 
+    // Log export
+    uc_order_log_changes($order->order_id, array('Export GLS.'));
+
     // Change order states
     if ($order->order_status == 'special_processing') {
       uc_order_update_status($order_id, 'special_pending');
@@ -416,11 +419,10 @@ function _uc_export_execute_clients() {
     ->orderBy('o.created', 'asc')
     ->execute()
     ->fetchCol();
+  $data = uc_order_load_multiple($to_export);
 
   // Build data
-  foreach ($to_export as $order_id) {
-    $order = uc_order_load($order_id);
-
+  foreach ($data as $order) {
     $tmp = array();
     $tmp[] = $order->uid; // CODE_CL
     $tmp[] = $order->billing_first_name . ' ' . $order->billing_last_name; // NOM
@@ -482,16 +484,17 @@ function _uc_export_execute_clients() {
     }
 
     $data[] = $tmp;
-  }
 
-  // Change order states
-  foreach ($to_export as $order_id) {
+    // Save export time.
     db_insert('uc_order_export')
       ->fields(array(
-        'order_id' => $order_id,
+        'order_id' => $order->order_id,
         'exported' => REQUEST_TIME,
       ))
       ->execute();
+      
+    // Log export.
+    uc_order_log_changes($order->order_id, array('Export GLS.'));
   }
 
   return $data;
