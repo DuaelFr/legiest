@@ -1,0 +1,38 @@
+<?php
+/**
+ * @file
+ * UC Export install file.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function uc_export_schema() {
+  $schema = array();
+  
+  $schema['uc_order_export'] = array(
+    'description' => '',
+    'fields' => array(
+      'order_id' => array(
+        'description' => 'The {uc_orders}.order_id of the order.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'exported' => array(
+        'description' => 'The Unix timestamp indicating when the order was exported.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(),
+    'primary key' => array('order_id'),
+    'foreign keys' => array(
+      'order_id' => array('uc_orders' => 'order_id'),
+    ),
+  );
+  
+  return $schema;
+}
