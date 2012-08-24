@@ -401,6 +401,73 @@ function config_shop_uc_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_allow_multiple';
+  $strongarm->value = 0;
+  $export['uc_coupon_allow_multiple'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_default_usage';
+  $strongarm->value = 'single';
+  $export['uc_coupon_default_usage'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_expiry_hour';
+  $strongarm->value = '0';
+  $export['uc_coupon_expiry_hour'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_expiry_timezone';
+  $strongarm->value = '0';
+  $export['uc_coupon_expiry_timezone'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_form_components';
+  $strongarm->value = array(
+    'entry' => 'entry',
+    'list' => 'list',
+    'table' => 0,
+  );
+  $export['uc_coupon_form_components'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_line_item_format';
+  $strongarm->value = 'Coupon [uc_coupon:code]';
+  $export['uc_coupon_line_item_format'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_querystring';
+  $strongarm->value = '';
+  $export['uc_coupon_querystring'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_show_in_cart';
+  $strongarm->value = 1;
+  $export['uc_coupon_show_in_cart'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_used_order_status';
+  $strongarm->value = 'pending';
+  $export['uc_coupon_used_order_status'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'uc_currency_code';
   $strongarm->value = 'EUR';
   $export['uc_currency_code'] = $strongarm;
@@ -439,6 +506,27 @@ function config_shop_uc_strongarm() {
   $strongarm->name = 'uc_customer_list_address';
   $strongarm->value = 'billing';
   $export['uc_customer_list_address'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_export_email';
+  $strongarm->value = 'admin@duael.fr';
+  $export['uc_export_email'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_export_headers';
+  $strongarm->value = 1;
+  $export['uc_export_headers'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_export_interval';
+  $strongarm->value = '1';
+  $export['uc_export_interval'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -523,6 +611,13 @@ function config_shop_uc_strongarm() {
   $strongarm->name = 'uc_length_unit';
   $strongarm->value = 'cm';
   $export['uc_length_unit'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_li_coupon_weight';
+  $strongarm->value = '0';
+  $export['uc_li_coupon_weight'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -869,6 +964,20 @@ If this does not resolve the issue, please call in to complete your order.';
    'email' => '',
 ));
   $export['uc_quote_store_default_address'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_reflate_email';
+  $strongarm->value = 'admin@duael.fr';
+  $export['uc_reflate_email'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_reflate_interval';
+  $strongarm->value = '30';
+  $export['uc_reflate_interval'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
