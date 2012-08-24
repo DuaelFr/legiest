@@ -323,11 +323,10 @@ function _uc_export_execute_shipping() {
     ->condition('order_status', array('processing', 'special_processing'), 'IN')
     ->execute()
     ->fetchCol();
+  $data = uc_order_load_multiple($to_export);
     
   // Build data
-  foreach ($to_export as $order_id) {
-    $order = uc_order_load($order_id);
-
+  foreach ($data as $order) {
     $adr_prefix = empty($order->delivery_street1) ? 'billing_' : 'delivery_';
 
     $tmp = array();
@@ -371,11 +370,14 @@ function _uc_export_execute_shipping() {
       }
     }
     $data[] = $tmp;
-  }
-  
-  // Change order states
-  foreach ($to_export as $order_id) {
-    uc_order_update_status($order_id, 'completed');
+
+    // Change order states
+    if ($order->order_status == 'special_processing') {
+      uc_order_update_status($order_id, 'special_pending');
+    }
+    else {
+      uc_order_update_status($order_id, 'completed');
+    }
   }
 
   return $data;
