@@ -32,12 +32,17 @@ function uc_legiest_menu() {
  */
 function uc_legiest_theme() {
   return array(
+    // Virement administratif
     'uc_legiest_receive_virt_admin_form' => array(
       'render element' => 'form',
       'file' => 'uc_legiest.admin.inc',
     ),
     'uc_legiest_bank_details' => array(
       'variables' => array('oid' => NULL),
+    ),
+    // Modif affichage sous total panier
+    'uc_legiest_cart_review_table' => array(
+      'variables' => array('items' => array(), 'show_subtotal' => TRUE),
     ),
   );
 }
@@ -161,6 +166,31 @@ function uc_legiest_tapir_table_alter(&$table, $table_id) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_uc_checkout_pane_alter().
+ */
+function uc_legiest_uc_checkout_pane_alter(&$panes) {
+  $panes['cart']['callback'] = 'uc_legiest_pane_cart';
+}
+
+/**
+ * Override cart review display function.
+ */
+function uc_legiest_pane_cart($op, $order, $form = NULL, &$form_state = NULL) {
+  $result = uc_checkout_pane_cart($op, $order, $form, $form_state);
+  $result['contents']['cart_review_table']['#theme'] = 'uc_legiest_cart_review_table';
+  return $result;
+}
+
+/**
+ * Override cart review display format.
+ */
+function theme_uc_legiest_cart_review_table($variables) {
+  $result = theme_uc_cart_review_table($variables);
+  $result = str_replace('Sous-total', 'Sous-total HT', $result);
+  return $result;
 }
 
 /**
