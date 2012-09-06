@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * Implements hook_permission().
+ */
+function uc_legiest_permission() {
+  return array(
+    'use special order states' => array(
+      'title' => t('Use special order states'),
+      'description' => t('Allow the user to be delivered before paying (for administrations)'),
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function uc_legiest_menu() {
@@ -147,18 +159,6 @@ function uc_legiest_commerce_tax_rate_info() {
   );
 
   return $tax_rates;
-}
-
-/**
- * Implements hook_permission().
- */
-function uc_legiest_permission() {
-  return array(
-    'use special order states' => array(
-      'title' => t('Use special order states'),
-      'description' => t('Allow the user to be delivered before paying (for administrations)'),
-    ),
-  );
 }
 
 /**
