@@ -5,24 +5,3 @@
  */
 
 include_once 'config_shop_uc.features.inc';
-
-/**
- * Implements hook_uc_tapir_table_alter().
- */
-function config_shop_uc_tapir_table_alter(&$table, $table_id) {
-  if ($table_id == 'uc_cart_view_table') {
-    $table['#columns']['remove']['weight'] = 5;
-    foreach (element_children($table) as $key) {
-      if (!empty($table[$key]['remove'])) {
-        $table[$key]['remove']['#type'] = 'submit';
-        $table[$key]['remove']['#value'] = '';
-        $table[$key]['remove']['#theme'] = 'button';
-        $table[$key]['remove']['#button_type'] = 'image';
-        $table[$key]['remove']['#attributes'] = array(
-          'src' => drupal_get_path('theme', variable_get('theme_default', 'bartik')) . '/images/cart-remove.png',
-          'alt' => t('Remove'),
-        );
-      }
-    }
-  }
-}
