@@ -169,6 +169,17 @@ function uc_legiest_tapir_table_alter(&$table, $table_id) {
 }
 
 /**
+ * Implements hook_form_alter().
+ * 
+ * Remove "Back" button from cart review.
+ */
+function uc_legiest_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'uc_cart_checkout_review_form') {
+    unset($form['actions']['back']);
+  }
+}
+
+/**
  * Implements hook_element_info_alter().
  * 
  * Allow to set default country as France.
