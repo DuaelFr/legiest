@@ -170,6 +170,8 @@ function uc_legiest_tapir_table_alter(&$table, $table_id) {
 
 /**
  * Implements hook_element_info_alter().
+ * 
+ * Allow to set default country as France.
  */
 function uc_legiest_element_info_alter(&$type) {
   $type['uc_address']['#process'][] = 'uc_legiest_process_address_field';
@@ -206,6 +208,8 @@ function uc_legiest_process_address_field($element, $form_state) {
 
 /**
  * Implements hook_uc_checkout_pane_alter().
+ * 
+ * Allow to add an "HT" mention into the cart review pane.
  */
 function uc_legiest_uc_checkout_pane_alter(&$panes) {
   $panes['cart']['callback'] = 'uc_legiest_pane_cart';
@@ -213,6 +217,8 @@ function uc_legiest_uc_checkout_pane_alter(&$panes) {
 
 /**
  * Override cart review display function.
+ * 
+ * Allow to add an "HT" mention into the cart review pane.
  */
 function uc_legiest_pane_cart($op, $order, $form = NULL, &$form_state = NULL) {
   $result = uc_checkout_pane_cart($op, $order, $form, $form_state);
@@ -222,6 +228,8 @@ function uc_legiest_pane_cart($op, $order, $form = NULL, &$form_state = NULL) {
 
 /**
  * Override cart review display format.
+ * 
+ * Add an "HT" mention into the cart review pane.
  */
 function theme_uc_legiest_cart_review_table($variables) {
   $result = theme_uc_cart_review_table($variables);
