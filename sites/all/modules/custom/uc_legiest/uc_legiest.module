@@ -160,6 +160,9 @@ function uc_legiest_tapir_table_alter(&$table, $table_id) {
           'alt' => t('Remove'),
         );
       }
+      if (!empty($table[$key]['total']) && count($table[$key]) == 1) {
+        $table[$key]['total']['#prefix'] = str_replace('Sous-total', 'Sous-total HT', $table[$key]['total']['#prefix']);
+      }
     }
   }
 }
