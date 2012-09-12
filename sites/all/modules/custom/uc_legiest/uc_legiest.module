@@ -48,55 +48,6 @@ function uc_legiest_theme() {
 }
 
 /**
- * Theme output displayed in checkout review, etc.
- */
-function theme_uc_legiest_bank_details($variables) {
-  $oid = $variables['oid'];
-  $output = uc_legiest_bank_details_bank_details($oid);
-  return $output;
-}
-
-/**
- * Implementation of uc_legiest_bank_details($oid).
- *
- * $oid = order ID
- */
-function uc_legiest_bank_details_bank_details($oid) {
-  if (variable_get('uc_legiest_account_owner', '') <> '') {
-    $bank_info[] = t('Propriétaire du compte') . ': ' . variable_get('uc_legiest_account_owner', '');
-  }
-  if (variable_get('uc_legiest_account_number', '') <> '') {
-    $bank_info[] = t('Numéro de compte') . ': ' . variable_get('uc_legiest_account_number', '');
-  }
-  if (variable_get('uc_legiest_account_iban', '') <> '') {
-    $bank_info[] = t('IBAN') . ': ' . variable_get('uc_legiest_account_iban', '');
-  }
-  if (variable_get('uc_legiest_bank_code', '') <> '') {
-    $bank_info[] = variable_get('uc_legiest_bank_code_appellation', 'Code banque') . ': ' . variable_get('uc_legiest_bank_code', '');
-  }
-  if (variable_get('uc_legiest_account_swift', '') <> '') {
-    $bank_info[] = t('SWIFT') . ': ' . variable_get('uc_legiest_account_swift', '');
-  }
-  if (variable_get('uc_legiest_account_bank', '') <> '') {
-    $bank_info[] = t('Nom de la banque') . ': ' . variable_get('uc_legiest_account_bank', '');
-  }
-  if (variable_get('uc_legiest_account_branch', '') <> '') {
-    $bank_info[] = t('Nom de l\'agence') . ': ' . variable_get('uc_legiest_account_branch', '');
-  }
-  if (variable_get('uc_legiest_subject_oid', FALSE)) {
-    isset($bank_info) ? ($bank_info[] = '<br />' . t('Libellé du paiement') . ': ' . t('numéro de commande') . ' ' . $oid) : ($bank_info[] = t('Libellé du paiement') . ': ' . t('numéro de commande') . ' ' . $oid);
-  }
-  if (variable_get('uc_legiest_policy', '') <> '') {
-    isset($bank_info) ? ($bank_info[] = '<br />' . variable_get('uc_legiest_policy', '')) : ($bank_info[] = variable_get('uc_legiest_policy', ''));
-  }
-
-  isset($bank_info) ? ($bank_details = implode('<br />', $bank_info)) : ($bank_details = '');
-
-  return $bank_details;
-}
-
-
-/**
  * Implements hook_commerce_order_status_info().
  */
 function uc_legiest_commerce_order_status_info() {
@@ -148,6 +99,7 @@ function uc_legiest_views_pre_build(&$view) {
     $filter->value['completed'] = 'completed';
   }
 }
+
 /**
  * Implements hook_tapir_table_alter().
  */
@@ -189,63 +141,12 @@ function uc_legiest_element_info_alter(&$type) {
 }
 
 /**
- * uc_address form type callback.
- * 
- * Set default country as France.
- */
-function uc_legiest_process_address_field($element, $form_state) {
-  $prefix = $element['#key_prefix'] ? ($element['#key_prefix'] . '_') : '';
-
-  if (isset($form_state['uc_address'])) {
-    // Use submitted Ajax values.
-    $value = $form_state['uc_address'];
-  }
-  elseif (is_array($element['#value']) || is_object($element['#value'])) {
-    // Use provided default value.
-    $value = (array) $element['#value'];
-  }
-  else {
-    $value = array();
-  }
-  
-  $countries = $element[$prefix . 'country']['#options'];
-  // Force the selected country to a valid one, so the zone dropdown matches.
-  if (empty($value[$prefix . 'country']) || !isset($countries[$value[$prefix . 'country']])) {
-    $element[$prefix . 'country']['#default_value'] = array_search('France', $countries);
-  }
-
-  return $element;
-}
-
-/**
  * Implements hook_uc_checkout_pane_alter().
  * 
  * Allow to add an "HT" mention into the cart review pane.
  */
 function uc_legiest_uc_checkout_pane_alter(&$panes) {
   $panes['cart']['callback'] = 'uc_legiest_pane_cart';
-}
-
-/**
- * Override cart review display function.
- * 
- * Allow to add an "HT" mention into the cart review pane.
- */
-function uc_legiest_pane_cart($op, $order, $form = NULL, &$form_state = NULL) {
-  $result = uc_checkout_pane_cart($op, $order, $form, $form_state);
-  $result['contents']['cart_review_table']['#theme'] = 'uc_legiest_cart_review_table';
-  return $result;
-}
-
-/**
- * Override cart review display format.
- * 
- * Add an "HT" mention into the cart review pane.
- */
-function theme_uc_legiest_cart_review_table($variables) {
-  $result = theme_uc_cart_review_table($variables);
-  $result = str_replace('Sous-total', 'Sous-total HT', $result);
-  return $result;
 }
 
 /**
@@ -281,6 +182,110 @@ function uc_legiest_uc_payment_method() {
   );
   return $methods;
 }
+
+/**
+ * Implements hook_views_default_views_alter().
+ * 
+ * Add company field to admin views.
+ */
+function uc_legiest_views_default_views_alter(&$views) {
+  if (array_key_exists('uc_orders', $views)) {
+    $handler = &$views['uc_orders']->display['default']->handler;
+
+    /* Field: Order: Billing address: Company */
+    $new_field = array(
+      'id' => 'billing_company',
+      'table' => 'uc_orders',
+      'field' => 'billing_company',
+      'alter' => array(
+        'alter_text' => 0,
+        'make_link' => 0,
+        'absolute' => 0,
+        'external' => 0,
+        'replace_spaces' => 0,
+        'trim_whitespace' => 0,
+        'nl2br' => 0,
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'more_link' => 0,
+        'strip_tags' => 0,
+        'trim' => 0,
+        'html' => 0,
+      ),
+      'element_label_colon' => 1,
+      'element_default_classes' => 1,
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'hide_alter_empty' => 1,
+    );
+    drupal_array_insert($handler->display->display_options['fields'], 'uid', array('billing_company' => $new_field));
+  }
+  if (array_key_exists('uc_customers', $views)) {
+    $handler = &$views['uc_customers']->display['default']->handler;
+    
+    /* Display formatter option */
+    $new_opt = array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    );
+    drupal_array_insert($handler->display->display_options['style_options']['info'], 'name', array('billing_company' => $new_opt));
+
+    /* Field: Order: Billing address: Company */
+    $new_field = array(
+      'id' => 'billing_company',
+      'table' => 'uc_orders',
+      'field' => 'billing_company',
+      'alter' => array(
+        'alter_text' => 0,
+        'make_link' => 0,
+        'absolute' => 0,
+        'external' => 0,
+        'replace_spaces' => 0,
+        'trim_whitespace' => 0,
+        'nl2br' => 0,
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'more_link' => 0,
+        'strip_tags' => 0,
+        'trim' => 0,
+        'html' => 0,
+      ),
+      'element_label_colon' => 1,
+      'element_default_classes' => 1,
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'hide_alter_empty' => 1,
+    );
+    drupal_array_insert($handler->display->display_options['fields'], 'name', array('billing_company' => $new_field));
+    
+    /* Filter criterion: Order: Billing address: Company */
+    $new_filter = array(
+      'id' => 'billing_company',
+      'table' => 'uc_orders',
+      'field' => 'billing_company',
+      'relationship' => 'uc_orders',
+      'operator' => 'contains',
+      'group' => 0,
+      'exposed' => TRUE,
+      'expose' => array(
+        'operator_id' => 'billing_company_op',
+        'label' => 'Société',
+        'operator' => 'billing_company_op',
+        'identifier' => 'billing_company',
+        'required' => 0,
+        'multiple' => FALSE,
+      ),
+    );
+    drupal_array_insert($handler->display->display_options['filters'], 'order_status', array('billing_company' => $new_filter));
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// CALLBACKS
 
 /**
  * Handle the Virement administratif payment method.
@@ -371,4 +376,107 @@ function uc_payment_method_virt_admin($op, &$order) {
       );
       return $form;
   }
+}
+
+/**
+ * uc_address form type callback.
+ * 
+ * Set default country as France.
+ */
+function uc_legiest_process_address_field($element, $form_state) {
+  $prefix = $element['#key_prefix'] ? ($element['#key_prefix'] . '_') : '';
+
+  if (isset($form_state['uc_address'])) {
+    // Use submitted Ajax values.
+    $value = $form_state['uc_address'];
+  }
+  elseif (is_array($element['#value']) || is_object($element['#value'])) {
+    // Use provided default value.
+    $value = (array) $element['#value'];
+  }
+  else {
+    $value = array();
+  }
+  
+  $countries = $element[$prefix . 'country']['#options'];
+  // Force the selected country to a valid one, so the zone dropdown matches.
+  if (empty($value[$prefix . 'country']) || !isset($countries[$value[$prefix . 'country']])) {
+    $element[$prefix . 'country']['#default_value'] = array_search('France', $countries);
+  }
+
+  return $element;
+}
+
+/**
+ * Override cart review display function.
+ * 
+ * Allow to add an "HT" mention into the cart review pane.
+ */
+function uc_legiest_pane_cart($op, $order, $form = NULL, &$form_state = NULL) {
+  $result = uc_checkout_pane_cart($op, $order, $form, $form_state);
+  $result['contents']['cart_review_table']['#theme'] = 'uc_legiest_cart_review_table';
+  return $result;
+}
+
+
+// -----------------------------------------------------------------------------
+// THEMES
+
+/**
+ * Override cart review display format.
+ * 
+ * Add an "HT" mention into the cart review pane.
+ */
+function theme_uc_legiest_cart_review_table($variables) {
+  $result = theme_uc_cart_review_table($variables);
+  $result = str_replace('Sous-total', 'Sous-total HT', $result);
+  return $result;
+}
+
+/**
+ * Theme output displayed in checkout review, etc.
+ */
+function theme_uc_legiest_bank_details($variables) {
+  $oid = $variables['oid'];
+  $output = uc_legiest_bank_details_bank_details($oid);
+  return $output;
+}
+
+/**
+ * Implementation of uc_legiest_bank_details($oid).
+ *
+ * $oid = order ID
+ */
+function uc_legiest_bank_details_bank_details($oid) {
+  if (variable_get('uc_legiest_account_owner', '') <> '') {
+    $bank_info[] = t('Propriétaire du compte') . ': ' . variable_get('uc_legiest_account_owner', '');
+  }
+  if (variable_get('uc_legiest_account_number', '') <> '') {
+    $bank_info[] = t('Numéro de compte') . ': ' . variable_get('uc_legiest_account_number', '');
+  }
+  if (variable_get('uc_legiest_account_iban', '') <> '') {
+    $bank_info[] = t('IBAN') . ': ' . variable_get('uc_legiest_account_iban', '');
+  }
+  if (variable_get('uc_legiest_bank_code', '') <> '') {
+    $bank_info[] = variable_get('uc_legiest_bank_code_appellation', 'Code banque') . ': ' . variable_get('uc_legiest_bank_code', '');
+  }
+  if (variable_get('uc_legiest_account_swift', '') <> '') {
+    $bank_info[] = t('SWIFT') . ': ' . variable_get('uc_legiest_account_swift', '');
+  }
+  if (variable_get('uc_legiest_account_bank', '') <> '') {
+    $bank_info[] = t('Nom de la banque') . ': ' . variable_get('uc_legiest_account_bank', '');
+  }
+  if (variable_get('uc_legiest_account_branch', '') <> '') {
+    $bank_info[] = t('Nom de l\'agence') . ': ' . variable_get('uc_legiest_account_branch', '');
+  }
+  if (variable_get('uc_legiest_subject_oid', FALSE)) {
+    isset($bank_info) ? ($bank_info[] = '<br />' . t('Libellé du paiement') . ': ' . t('numéro de commande') . ' ' . $oid) : ($bank_info[] = t('Libellé du paiement') . ': ' . t('numéro de commande') . ' ' . $oid);
+  }
+  if (variable_get('uc_legiest_policy', '') <> '') {
+    isset($bank_info) ? ($bank_info[] = '<br />' . variable_get('uc_legiest_policy', '')) : ($bank_info[] = variable_get('uc_legiest_policy', ''));
+  }
+
+  isset($bank_info) ? ($bank_details = implode('<br />', $bank_info)) : ($bank_details = '');
+
+  return $bank_details;
 }
