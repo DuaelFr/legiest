@@ -265,7 +265,8 @@ function uc_export_execute($type, $force = FALSE) {
   // Write data to a file
   $path = uc_export_get_path($type);
   $file = $path . DIRECTORY_SEPARATOR . $type . '_' . date('Y-m-d_H-i', $now) . '.csv';
-  if (!empty($data)) {
+  // If data contains at least one real line (headers does not count)
+  if (count($data) > intval(variable_get(UC_EXPORT_HEADERS_VAR, TRUE))) {
     $f = fopen($file, 'a+');
     foreach ($data as $line) {
       fputcsv($f, $line, ';', '"');
