@@ -363,6 +363,15 @@ function config_permissions_user_default_permissions() {
     'module' => 'uc_product',
   );
 
+  // Exported permission: administer recurring fees.
+  $permissions['administer recurring fees'] = array(
+    'name' => 'administer recurring fees',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'uc_recurring',
+  );
+
   // Exported permission: administer rules.
   $permissions['administer rules'] = array(
     'name' => 'administer rules',
@@ -1083,6 +1092,15 @@ function config_permissions_user_default_permissions() {
       1 => 'authenticated user',
     ),
     'module' => 'uc_order',
+  );
+
+  // Exported permission: view own recurring fees.
+  $permissions['view own recurring fees'] = array(
+    'name' => 'view own recurring fees',
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'module' => 'uc_recurring',
   );
 
   // Exported permission: view own unpublished content.
