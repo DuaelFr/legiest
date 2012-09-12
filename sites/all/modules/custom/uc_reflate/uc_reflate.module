@@ -177,7 +177,7 @@ function uc_reflate_execute($force = FALSE) {
   if (!empty($mail)) {
     $params = array(
       'date'  => $now,
-      'count' => count($data),
+      'count' => count($orders),
     );
     drupal_mail('uc_reflate', 'report', $mail, language_default(), $params);
   }
@@ -189,7 +189,7 @@ function uc_reflate_execute($force = FALSE) {
          'Reflation is over.<br />- @total_time seconds<br />- @count mails', 
            array(
              '@total_time' => round($end - $start, 2),
-             '@count' => count($data),
+             '@count' => count($orders),
            ), 
            WATCHDOG_INFO);
 }
