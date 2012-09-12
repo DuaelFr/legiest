@@ -338,10 +338,10 @@ function _uc_export_execute_shipping() {
     $tmp[] = uc_export_s($order->{$adr_prefix . 'street1'}); // ADRESSEPRINCIPALE
     $tmp[] = '.'; // Réf
     $tmp[] = 'FR'; // Pays
-    $tmp[] = uc_export_s($order->{$adr_prefix . 'postal_code'}); // CP
+    $tmp[] = "'" . uc_export_s($order->{$adr_prefix . 'postal_code'}); // CP
     $tmp[] = uc_export_s($order->{$adr_prefix . 'city'}); // VILLE
     $tmp[] = uc_export_s($order->{$adr_prefix . 'first_name'} . ' ' . strtoupper($order->{$adr_prefix . 'last_name'})); // Contact
-    $tmp[] = uc_export_s($order->{$adr_prefix . 'phone'}); // Téléphone
+    $tmp[] = "'" . uc_export_s($order->{$adr_prefix . 'phone'}); // Téléphone
     $tmp_prod = array(); 
     if (count($order->products) == 1) {
       $product = reset($order->products);
@@ -430,11 +430,11 @@ function _uc_export_execute_clients() {
     $tmp[] = $order->billing_street1; // ADR1
     $tmp[] = $order->billing_street2; // ADR2
     $tmp[] = ''; // ADR3
-    $tmp[] = $order->billing_postal_code; // CP
+    $tmp[] = "'" . $order->billing_postal_code; // CP
     $tmp[] = $order->billing_city; // VILLE
     $tmp[] = ''; // CONTACT
     $tmp[] = $order->primary_email; // E_MAIL
-    $tmp[] = $order->delivery_phone; // TEL
+    $tmp[] = "'" . $order->delivery_phone; // TEL
     $tmp[] = ''; // FAX
     $tmp[] = ''; // GSM
     $tmp[] = $order->payment_method; // MODE REGL
@@ -452,19 +452,19 @@ function _uc_export_execute_clients() {
         $shipping = $li['amount'];
       }
     }
-    $tmp[] = $order->order_total; // TOT TTC
-    $tmp[] = $subtotal; // TOTAL HT
+    $tmp[] = number_format($order->order_total, 2, ',', ''); // TOT TTC
+    $tmp[] = number_format($subtotal, 2, ',', ''); // TOTAL HT
     $tmp[] = ''; // Tx TVA
-    $tmp[] = $order->order_total - $subtotal; // TVA
-    $tmp[] = $shipping; // PORT
-    $tmp[] = uc_payment_balance($order); // RESTE DU
+    $tmp[] = number_format($order->order_total - $subtotal, 2, ',', ''); // TVA
+    $tmp[] = number_format($shipping, 2, ',', ''); // PORT
+    $tmp[] = number_format(uc_payment_balance($order), 2, ',', ''); // RESTE DU
 
     $tmp_prod = array();
     foreach ($order->products as $product) {
       $tmp_prod[] = $product->qty;
       $tmp_prod[] = $product->model;
-      $tmp_prod[] = $product->price;
-      $tmp_prod[] = $product->price * $product->qty;
+      $tmp_prod[] = number_format($product->price, 2, ',', '');
+      $tmp_prod[] = number_format($product->price * $product->qty, 2, ',', '');
       $tmp_prod[] = $product->title;
     }
     for ($i = 0 ; $i < 10 ; ++$i) {
