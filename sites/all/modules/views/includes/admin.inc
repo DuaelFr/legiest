@@ -1871,17 +1871,18 @@ function views_ui_pre_render_add_fieldset_markup($form) {
 }
 
 /**
- * Pre_render function to show argument_value form below the value form element
+ * Pre_render function shows an argument_value form below the value form element
  * in the filter function.
  *
- * Therefore wrap each argument_value with it's corresponding value form element in a div.
+ * Each argument_value is wrapped with it's corresponding value form element
+ * inside a container div.
  */
 function views_handler_filter_form_argument_value_pre_render($form) {
   foreach (element_children($form['argument_value']) as $element) {
     $setting = $form['argument_value'][$element]['#value_setting'];
 
-    // Collect the name, the form element of the value and the form element of the argument.
-    // Take sure that the single value exception works as well.
+    // Collect the name and the form element of the value and the form element
+    // of the argument, while ensuring the single value exception works as well.
     if (empty($setting['value_single'])) {
       $name = $setting['value_name'];
       $value_form = $form['value'][$name];

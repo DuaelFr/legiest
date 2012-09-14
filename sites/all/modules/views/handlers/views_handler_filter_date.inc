@@ -188,4 +188,3 @@ class views_handler_filter_date extends views_handler_filter_numeric {
     $this->query->add_where_expression($this->options['group'], "$field $this->operator $value");
   }
 }
-

@@ -110,6 +110,8 @@ class views_handler_filter extends views_handler {
     $options['value'] = array('default' => '');
     $options['group'] = array('default' => '1');
     $options['exposed'] = array('default' => FALSE, 'bool' => TRUE);
+    $options['pull_value'] = array('default' => FALSE, 'bool' => TRUE);
+    $options['argument_value'] = array('default' => array());
     $options['expose'] = array(
       'contains' => array(
         'operator_id' => array('default' => FALSE),
@@ -155,13 +157,19 @@ class views_handler_filter extends views_handler {
   }
 
   /**
-   * Define how value looks like.
+   * Define the value format for a specific field type's filter hanlder.
    *
-   * This function is not required but it helps views to adapt it's behavior.
+   * This function is not required but it may help other views filter handler
+   * implementations better support their specific field types.
    *
    * @return array
-   *   The keys of the array of the fields in $value and the value is TRUE if
-   *   it's really an value or just some kind of configuration.
+   *   An array containing the keys of the $options['value'] array provided by
+   *   the options_definition() function. The value of each key in this array
+   *   is TRUE if the key expects a real value or FALSE if the key contains
+   *   configuration data.
+   *
+   * @see views_handler_filter_numeric::value_definition()
+   * @see views_handler_filter_date::value_definition()
    */
   function value_definition() { return array(); }
 
@@ -226,6 +234,8 @@ class views_handler_filter extends views_handler {
       $this->show_operator_form($form, $form_state);
       // Add the subform from value_form().
       $this->show_value_form($form, $form_state);
+      $this->show_pull_value_form($form, $form_state);
+      $this->show_pull_value_button($form, $form_state);
       $form['clear_markup_end'] = array(
         '#markup' => '</div>',
       );
@@ -324,10 +334,10 @@ class views_handler_filter extends views_handler {
       $form['value']['#suffix'] = (isset($form['value']['#suffix']) ? $form['value']['#suffix'] : '') . '</div>';
     }
   }
+
   /**
     * Shortcut to display the pull value select elements.
     */
-  
   function show_pull_value_form(&$form, &$form_state) {
     if (empty($this->options['pull_value'])) {
       return;
@@ -337,16 +347,16 @@ class views_handler_filter extends views_handler {
       $options[$id] = $argument->ui_name(TRUE);
     }
 
-    // Add argument selection forms.
+    // Add the filter criterion argument selection form.
     // If a certain filter handler has multiple form elements both
     // add the value as possible form element and update the dependency.
-    
     $option_definition = $this->option_definition();
     $value_definition = $this->value_definition();
-    
+
     if (isset($option_definition['value']['contains'])) {
       foreach ($option_definition['value']['contains'] as $value => $definition) {
-        // Some fields uses 'value' in the form or as a child element. So take care about it.
+        // Some fields that use 'value' as a key in the form or as a child
+        // element must be handled carefully.
         if ($value == 'value') {
           if (isset($form['value']['value'])) {
             $values[$value] = array(
@@ -369,7 +379,8 @@ class views_handler_filter extends views_handler {
           }
         }
         else {
-          // If the handler exposed the value_definition uses it, else show the form all the time.
+          // If the handler provides a value_definition() use it, otherwise show
+          // the form all the time.
           if (!isset($value_definition[$value]) || !empty($value_definition[$value])) {
             $values[$value] = array(
               'title' => isset($form['value'][$value]['#title']) ? $form['value'][$value]['#title'] : '',
@@ -391,12 +402,13 @@ class views_handler_filter extends views_handler {
       ));
       $form['value']['#dependency']['edit-options-argument-value-value'] = array('');
     }
-    
+
     foreach ($values as $value => $setting) {
       $setting['value_name'] = $value;
       $form['argument_value'][$value] = array(
         '#type' => 'select',
-        '#title' => t('Select value from argument for @field.', array('@field' => $setting['title'])),
+        '#title' => t('Contextual filter'),
+        '#description' => t('The argument passed to the selected contextual filter will be used as this filter criterion\'s value.'),
         '#options' => $options,
         '#default_value' => isset($this->options['argument_value'][$value]) ? $this->options['argument_value'][$value] : '',
         '#weight' => ++$setting['weight'],
@@ -404,17 +416,17 @@ class views_handler_filter extends views_handler {
         '#dependency' => $setting['dependency'],
         );
     }
-  
-    // Add a pre_render function to draw the value + the argument value form in the same container.
+    // Add a pre_render function to draw the value + the argument value form
+    // in the same container.
     $form['#pre_render'][] = 'views_handler_filter_form_argument_value_pre_render';
   }
-  
-/**
-* Shortcut to display the pull value button.
-*/
+
+  /**
+   * Shortcut to display the pull value button.
+   */
   function show_pull_value_button(&$form, &$form_state) {
     $form['argument_value_button'] = array(
-      '#prefix' => '<div class="views-argument-value views-checkboxify-wrapper clearfix">',
+      '#prefix' => '<div class="views-argument-value clearfix">',
       '#suffix' => '</div>',
       // Should always come after the description and the relationship.
       '#weight' => -200,
@@ -426,36 +438,36 @@ class views_handler_filter extends views_handler {
       '#attributes' => array('class' => array('js-only')),
     );
     $form['argument_value_button']['checkbox']['checkbox'] = array(
-      '#title' => t('Pick values from arguments'),
+      '#title' => t('Use an argument provided by contextual filters'),
       '#type' => 'checkbox',
     );
     // Then add the button itself.
     if (empty($this->options['pull_value'])) {
       $form['argument_value_button']['markup'] = array(
-        '#markup' => '<div class="description exposed-description">' . t('The filter values can\'t be pulled from the argument. Pull values to allow it.') . '</div>',
+        '#markup' => '<div class="description argument-value-description">' . t("You may use a dynamic arguement provided by a contextual filter as the source for this filter's value.") . ' ' . t('WARNING: This is an experimental configuration and may cause unknown issues if improperly configured.') . '</div>',
       );
       $form['argument_value_button']['button'] = array(
         '#limit_validation_errors' => array(),
         '#type' => 'submit',
-        '#value' => t('Pull values'),
+        '#value' => t('Contextual argument'),
         '#submit' => array('views_ui_config_item_form_pull_value'),
       );
       $form['argument_value_button']['checkbox']['checkbox']['#default_value'] = 0;
     }
     else {
       $form['argument_value_button']['markup'] = array(
-        '#markup' => '<div class="description exposed-description">' . t('This filter values can be pulled.') . '</div>',
+        '#markup' => '<div class="description argument-value-description">' . t("The criteria value for this filter will be provided dynamically by an argument passed to a contextual filter.") . ' ' . t('WARNING: This is an experimental configuration and may cause unknown issues if improperly configured.') . '</div>',
       );
       $form['argument_value_button']['button'] = array(
         '#limit_validation_errors' => array(),
         '#type' => 'submit',
-        '#value' => t("Don't pull values"),
+        '#value' => t("Remove contextual argument"),
         '#submit' => array('views_ui_config_item_form_pull_value'),
       );
       $form['argument_value_button']['checkbox']['checkbox']['#default_value'] = 1;
     }
   }
-        
+
   /**
    * Options form subform for setting options.
    *
@@ -554,7 +566,7 @@ class views_handler_filter extends views_handler {
    */
   function show_expose_button(&$form, &$form_state) {
     $form['expose_button'] = array(
-      '#prefix' => '<div class="views-expose views-checkboxify-wrapper clearfix">',
+      '#prefix' => '<div class="views-expose clearfix">',
       '#suffix' => '</div>',
       // Should always come after the description and the relationship.
       '#weight' => -200,
@@ -574,7 +586,7 @@ class views_handler_filter extends views_handler {
     // Then add the button itself.
     if (empty($this->options['exposed'])) {
       $form['expose_button']['markup'] = array(
-        '#markup' => '<div class="description exposed-description views-checkboxify-description">' . t('This filter is not exposed. Expose it to allow the users to change it.') . '</div>',
+        '#markup' => '<div class="description exposed-description">' . t('This filter is not exposed. Expose it to allow the users to change it.') . '</div>',
       );
       $form['expose_button']['button'] = array(
         '#limit_validation_errors' => array(),
@@ -1571,4 +1583,3 @@ function _views_array_filter_zero($var) {
 /**
  * @}
  */
-
