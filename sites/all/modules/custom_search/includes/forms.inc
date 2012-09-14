@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Search forms
+ */
 
 /**
  * Default admin form.
@@ -21,6 +25,11 @@ function _custom_search_default_admin_form($delta = '') {
     '#title'          => t('Search box label'),
     '#default_value'  => variable_get('custom_search_' . $delta . 'label', CUSTOM_SEARCH_LABEL_DEFAULT),
     '#description'    => t('Enter the label text for the search box. The default value is "!default".', array('!default' => CUSTOM_SEARCH_LABEL_DEFAULT)),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="custom_search_' . $delta . 'label_visibility"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['search_box']['custom_search_' . $delta . 'text'] = array(
     '#type'           => 'textfield',
@@ -71,12 +80,12 @@ function _custom_search_default_admin_form($delta = '') {
   $form['criteria'] = array(
     '#type'         => 'fieldset',
     '#title'        => t('Advanced search criteria'),
+    '#collapsible'  => TRUE,
+    '#collapsed'    => TRUE,
   );
   $form['criteria']['or'] = array(
     '#type'         => 'fieldset',
     '#title'        => t('Or'),
-    '#collapsible'  => TRUE,
-    '#collapsed'    => TRUE,
   );
   $form['criteria']['or']['custom_search_' . $delta . 'criteria_or_display'] = array(
     '#type'           => 'checkbox',
@@ -88,12 +97,15 @@ function _custom_search_default_admin_form($delta = '') {
     '#title'          => t('Label'),
     '#default_value'  => variable_get('custom_search_' . $delta . 'criteria_or_label', CUSTOM_SEARCH_CRITERIA_OR_LABEL_DEFAULT),
     '#description'    => t('Enter the label text for this field. The default value is "!default".', array('!default' => CUSTOM_SEARCH_CRITERIA_OR_LABEL_DEFAULT)),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="custom_search_' . $delta . 'criteria_or_display"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['criteria']['phrase'] = array(
     '#type'         => 'fieldset',
     '#title'        => t('Phrase'),
-    '#collapsible'  => TRUE,
-    '#collapsed'    => TRUE,
   );
   $form['criteria']['phrase']['custom_search_' . $delta . 'criteria_phrase_display'] = array(
     '#type'           => 'checkbox',
@@ -105,12 +117,15 @@ function _custom_search_default_admin_form($delta = '') {
     '#title'          => t('Label'),
     '#default_value'  => variable_get('custom_search_' . $delta . 'criteria_phrase_label', CUSTOM_SEARCH_CRITERIA_PHRASE_LABEL_DEFAULT),
     '#description'    => t('Enter the label text for this field. The default value is "!default".', array('!default' => CUSTOM_SEARCH_CRITERIA_PHRASE_LABEL_DEFAULT)),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="custom_search_' . $delta . 'criteria_phrase_display"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['criteria']['negative'] = array(
     '#type'         => 'fieldset',
     '#title'        => t('Negative'),
-    '#collapsible'  => TRUE,
-    '#collapsed'    => TRUE,
   );
   $form['criteria']['negative']['custom_search_' . $delta . 'criteria_negative_display'] = array(
     '#type'           => 'checkbox',
@@ -122,7 +137,13 @@ function _custom_search_default_admin_form($delta = '') {
     '#title'          => t('Label'),
     '#default_value'  => variable_get('custom_search_' . $delta . 'criteria_negative_label', CUSTOM_SEARCH_CRITERIA_NEGATIVE_LABEL_DEFAULT),
     '#description'    => t('Enter the label text for this field. The default value is "!default".', array('!default' => CUSTOM_SEARCH_CRITERIA_NEGATIVE_LABEL_DEFAULT)),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="custom_search_' . $delta . 'criteria_negative_display"]' => array('checked' => TRUE),
+      ),
+    ),
   );
+
 
   if (module_exists('search_api_page')) {
     $search_api_pages = search_api_page_load_multiple();
@@ -201,6 +222,11 @@ function _custom_search_content_admin_form($delta = '') {
     '#title'          => t('Label text'),
     '#default_value'  => variable_get('custom_search_' . $delta . 'type_selector_label', CUSTOM_SEARCH_TYPE_SELECTOR_LABEL_DEFAULT),
     '#description'    => t('Enter the label text for the selector. The default value is "!default".', array('!default' => CUSTOM_SEARCH_TYPE_SELECTOR_LABEL_DEFAULT)),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="custom_search_' . $delta . 'type_selector_label_visibility"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['content_selector']['any'] = array(
     '#type'         => 'fieldset',

@@ -10,7 +10,7 @@
  */
 function custom_search_blocks_help($path, $arg) {
   switch ($path) {
-    case 'admin/settings/custom_search/blocks':
+    case 'admin/config/search/custom_search/blocks':
       $output = t('If you want custom search blocks, enable them here. Then go to the <a href="@link">block page</a> to place them in a region.', array('@link' => url('admin/build/block')));
     break;
   }

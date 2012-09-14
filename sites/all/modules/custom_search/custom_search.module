@@ -104,7 +104,7 @@ function custom_search_form_alter(&$form, &$form_state, $form_id) {
 
     case 'search_form':
 
-      if ($form['module']['#value'] == 'node' && isset($form['advanced'])) {
+      if (isset($form['module']) && $form['module']['#value'] == 'node' && isset($form['advanced'])) {
 
         // Criteria
         if (!variable_get('custom_search_advanced_or_display', TRUE)) $form['advanced']['keywords']['or']['#type'] = 'hidden';
@@ -280,7 +280,7 @@ function custom_search_form_alter(&$form, &$form_state, $form_id) {
         }
         elseif ($form['actions']['submit']['#value'] == '') $form['actions']['submit']['#attributes'] = array('style' => 'display:none;');
 
-        $form['actions']['submit']['#weight'] = variable_get('custom_search_' . $delta . 'submit_button_weight', 3);
+        $form['actions']['#weight'] = variable_get('custom_search_' . $delta . 'submit_button_weight', 3);
 
         // Popup
         $form['popup'] = array(
@@ -361,7 +361,16 @@ function custom_search_submit($form, &$form_state) {
     if (module_exists('taxonomy') && count($terms)) {
       $keys = search_expression_insert($keys, 'term', implode(',', $terms));
     }
+    if (module_exists('custom_search_i18n')) {
+      if (variable_get('custom_search_i18n_' . $delta . 'search_language', 'all') == 'current') {
+        $keys = search_expression_insert($keys, 'language', i18n_language()->language);
+      }
+    }
   }
+  $search_path = array(
+    'path'  => 'search/' . $type . '/' . $keys,
+    'query' => array(),
+  );
 
   // Integrates other search modules
   if (module_exists('apachesolr_search')) {
@@ -393,27 +402,29 @@ function custom_search_submit($form, &$form_state) {
         'page'      => $search_api_page,
       ));
     }
-    else {
-      $search_path = array(
-        'path'  => 'search/' . $type . '/' . $keys,
-        'query' => array(),
-      );
-    }
-  }
-  else {
-    $search_path = array(
-      'path'  => 'search/' . $type . '/' . $keys,
-      'query' => array(),
-    );
   }
 
   // Build a custom path if needed
   if (isset($form_state['values']['custom_search_paths']) && $form_state['values']['custom_search_paths'] != '') {
     $custom_path = str_replace('[key]', $form_state['values'][$form_state['values']['form_id']], $form_state['values']['custom_search_paths']);
     if (strpos($form_state['values']['custom_search_paths'], '[terms]') !== FALSE) $custom_path = str_replace('[terms]', (count($terms)) ? implode($form_state['values']['custom_search_paths_terms_separator'], $terms) : '', $custom_path);
-    $form_state['redirect'] = $custom_path;
-    // check for external path. If not, add base path
-    if (drupal_substr($custom_path, 0, 4) != 'http') $form_state['redirect'] = url($form_state['redirect'], array('absolute' => TRUE));
+    // Check for a query string
+    $custom_path_query_position = strpos($custom_path, '?');
+    $custom_path_query = array();
+    if ($custom_path_query_position !== FALSE) {
+      $custom_path_query_tmp = substr($custom_path, 1 + $custom_path_query_position);
+      $custom_path_query_tmp = str_replace('&amp;', '&', $custom_path_query_tmp);
+      $custom_path_query_tmp = explode('&', $custom_path_query_tmp);
+      foreach ($custom_path_query_tmp as $param) {
+        $param_exploded = explode('=', $param);
+        $custom_path_query[$param_exploded[0]] = $param_exploded[1];
+      }
+      $custom_path = substr($custom_path, 0, $custom_path_query_position);
+    }
+    // Check for external path. If not, add base path
+    if (drupal_substr($custom_path, 0, 4) != 'http') $custom_path = url($custom_path, array('absolute' => TRUE));
+    // Send the final url
+    $form_state['redirect'] = url($custom_path, array('query' => $custom_path_query, 'absolute' => TRUE));
   }
   else $form_state['redirect'] = url($search_path['path'], array('query' => $search_path['query'], 'absolute' => TRUE));
 
