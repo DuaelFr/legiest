@@ -7,6 +7,22 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function custom_search_i18n_menu() {
+  $items['admin/config/search/custom_search/i18n'] = array(
+    'title'             => 'Languages',
+    'description'       => 'Manage search languages.',
+    'page arguments'    => array('custom_search_i18n_admin'),
+    'access arguments'  => array('administer custom search'),
+    'file'              => 'custom_search_i18n.admin.inc',
+    'type'              => MENU_LOCAL_TASK,
+    'weight'            => 10,
+  );
+  return $items;
+}
+
+/**
  * Implements hook_form_alter().
  */
 function custom_search_i18n_form_alter(&$form, &$form_state, $form_id) {
@@ -133,7 +149,7 @@ function custom_search_i18n_form_alter(&$form, &$form_state, $form_id) {
     case 'custom_search_results_admin': $form['#submit'][] = 'custom_search_i18n_results_admin_submit'; break;
     case 'block_admin_configure':
       // Custom Search Blocks
-      if ($form['module']['#value'] == 'custom_search_blocks') {
+      if (isset($form['module']) && $form['module']['#value'] == 'custom_search_blocks') {
         $form['#submit'][] = 'custom_search_i18n_block_admin_configure_submit';
       }
     break;
