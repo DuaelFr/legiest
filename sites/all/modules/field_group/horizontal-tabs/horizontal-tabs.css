@@ -41,7 +41,6 @@ fieldset.horizontal-tabs-pane fieldset legend {
   padding-top: 0; 
   margin: 0;
   min-width: 5em; /* IE7 */
-  outline: none; /* Chrome */
   float: left; /* LTR */
 }
 .horizontal-tabs ul.horizontal-tabs-list li.selected {
@@ -60,6 +59,9 @@ fieldset.horizontal-tabs-pane fieldset legend {
 .horizontal-tabs ul.horizontal-tabs-list li:hover,
 .horizontal-tabs ul.horizontal-tabs-list li:focus {
   background-color: #ddd;
+}
+.horizontal-tabs ul.horizontal-tabs-list :focus {
+  outline: none;
 }
 .horizontal-tabs ul.horizontal-tabs-list li a:focus strong,
 .horizontal-tabs ul.horizontal-tabs-list li a:active strong,
