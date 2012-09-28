@@ -950,7 +950,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_comments_weight';
-  $strongarm->value = '-3';
+  $strongarm->value = '-2';
   $export['uc_pane_comments_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -964,7 +964,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_coupon_automatic_weight';
-  $strongarm->value = '-1';
+  $strongarm->value = '0';
   $export['uc_pane_coupon_automatic_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -1048,7 +1048,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_recurring-product_weight';
-  $strongarm->value = '-2';
+  $strongarm->value = '-1';
   $export['uc_pane_recurring-product_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -1062,7 +1062,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_uc_termsofservice_agreement_checkout_weight';
-  $strongarm->value = '6';
+  $strongarm->value = '-3';
   $export['uc_pane_uc_termsofservice_agreement_checkout_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -1592,7 +1592,7 @@ If this does not resolve the issue, please call in to complete your order.';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_termsofservice_checkout_node';
-  $strongarm->value = 'CGV [nid: 6]';
+  $strongarm->value = 'Conditions Générales de Vente [nid: 22]';
   $export['uc_termsofservice_checkout_node'] = $strongarm;
 
   $strongarm = new stdClass();
