@@ -1,0 +1,21 @@
+/**
+ * @file
+ * Styles for uc_termsofservice.
+ */
+#uc-termsofservice-general-form #edit-submit {
+  display: none;
+}
+
+#uc_termsofservice_agreement_checkout-pane {
+  position: relative;
+}
+
+#uc_termsofservice_agreement_checkout-pane .tos-text {
+  border: 1px solid #D2E6F3;
+  display: block;
+  height: 200px;
+  margin: 0 0 10px 0;
+  overflow: auto;
+  padding: 5px;
+  position: relative;
+}
