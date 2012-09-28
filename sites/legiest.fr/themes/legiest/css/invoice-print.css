@@ -1,0 +1,6 @@
+.buttons { display: none; }
+
+.invoice { page-break-after: always; }
+.invoice:last-child { page-break-after: auto; }
+
+.invoice tbody { border-top: none; }

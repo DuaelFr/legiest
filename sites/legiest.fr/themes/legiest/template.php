@@ -77,3 +77,20 @@ function legiest_uc_cart_block_content($variables) {
 
   return $output;
 }
+
+function legiest_preprocess_uc_order_invoice_page(&$variables) {
+  template_preprocess_uc_order_invoice_page($variables);
+  
+  drupal_add_css(drupal_get_path('theme', 'legiest') . '/css/invoice-screen.css', array(
+    'media' => 'screen'
+  ));
+  drupal_add_css(drupal_get_path('theme', 'legiest') . '/css/invoice-print.css', array(
+    'media' => 'print'
+  ));
+
+  $variables['head']    = drupal_get_html_head();
+  $variables['styles']  = drupal_get_css();
+  $variables['content'] = str_replace('<div style="page-break-after: always;">', '<div class="invoice">', $variables['content']);
+
+  $variables['new_page'] = $_SERVER['REQUEST_URI'] != '/admin/legiest/bulk/invoice/print';
+}

@@ -24,7 +24,22 @@ function uc_legiest_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'uc_legiest.admin.inc',
   );
+  $items['admin/legiest/bulk/invoice/print'] = array(
+    'title' => '',
+    'page callback' => '_uc_legiest_bulk_invoice_print',
+    'access arguments' => array('view all orders'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function uc_legiest_admin_paths() {
+  return array(
+    'admin/legiest/bulk/invoice/print' => FALSE,
+  );
 }
 
 /**
@@ -191,6 +206,30 @@ function uc_legiest_uc_payment_method() {
 function uc_legiest_views_default_views_alter(&$views) {
   if (array_key_exists('uc_orders', $views)) {
     $handler = &$views['uc_orders']->display['default']->handler;
+    
+    /* Champ: Opérations en masse : Ordre */
+    $new_field = array(
+      'id' => 'views_bulk_operations',
+      'table' => 'uc_orders',
+      'field' => 'views_bulk_operations',
+      'vbo' => array(
+        'entity_load_capacity' => '10',
+        'operations' => array(
+          'action::uc_legiest_action_print' => array(
+            'selected' => 1,
+            'skip_confirmation' => 0,
+            'override_label' => 0,
+            'label' => '',
+          ),
+        ),
+        'enable_select_all_pages' => 1,
+        'display_type' => '0',
+        'display_result' => 1,
+        'merge_single_action' => 0,
+        'force_single' => 0,
+      ),
+    );
+    drupal_array_insert($handler->display->display_options['fields'], 'actions', array('views_bulk_operations' => $new_field), TRUE);
 
     /* Field: Order: Billing address: Company */
     $new_field = array(
@@ -281,6 +320,31 @@ function uc_legiest_views_default_views_alter(&$views) {
     );
     drupal_array_insert($handler->display->display_options['filters'], 'order_status', array('billing_company' => $new_filter));
   }
+}
+
+/**
+ * Implements hook_uc_order_actions_alter().
+ */
+function uc_legiest_uc_order_actions_alter(&$actions) {
+  foreach ($actions as &$action) {
+    if ($action['name'] == t('Print')) {
+      $action['attributes']['target'] = '_blank';
+    }
+  }
+}
+
+/**
+ * Implements hook_action_info().
+ */
+function uc_legiest_action_info() {
+  return array(
+    'uc_legiest_action_print' => array(
+      'label' => t('Imprimer les factures'),
+      'type' => 'uc_order',
+      'aggregate' => TRUE,
+      'configurable' => FALSE,
+    ),
+  );
 }
 
 
@@ -416,6 +480,37 @@ function uc_legiest_pane_cart($op, $order, $form = NULL, &$form_state = NULL) {
   $result = uc_checkout_pane_cart($op, $order, $form, $form_state);
   $result['contents']['cart_review_table']['#theme'] = 'uc_legiest_cart_review_table';
   return $result;
+}
+
+/**
+ * uc_legiest_action_print action callback.
+ */
+function uc_legiest_action_print($orders, $context = array()) {
+  $output = '';
+
+  foreach ($orders as $order) {
+    $output .= '<div style="page-break-after: always;">';
+    $output .= theme('uc_order', array(
+      'order' => $order,
+      'op' => 'print',
+      'template' => variable_get('uc_cust_order_invoice_template', 'customer'),
+    ));
+    $output .= '</div>';
+  }
+
+  $_SESSION['uc_legiest_bulk_invoice_print'] = $output;
+  drupal_goto('admin/legiest/bulk/invoice/print');
+}
+
+/**
+ * Invoice bulk print callback.
+ */
+function _uc_legiest_bulk_invoice_print() {
+  $output = $_SESSION['uc_legiest_bulk_invoice_print'];
+  
+  drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
+  print theme('uc_order_invoice_page', array('content' => $output));
+  exit();  
 }
 
 
