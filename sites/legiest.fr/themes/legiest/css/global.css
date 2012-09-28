@@ -891,3 +891,8 @@ h1#page-title {
   font-weight: normal;
   color: 697DA2;
 }
+
+#uc_termsofservice_agreement_checkout-pane article {
+	height: 150px;
+	overflow: auto;
+}

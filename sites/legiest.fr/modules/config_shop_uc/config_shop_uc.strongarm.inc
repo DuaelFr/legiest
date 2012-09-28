@@ -1054,6 +1054,20 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_uc_termsofservice_agreement_checkout_enabled';
+  $strongarm->value = 1;
+  $export['uc_pane_uc_termsofservice_agreement_checkout_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_uc_termsofservice_agreement_checkout_weight';
+  $strongarm->value = '6';
+  $export['uc_pane_uc_termsofservice_agreement_checkout_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_bank_transfer_checkout';
   $strongarm->value = 1;
   $export['uc_payment_method_bank_transfer_checkout'] = $strongarm;
@@ -1566,6 +1580,41 @@ If this does not resolve the issue, please call in to complete your order.';
   $strongarm->name = 'uc_store_zone';
   $strongarm->value = 0;
   $export['uc_store_zone'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_display';
+  $strongarm->value = 'full';
+  $export['uc_termsofservice_checkout_display'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_node';
+  $strongarm->value = 'CGV [nid: 6]';
+  $export['uc_termsofservice_checkout_node'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_required';
+  $strongarm->value = 1;
+  $export['uc_termsofservice_checkout_required'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_rules';
+  $strongarm->value = 0;
+  $export['uc_termsofservice_checkout_rules'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_title';
+  $strongarm->value = '0';
+  $export['uc_termsofservice_checkout_title'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
