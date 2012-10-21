@@ -299,7 +299,9 @@ function uc_reflate_settings_form_validate($form, &$form_state) {
   if (!empty($form_state['values']['interval'])) {
     $form_state['values']['interval'] = str_replace(' ', '', $form_state['values']['interval']);
     $form_state['values']['interval'] = explode(',', $form_state['values']['interval']);
-    $form_state['values']['interval'] = array_map(function($val) { return abs(round((float) $val)); }, $form_state['values']['interval']);
+    $form_state['values']['interval'] = array_map('floatval', $form_state['values']['interval']);
+    $form_state['values']['interval'] = array_map('round', $form_state['values']['interval']);
+    $form_state['values']['interval'] = array_map('abs', $form_state['values']['interval']);
     $form_state['values']['interval'] = array_filter($form_state['values']['interval']);
     $form_state['values']['interval'] = implode(',', $form_state['values']['interval']);
   }
