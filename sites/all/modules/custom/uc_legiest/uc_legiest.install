@@ -20,6 +20,7 @@ function uc_legiest_install() {
     ->fetchField();
   db_update('system')
     ->fields(array('weight' => $weight+5))
+    ->condition('name', 'uc_legiest')
     ->execute();
 }
 
