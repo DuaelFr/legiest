@@ -474,7 +474,7 @@ function uc_legiest_process_address_field($element, $form_state) {
   $countries = $element[$prefix . 'country']['#options'];
   // Force the selected country to a valid one, so the zone dropdown matches.
   if (empty($value[$prefix . 'country']) || !isset($countries[$value[$prefix . 'country']])) {
-    $element[$prefix . 'country']['#default_value'] = array_search('France', $countries);
+    $element[$prefix . 'country']['#value'] = $element[$prefix . 'country']['#default_value'] = array_search('France', $countries);
   }
 
   return $element;
