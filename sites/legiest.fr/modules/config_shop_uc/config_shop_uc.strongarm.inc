@@ -645,7 +645,7 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_export_email';
-  $strongarm->value = 'admin@duael.fr';
+  $strongarm->value = 'contact@legiest.fr';
   $export['uc_export_email'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -1450,14 +1450,14 @@ If this does not resolve the issue, please call in to complete your order.';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_reflate_email';
-  $strongarm->value = 'admin@duael.fr';
+  $strongarm->value = 'contact@legiest.fr';
   $export['uc_reflate_email'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_reflate_interval';
-  $strongarm->value = '30';
+  $strongarm->value = '30,15,15,10,10,5,5,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1';
   $export['uc_reflate_interval'] = $strongarm;
 
   $strongarm = new stdClass();
