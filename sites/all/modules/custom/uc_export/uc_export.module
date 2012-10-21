@@ -44,15 +44,9 @@ function uc_export_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('uc_export_settings_form'),
   );
+  $menu['admin/store/export/clients'] =
+  $menu['admin/store/export/prospects'] =  
   $menu['admin/store/export/shipping'] = array(
-    'title callback' => '_uc_export_page_title',
-    'title arguments' => array(3),
-    'description' => '',
-    'access arguments' => array(UC_EXPORT_PERMISSION),
-    'page callback' => '_uc_export_page',
-    'page arguments' => array(3),
-  );
-  $menu['admin/store/export/clients'] = array(
     'title callback' => '_uc_export_page_title',
     'title arguments' => array(3),
     'description' => '',
@@ -178,6 +172,7 @@ function uc_export_cron() {
   if (date(H) > 1 && date(H) < 4) {
     uc_export_execute('shipping');
     uc_export_execute('clients');
+    uc_export_execute('prospects');
   }
 }
 
@@ -213,7 +208,14 @@ function uc_export_get_path($type) {
  * Get uc_export type name. 
  */
 function uc_export_get_name($type) {
-  return $type == 'shipping' ? 'GLS' : 'Clients';  
+  switch ($type) {
+    case 'shipping':
+      return 'GLS';
+    case 'prospects':
+      return 'Prospects';
+    default:
+      return 'Clients';
+  }  
 }
 
 /**
@@ -388,9 +390,61 @@ function _uc_export_execute_shipping() {
 }
 
 /**
+ * Get users considred as clients.
+ * 
+ * Clients have at least an order which has been paid.
+ */
+function _uc_export_get_clients() {
+  return db_select('uc_orders', 'o')
+    ->fields('o', array('uid'))
+    ->condition('o.order_status', array('processing', 'completed'), 'IN')
+    ->distinct()
+    ->execute()
+    ->fetchCol();
+}
+
+/**
  * Export procedure for clients.
  */
 function _uc_export_execute_clients() {
+  // Get exportables order ids
+  $query = db_select('uc_orders', 'o');
+  $query->leftJoin('uc_order_export', 'e', 'o.order_id = e.order_id');
+  $to_export = $query->fields('o', array('order_id'))
+//    ->condition('o.order_status', array('pending', 'processing', 'special_processing', 'special_pending', 'completed'), 'IN')
+    ->condition('o.uid', _uc_export_get_clients(), 'IN')
+    ->condition('e.exported', NULL)
+    ->orderBy('o.created', 'asc')
+    ->execute()
+    ->fetchCol();
+  $orders = uc_order_load_multiple($to_export);
+
+  return _uc_export_execute_people($orders);
+}
+
+/**
+ * Export procedure for prospects.
+ */
+function _uc_export_execute_prospects() {
+  // Get exportables order ids
+  $query = db_select('uc_orders', 'o');
+  $query->leftJoin('uc_order_export', 'e', 'o.order_id = e.order_id');
+  $to_export = $query->fields('o', array('order_id'))
+//    ->condition('o.order_status', array('pending', 'processing', 'special_processing', 'special_pending', 'completed'), 'IN')
+    ->condition('o.uid', _uc_export_get_clients(), 'NOT IN')
+    ->condition('e.exported', NULL)
+    ->orderBy('o.created', 'asc')
+    ->execute()
+    ->fetchCol();
+  $orders = uc_order_load_multiple($to_export);
+
+  return _uc_export_execute_people($orders);
+}
+
+/**
+ * Export procedure for clients and prospects
+ */
+function _uc_export_execute_people($orders) {
   $data = array();
 
   if (variable_get(UC_EXPORT_HEADERS_VAR, TRUE)) {
@@ -410,17 +464,6 @@ function _uc_export_execute_clients() {
       'QT10', 'REF10', 'PU10', 'MTHT10', 'DES10',
     );
   }
-
-  // Get exportables order ids
-  $query = db_select('uc_orders', 'o');
-  $query->leftJoin('uc_order_export', 'e', 'o.order_id = e.order_id');
-  $to_export = $query->fields('o', array('order_id'))
-    ->condition('o.order_status', array('pending', 'processing', 'special_processing', 'special_pending', 'completed'), 'IN')
-    ->condition('e.exported', NULL)
-    ->orderBy('o.created', 'asc')
-    ->execute()
-    ->fetchCol();
-  $orders = uc_order_load_multiple($to_export);
 
   // Build data
   foreach ($orders as $order) {
