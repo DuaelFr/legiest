@@ -64,6 +64,13 @@
   padding-top: 5px;
 }
 
+#block-menu-menu-secondary-menu .menu .first a {
+	background: transparent url('../images/home_legiest.png') no-repeat center 10px;
+	outline: none;
+	text-indent: -9999px;
+	width: 22px;
+}
+
 /******************** ZONE BRANDING WRAPPER **********************/
 #zone-branding-wrapper {
 }
