@@ -15,6 +15,12 @@ ucLegiestCheckout.panels = {
     visited: false,
     error: false
   },
+  delivery: {
+    title: 'Adresse de livraison',
+    elements: ['delivery-pane', 'uc-legiest-control-next', 'uc-legiest-control-prev'],
+    visited: false,
+    error: false
+  },
   billing: {
     title: 'Adresse de facturation',
     elements: ['billing-pane', 'uc-legiest-control-next', 'uc-legiest-control-prev'],
@@ -22,8 +28,8 @@ ucLegiestCheckout.panels = {
     error: false
   },
   shipping: {
-    title: 'Adresse de livraison',
-    elements: ['shipping-pane', 'uc-legiest-control-next', 'uc-legiest-control-prev'],
+    title: 'Mode de livraison',
+    elements: ['quotes-pane', 'uc-legiest-control-next', 'uc-legiest-control-prev'],
     visited: false,
     error: false
   },
