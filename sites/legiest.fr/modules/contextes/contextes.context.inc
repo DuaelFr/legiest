@@ -32,6 +32,12 @@ function contextes_context_default_contexts() {
           'region' => 'content',
           'weight' => '-10',
         ),
+        'menu-menu-espace-clients' => array(
+          'module' => 'menu',
+          'delta' => 'menu-espace-clients',
+          'region' => 'user_second',
+          'weight' => '-10',
+        ),
         'boxes-legiest_phone' => array(
           'module' => 'boxes',
           'delta' => 'legiest_phone',

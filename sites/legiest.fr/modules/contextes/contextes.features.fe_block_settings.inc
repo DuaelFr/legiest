@@ -83,6 +83,20 @@ function contextes_default_fe_block_settings() {
     'cache' => -2,
   );
 
+  $theme['menu-menu-espace-clients'] = array(
+    'module' => 'menu',
+    'delta' => 'menu-espace-clients',
+    'theme' => 'legiest',
+    'status' => 0,
+    'weight' => '0',
+    'region' => '',
+    'custom' => '0',
+    'visibility' => '0',
+    'pages' => '',
+    'title' => '<none>',
+    'cache' => -1,
+  );
+
   $theme['menu-menu-footer-menu'] = array(
     'module' => 'menu',
     'delta' => 'menu-footer-menu',
@@ -129,9 +143,9 @@ function contextes_default_fe_block_settings() {
     'module' => 'system',
     'delta' => 'main',
     'theme' => 'legiest',
-    'status' => '1',
+    'status' => 0,
     'weight' => '0',
-    'region' => 'content',
+    'region' => '',
     'custom' => '0',
     'visibility' => '0',
     'pages' => '',

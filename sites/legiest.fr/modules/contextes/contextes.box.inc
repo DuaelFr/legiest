@@ -82,7 +82,7 @@ function contextes_default_box() {
   $box->description = 'Paiement sécurisé';
   $box->options = array(
     'body' => array(
-      'value' => '<p>paiement sécurisé<br><img alt="" src="/sites/legiest.fr/themes/legiest/images/cb.png" style="width: 206px; height: 23px;"><br><img alt="" src="/sites/legiest.fr/themes/legiest/images/cheques_virements.png" style="width: 171px; height: 33px;"></p>',
+      'value' => '<p>paiement sécurisé</p><p><img alt="" src="/sites/legiest.fr/themes/legiest/images/cb.png" style="width: 206px; height: 23px;"><br><img alt="" src="/sites/legiest.fr/themes/legiest/images/cheques_virements.png" style="width: 171px; height: 33px;"></p>',
       'format' => 'full_html',
     ),
     'additional_classes' => '',
