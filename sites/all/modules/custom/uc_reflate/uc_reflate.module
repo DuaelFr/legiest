@@ -7,6 +7,7 @@
 define('UC_REFLATE_MAIL_VAR', 'uc_reflate_email');
 define('UC_REFLATE_INTERVAL_VAR', 'uc_reflate_interval');
 define('UC_REFLATE_LAST_RUN_VAR', 'uc_reflate_last_run');
+define('UC_REFLATE_REFLATED_VAR', 'uc_reflate_reflated');
 
 define('UC_REFLATE_PERMISSION', 'administer store reflations');
 
@@ -121,6 +122,50 @@ function uc_reflate_get_source() {
 }
 
 /**
+ * Implements hook_uc_order().
+ */
+function uc_reflate_uc_order($op, $order, $arg2) {
+  if ($op == 'update') {
+    if (!in_array($arg2->order_status, array('pending', 'special_pending'))) {
+      $reflated = variable_get(UC_REFLATE_REFLATED_VAR, array());
+      unset($reflated[$arg2->order_id]);
+      variable_set(UC_REFLATE_REFLATED_VAR, $reflated);
+    }
+  }
+}
+
+/**
+ * Manage multidate reflates.
+ */
+function uc_reflate_filter($orders) {
+  $intervals = explode(',', variable_get(UC_REFLATE_INTERVAL_VAR, '30,15,15'));
+  $reflated = variable_get(UC_REFLATE_REFLATED_VAR, array());
+
+  $to_reflate = array();
+  foreach ($orders as $i => $order) {
+    // Never reflated
+    if (!array_key_exists($order->order_id, $reflated)) {
+      // Last modification time is older than the first reflate
+      if ($order->modified < REQUEST_TIME - ($intervals[0] * 24 * 60 * 60)) {
+        $reflated[$order->order_id] = 1;
+        $to_reflate[] = $order->order_id;
+      }
+    }
+    // Already reflated and new reflate interval exists
+    elseif (!empty($intervals[$reflated[$order->order_id]])) {
+      // Last modification time is older than the new reflate
+      if ($order->modified < REQUEST_TIME - ($intervals[$reflated[$order->order_id]] * 24 * 60 * 60)) {
+        $reflated[$order->order_id]++;
+        $to_reflate[] = $order->order_id;
+      }      
+    }
+  }
+
+  variable_set(UC_REFLATE_REFLATED_VAR, $reflated);
+  return $to_reflate;
+}
+
+/**
  * Process a reflation.
  */
 function uc_reflate_execute($force = FALSE) {
@@ -150,11 +195,12 @@ function uc_reflate_execute($force = FALSE) {
 
   // Get reflatable orders
   $to_reflate = db_select('uc_orders', 'o')
-    ->fields('o', array('order_id'))
+    ->fields('o', array('order_id', 'modified'))
     ->condition('order_status', array('pending', 'special_pending'), 'IN')
-    ->condition('modified', $now - (variable_get(UC_REFLATE_INTERVAL_VAR, 30) * 24 * 60 * 60), '<=')
     ->execute()
-    ->fetchCol();
+    ->fetchAll();
+  // Filter orders
+  $to_reflate = uc_reflate_filter($to_reflate);
   $orders = uc_order_load_multiple($to_reflate);
   
   // Send reflation mails
@@ -233,16 +279,16 @@ function uc_reflate_settings_form() {
   );
   $form['interval'] = array(
     '#type' => 'textfield',
-    '#title' => 'Intervale',
-    '#description' => 'Nombre de jours entre deux relances.',
-    '#default_value' => variable_get(UC_REFLATE_INTERVAL_VAR, 30),
+    '#title' => 'Intervales',
+    '#description' => 'Nombre de jours entre chaque relance. Vous pouvez entrer plusieurs valeurs séparées par une virgule.<br/>Si le nombre d\'intervales n\'est pas suffisant pour une commande, ses relances seront interrompues.',
+    '#default_value' => variable_get(UC_REFLATE_INTERVAL_VAR, '30,15,15'),
     '#required' => TRUE,
   );
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
-  
+
   return $form;
 }
 
@@ -250,10 +296,14 @@ function uc_reflate_settings_form() {
  * Implements hook_form_validate().
  */
 function uc_reflate_settings_form_validate($form, &$form_state) {
-  if ($form_state['values']['interval'] && intval($form_state['values']['interval']) <= 0) {
-    form_set_error('interval', t('L\'intervale doit être un nombre entier positif.'));
+  if (!empty($form_state['values']['interval'])) {
+    $form_state['values']['interval'] = str_replace(' ', '', $form_state['values']['interval']);
+    $form_state['values']['interval'] = explode(',', $form_state['values']['interval']);
+    $form_state['values']['interval'] = array_map(function($val) { return abs(round((float) $val)); }, $form_state['values']['interval']);
+    $form_state['values']['interval'] = array_filter($form_state['values']['interval']);
+    $form_state['values']['interval'] = implode(',', $form_state['values']['interval']);
   }
-  if ($form_state['values']['mail'] && !valid_email_address($form_state['values']['mail'])) {
+  if (!empty($form_state['values']['mail']) && !valid_email_address($form_state['values']['mail'])) {
     form_set_error('mail', t('The e-mail address you specified is not valid.'));
   }
 }
