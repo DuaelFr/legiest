@@ -381,7 +381,7 @@ function uc_termsofservice_checkout_form_validate($form, &$form_state) {
       }
       if (!$agreed) {
         $node = uc_termsofservice_get_node('checkout');
-        form_set_error('tos_agree', t("In order to continue with the checkout process, you should accept first the !tos", array('!tos' => $node->title)));
+        form_set_error('panes][uc_termsofservice_agreement_checkout][tos_agree', t("In order to continue with the checkout process, you should accept first the !tos", array('!tos' => $node->title)));
       }
     }
   }
