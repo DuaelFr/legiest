@@ -1620,7 +1620,7 @@ If this does not resolve the issue, please call in to complete your order.';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_use_next_buttons';
-  $strongarm->value = 1;
+  $strongarm->value = 0;
   $export['uc_use_next_buttons'] = $strongarm;
 
   $strongarm = new stdClass();
