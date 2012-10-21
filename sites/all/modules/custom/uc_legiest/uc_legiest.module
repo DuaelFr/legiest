@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * Implements hook_init().
+ */
+function uc_legiest_init() {
+  if (arg(0) == 'cart' && arg(1) == 'checkout') {
+    drupal_add_js(drupal_get_path('module', 'uc_legiest') . '/uc_legiest_checkout.js');
+  }
+}
+
+/**
  * Implements hook_permission().
  */
 function uc_legiest_permission() {

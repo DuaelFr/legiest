@@ -896,3 +896,51 @@ h1#page-title {
 	height: 150px;
 	overflow: auto;
 }
+
+/* Nouveau process de checkout */
+
+.page-cart-checkout #block-system-main > .block-inner {
+	min-height: 420px;
+}
+
+.block-uc-legiest {}
+.block-uc-legiest .block-title { display: none; }
+.block-uc-legiest .step-list { 
+	list-style-position: inside;
+}
+.block-uc-legiest .step-list .step { 
+    /* grisé, désactivé, pas cliquable */
+	background: #f1f1f1;
+	color: #666;
+	padding: 1em;
+}
+.block-uc-legiest .step-list .step.visited {
+	/* cliquable, accessible mais pas en cours d'utilisation */
+	background: #e5e5e5;
+	color: #000;
+	cursor: pointer;
+	font-weight: bold;
+}
+.block-uc-legiest .step-list .step.error {
+	background: #fbb;
+}
+.block-uc-legiest .step-list .step.active { 
+    /* en cours d'utilisation */
+    background: #0062A0;
+    color: #fff;
+}
+.block-uc-legiest .step-list .step.active.error { 
+	background: #FF3030;
+}
+
+.uc-legiest-checkout-controls { overflow: hidden; }
+input.uc-legiest-control {}
+input.uc-legiest-control-next {
+    float: right;
+}
+input.uc-legiest-control-prev {
+    float: left;
+}
+#uc-cart-checkout-form #edit-actions {
+	margin-top: -24px;
+}
