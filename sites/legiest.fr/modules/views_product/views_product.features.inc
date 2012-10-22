@@ -28,20 +28,50 @@ function views_product_image_default_styles() {
   $styles['produit-fiche'] = array(
     'name' => 'produit-fiche',
     'effects' => array(
-      8 => array(
-        'label' => 'Scale and Smart Crop',
-        'help' => 'Similar to "Scale And Crop", but preserves the portion of the image with the most entropy.',
-        'effect callback' => 'smartcrop_scale_effect',
+      7 => array(
+        'label' => 'Échelle',
+        'help' => 'La mise à l\'échelle maintiendra les proportions originales de l\'image. Si une seule dimension est précisée, l\'autre dimension sera calculée automatiquement.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
         'form callback' => 'image_scale_form',
         'summary theme' => 'image_scale_summary',
-        'module' => 'smartcrop',
-        'name' => 'smartcrop_scale_and_crop',
+        'module' => 'image',
+        'name' => 'image_scale',
         'data' => array(
           'width' => '300',
           'height' => '200',
           'upscale' => 0,
         ),
-        'weight' => '1',
+        'weight' => '2',
+      ),
+      8 => array(
+        'label' => 'Define canvas',
+        'help' => 'Define the size of the working canvas and background color, this controls the dimensions of the output image.',
+        'effect callback' => 'canvasactions_definecanvas_effect',
+        'dimensions callback' => 'canvasactions_definecanvas_dimensions',
+        'form callback' => 'canvasactions_definecanvas_form',
+        'summary theme' => 'canvasactions_definecanvas_summary',
+        'module' => 'imagecache_canvasactions',
+        'name' => 'canvasactions_definecanvas',
+        'data' => array(
+          'RGB' => array(
+            'HEX' => 'ffffff',
+          ),
+          'under' => 1,
+          'exact' => array(
+            'width' => '300',
+            'height' => '200',
+            'xpos' => 'center',
+            'ypos' => 'center',
+          ),
+          'relative' => array(
+            'leftdiff' => '',
+            'rightdiff' => '',
+            'topdiff' => '',
+            'bottomdiff' => '',
+          ),
+        ),
+        'weight' => '3',
       ),
     ),
   );
@@ -50,20 +80,50 @@ function views_product_image_default_styles() {
   $styles['produits-liste'] = array(
     'name' => 'produits-liste',
     'effects' => array(
-      7 => array(
-        'label' => 'Scale and Smart Crop',
-        'help' => 'Similar to "Scale And Crop", but preserves the portion of the image with the most entropy.',
-        'effect callback' => 'smartcrop_scale_effect',
+      4 => array(
+        'label' => 'Échelle',
+        'help' => 'La mise à l\'échelle maintiendra les proportions originales de l\'image. Si une seule dimension est précisée, l\'autre dimension sera calculée automatiquement.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
         'form callback' => 'image_scale_form',
         'summary theme' => 'image_scale_summary',
-        'module' => 'smartcrop',
-        'name' => 'smartcrop_scale_and_crop',
+        'module' => 'image',
+        'name' => 'image_scale',
         'data' => array(
           'width' => '130',
           'height' => '90',
           'upscale' => 0,
         ),
-        'weight' => '1',
+        'weight' => '2',
+      ),
+      5 => array(
+        'label' => 'Define canvas',
+        'help' => 'Define the size of the working canvas and background color, this controls the dimensions of the output image.',
+        'effect callback' => 'canvasactions_definecanvas_effect',
+        'dimensions callback' => 'canvasactions_definecanvas_dimensions',
+        'form callback' => 'canvasactions_definecanvas_form',
+        'summary theme' => 'canvasactions_definecanvas_summary',
+        'module' => 'imagecache_canvasactions',
+        'name' => 'canvasactions_definecanvas',
+        'data' => array(
+          'RGB' => array(
+            'HEX' => 'ffffff',
+          ),
+          'under' => 1,
+          'exact' => array(
+            'width' => '130',
+            'height' => '90',
+            'xpos' => 'center',
+            'ypos' => 'center',
+          ),
+          'relative' => array(
+            'leftdiff' => '',
+            'rightdiff' => '',
+            'topdiff' => '',
+            'bottomdiff' => '',
+          ),
+        ),
+        'weight' => '3',
       ),
     ),
   );

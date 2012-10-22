@@ -1,6 +1,7 @@
 name = Type News
 core = 7.x
 package = App
+php = 5.2.4
 version = 7.x-1.0-alpha1
 project = type_news
 dependencies[] = ctools
@@ -15,6 +16,7 @@ features[features_api][] = api:1
 features[field][] = node-news-body
 features[field][] = node-news-field_picture
 features[node][] = news
+features[variable][] = field_bundle_settings_node__news
 features[variable][] = language_content_type_news
 features[variable][] = menu_options_news
 features[variable][] = menu_parent_news

@@ -218,7 +218,7 @@ function type_product_uc_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
-            'image_style' => 'produit-fiche',
+            'image_style' => '',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -925,7 +925,7 @@ function type_product_uc_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
-            'image_style' => 'produit-fiche',
+            'image_style' => '',
           ),
           'type' => 'image',
           'weight' => '0',

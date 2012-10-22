@@ -100,6 +100,42 @@ function config_permissions_user_default_permissions() {
     'module' => 'user',
   );
 
+  // Exported permission: add terms in 1.
+  $permissions['add terms in 1'] = array(
+    'name' => 'add terms in 1',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'taxonomy_access_fix',
+  );
+
+  // Exported permission: add terms in 2.
+  $permissions['add terms in 2'] = array(
+    'name' => 'add terms in 2',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'taxonomy_access_fix',
+  );
+
+  // Exported permission: add terms in 3.
+  $permissions['add terms in 3'] = array(
+    'name' => 'add terms in 3',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'taxonomy_access_fix',
+  );
+
+  // Exported permission: add terms in 4.
+  $permissions['add terms in 4'] = array(
+    'name' => 'add terms in 4',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'taxonomy_access_fix',
+  );
+
   // Exported permission: admin_display_suite.
   $permissions['admin_display_suite'] = array(
     'name' => 'admin_display_suite',
@@ -168,13 +204,6 @@ function config_permissions_user_default_permissions() {
     'name' => 'administer features',
     'roles' => array(),
     'module' => 'features',
-  );
-
-  // Exported permission: administer fieldgroups.
-  $permissions['administer fieldgroups'] = array(
-    'name' => 'administer fieldgroups',
-    'roles' => array(),
-    'module' => 'field_group',
   );
 
   // Exported permission: administer filters.
@@ -334,6 +363,15 @@ function config_permissions_user_default_permissions() {
     'module' => 'uc_product',
   );
 
+  // Exported permission: administer recurring fees.
+  $permissions['administer recurring fees'] = array(
+    'name' => 'administer recurring fees',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'uc_recurring',
+  );
+
   // Exported permission: administer rules.
   $permissions['administer rules'] = array(
     'name' => 'administer rules',
@@ -367,6 +405,24 @@ function config_permissions_user_default_permissions() {
     'name' => 'administer store',
     'roles' => array(),
     'module' => 'uc_store',
+  );
+
+  // Exported permission: administer store exports.
+  $permissions['administer store exports'] = array(
+    'name' => 'administer store exports',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'uc_export',
+  );
+
+  // Exported permission: administer store reflations.
+  $permissions['administer store reflations'] = array(
+    'name' => 'administer store reflations',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'uc_reflate',
   );
 
   // Exported permission: administer taxonomy.
@@ -856,6 +912,15 @@ function config_permissions_user_default_permissions() {
     'module' => 'features',
   );
 
+  // Exported permission: manage store coupons.
+  $permissions['manage store coupons'] = array(
+    'name' => 'manage store coupons',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'uc_coupon',
+  );
+
   // Exported permission: manipulate all queues.
   $permissions['manipulate all queues'] = array(
     'name' => 'manipulate all queues',
@@ -1029,6 +1094,15 @@ function config_permissions_user_default_permissions() {
     'module' => 'uc_order',
   );
 
+  // Exported permission: view own recurring fees.
+  $permissions['view own recurring fees'] = array(
+    'name' => 'view own recurring fees',
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'module' => 'uc_recurring',
+  );
+
   // Exported permission: view own unpublished content.
   $permissions['view own unpublished content'] = array(
     'name' => 'view own unpublished content',
@@ -1063,6 +1137,15 @@ function config_permissions_user_default_permissions() {
       0 => 'Administrateur Legiest',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: view store coupons.
+  $permissions['view store coupons'] = array(
+    'name' => 'view store coupons',
+    'roles' => array(
+      0 => 'Administrateur Legiest',
+    ),
+    'module' => 'uc_coupon',
   );
 
   // Exported permission: view the administration theme.

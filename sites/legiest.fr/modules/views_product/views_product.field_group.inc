@@ -32,7 +32,7 @@ function views_product_field_group_info() {
     'format_settings' => array(
       'label' => 'Détails',
       'instance_settings' => array(
-        'classes' => '',
+        'classes' => ' group-product-details field-group-div',
         'description' => '',
         'show_label' => '0',
         'label_element' => 'h3',

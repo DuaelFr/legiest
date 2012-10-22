@@ -13,6 +13,56 @@ function config_shop_uc_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'uc_address_fields';
+  $strongarm->value = array(
+    'first_name' => 'first_name',
+    'last_name' => 'last_name',
+    'company' => 'company',
+    'street1' => 'street1',
+    'street2' => 'street2',
+    'city' => 'city',
+    'country' => 'country',
+    'postal_code' => 'postal_code',
+    'phone' => 'phone',
+  );
+  $export['uc_address_fields'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_address_fields_required';
+  $strongarm->value = array(
+    'first_name' => 'first_name',
+    'last_name' => 'last_name',
+    'company' => 'company',
+    'street1' => 'street1',
+    'city' => 'city',
+    'country' => 'country',
+    'postal_code' => 'postal_code',
+  );
+  $export['uc_address_fields_required'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_address_fields_weight';
+  $strongarm->value = array(
+    'first_name' => '-9',
+    'last_name' => '-8',
+    'company' => '-10',
+    'street1' => '-7',
+    'street2' => '-6',
+    'city' => '-4',
+    'zone' => '-3',
+    'country' => '-2',
+    'postal_code' => '-5',
+    'phone' => '-1',
+  );
+  $export['uc_address_fields_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'uc_address_format_175';
   $strongarm->value = '!company
 !first_name !last_name
@@ -206,7 +256,7 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_add_item_redirect';
-  $strongarm->value = 'cart';
+  $strongarm->value = '<none>';
   $export['uc_add_item_redirect'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -220,8 +270,36 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_cap_cart_form_weight';
-  $strongarm->value = '0';
+  $strongarm->value = '-10';
   $export['uc_cap_cart_form_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cap_coupon_auto_enabled';
+  $strongarm->value = 0;
+  $export['uc_cap_coupon_auto_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cap_coupon_auto_weight';
+  $strongarm->value = '-8';
+  $export['uc_cap_coupon_auto_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cap_coupon_enabled';
+  $strongarm->value = 1;
+  $export['uc_cap_coupon_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cap_coupon_weight';
+  $strongarm->value = '-9';
+  $export['uc_cap_coupon_weight'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -234,7 +312,7 @@ function config_shop_uc_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_cap_quotes_weight';
-  $strongarm->value = '5';
+  $strongarm->value = '-7';
   $export['uc_cap_quotes_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -275,6 +353,34 @@ function config_shop_uc_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cart_block_collapsed';
+  $strongarm->value = 0;
+  $export['uc_cart_block_collapsed'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cart_block_collapsible';
+  $strongarm->value = 1;
+  $export['uc_cart_block_collapsible'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cart_block_empty_hide';
+  $strongarm->value = 0;
+  $export['uc_cart_block_empty_hide'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cart_block_image';
+  $strongarm->value = 0;
+  $export['uc_cart_block_image'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'uc_cart_breadcrumb_text';
   $strongarm->value = '';
   $export['uc_cart_breadcrumb_text'] = $strongarm;
@@ -310,6 +416,13 @@ function config_shop_uc_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cart_help_text';
+  $strongarm->value = 'Click title to display cart contents.';
+  $export['uc_cart_help_text'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'uc_cart_mail_existing';
   $strongarm->value = 1;
   $export['uc_cart_mail_existing'] = $strongarm;
@@ -334,6 +447,13 @@ function config_shop_uc_strongarm() {
   $strongarm->name = 'uc_cart_new_account_password';
   $strongarm->value = 0;
   $export['uc_cart_new_account_password'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_cart_show_help_text';
+  $strongarm->value = 0;
+  $export['uc_cart_show_help_text'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -401,6 +521,87 @@ function config_shop_uc_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_allow_multiple';
+  $strongarm->value = 0;
+  $export['uc_coupon_allow_multiple'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_collapse_pane';
+  $strongarm->value = 0;
+  $export['uc_coupon_collapse_pane'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_default_usage';
+  $strongarm->value = 'single';
+  $export['uc_coupon_default_usage'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_expiry_hour';
+  $strongarm->value = '0';
+  $export['uc_coupon_expiry_hour'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_expiry_timezone';
+  $strongarm->value = '0';
+  $export['uc_coupon_expiry_timezone'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_form_components';
+  $strongarm->value = array(
+    'entry' => 'entry',
+    'table' => 0,
+    'list' => 0,
+  );
+  $export['uc_coupon_form_components'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_line_item_format';
+  $strongarm->value = 'Coupon [uc_coupon:code]';
+  $export['uc_coupon_line_item_format'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_pane_description';
+  $strongarm->value = 'Saisir un code de coupon pour cette commande.';
+  $export['uc_coupon_pane_description'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_querystring';
+  $strongarm->value = 'coupon';
+  $export['uc_coupon_querystring'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_show_in_cart';
+  $strongarm->value = 1;
+  $export['uc_coupon_show_in_cart'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_coupon_used_order_status';
+  $strongarm->value = 'pending';
+  $export['uc_coupon_used_order_status'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'uc_currency_code';
   $strongarm->value = 'EUR';
   $export['uc_currency_code'] = $strongarm;
@@ -439,6 +640,97 @@ function config_shop_uc_strongarm() {
   $strongarm->name = 'uc_customer_list_address';
   $strongarm->value = 'billing';
   $export['uc_customer_list_address'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_export_email';
+  $strongarm->value = 'contact@legiest.fr';
+  $export['uc_export_email'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_export_headers';
+  $strongarm->value = 1;
+  $export['uc_export_headers'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_export_interval';
+  $strongarm->value = '1';
+  $export['uc_export_interval'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_city';
+  $strongarm->value = 'Ville';
+  $export['uc_field_city'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_company';
+  $strongarm->value = 'Société';
+  $export['uc_field_company'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_country';
+  $strongarm->value = 'Pays';
+  $export['uc_field_country'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_first_name';
+  $strongarm->value = 'Prénom';
+  $export['uc_field_first_name'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_last_name';
+  $strongarm->value = 'Nom';
+  $export['uc_field_last_name'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_phone';
+  $strongarm->value = 'Numéro de téléphone';
+  $export['uc_field_phone'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_postal_code';
+  $strongarm->value = 'Code postal';
+  $export['uc_field_postal_code'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_street1';
+  $strongarm->value = 'Adresse';
+  $export['uc_field_street1'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_street2';
+  $strongarm->value = 'Complément d\'adresse';
+  $export['uc_field_street2'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_field_zone';
+  $strongarm->value = 'État/Région/Département';
+  $export['uc_field_zone'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -523,6 +815,13 @@ function config_shop_uc_strongarm() {
   $strongarm->name = 'uc_length_unit';
   $strongarm->value = 'cm';
   $export['uc_length_unit'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_li_coupon_weight';
+  $strongarm->value = '0';
+  $export['uc_li_coupon_weight'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -623,7 +922,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_billing_weight';
-  $strongarm->value = '4';
+  $strongarm->value = '-6';
   $export['uc_pane_billing_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -637,7 +936,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_cart_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-10';
   $export['uc_pane_cart_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -651,8 +950,36 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_comments_weight';
-  $strongarm->value = '7';
+  $strongarm->value = '-2';
   $export['uc_pane_comments_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_coupon_automatic_enabled';
+  $strongarm->value = 0;
+  $export['uc_pane_coupon_automatic_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_coupon_automatic_weight';
+  $strongarm->value = '0';
+  $export['uc_pane_coupon_automatic_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_coupon_enabled';
+  $strongarm->value = 1;
+  $export['uc_pane_coupon_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_coupon_weight';
+  $strongarm->value = '-9';
+  $export['uc_pane_coupon_weight'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -665,7 +992,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_customer_weight';
-  $strongarm->value = '2';
+  $strongarm->value = '-8';
   $export['uc_pane_customer_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -679,7 +1006,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_delivery_weight';
-  $strongarm->value = '3';
+  $strongarm->value = '-7';
   $export['uc_pane_delivery_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -693,7 +1020,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_payment_weight';
-  $strongarm->value = '6';
+  $strongarm->value = '-4';
   $export['uc_pane_payment_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -707,8 +1034,36 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_pane_quotes_weight';
-  $strongarm->value = '5';
+  $strongarm->value = '-5';
   $export['uc_pane_quotes_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_recurring-product_enabled';
+  $strongarm->value = 0;
+  $export['uc_pane_recurring-product_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_recurring-product_weight';
+  $strongarm->value = '-1';
+  $export['uc_pane_recurring-product_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_uc_termsofservice_agreement_checkout_enabled';
+  $strongarm->value = 1;
+  $export['uc_pane_uc_termsofservice_agreement_checkout_enabled'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_pane_uc_termsofservice_agreement_checkout_weight';
+  $strongarm->value = '-3';
+  $export['uc_pane_uc_termsofservice_agreement_checkout_weight'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -721,7 +1076,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_bank_transfer_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-9';
   $export['uc_payment_method_bank_transfer_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -735,7 +1090,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_check_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-10';
   $export['uc_payment_method_check_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -749,7 +1104,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_cod_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-4';
   $export['uc_payment_method_cod_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -763,7 +1118,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_other_weight';
-  $strongarm->value = '10';
+  $strongarm->value = '-3';
   $export['uc_payment_method_other_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -777,7 +1132,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_paypal_ec_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-5';
   $export['uc_payment_method_paypal_ec_weight'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -791,8 +1146,22 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_payment_method_paypal_wps_weight';
-  $strongarm->value = '1';
+  $strongarm->value = '-8';
   $export['uc_payment_method_paypal_wps_weight'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_payment_method_virt_admin_checkout';
+  $strongarm->value = 1;
+  $export['uc_payment_method_virt_admin_checkout'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_payment_method_virt_admin_weight';
+  $strongarm->value = '-7';
+  $export['uc_payment_method_virt_admin_weight'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -800,6 +1169,167 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->name = 'uc_payment_show_order_total_preview';
   $strongarm->value = 1;
   $export['uc_payment_show_order_total_preview'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_api_password';
+  $strongarm->value = '1339334895';
+  $export['uc_paypal_api_password'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_api_signature';
+  $strongarm->value = 'ARvCDkf2jM7rt61mSAxmIS0nB5TzAz1xz09B1-ePAeYvkVZMhFL2h1xs';
+  $export['uc_paypal_api_signature'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_api_username';
+  $strongarm->value = 'seller_1339334871_biz_api1.duael.fr';
+  $export['uc_paypal_api_username'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_ec_landingpage_style';
+  $strongarm->value = 'Billing';
+  $export['uc_paypal_ec_landingpage_style'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_ec_review_comment';
+  $strongarm->value = 1;
+  $export['uc_paypal_ec_review_comment'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_ec_review_company';
+  $strongarm->value = 1;
+  $export['uc_paypal_ec_review_company'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_ec_review_phone';
+  $strongarm->value = 1;
+  $export['uc_paypal_ec_review_phone'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_ec_review_shipping';
+  $strongarm->value = 1;
+  $export['uc_paypal_ec_review_shipping'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_ec_rqconfirmed_addr';
+  $strongarm->value = 0;
+  $export['uc_paypal_ec_rqconfirmed_addr'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wpp_currency';
+  $strongarm->value = 'EUR';
+  $export['uc_paypal_wpp_currency'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wpp_server';
+  $strongarm->value = 'https://api-3t.sandbox.paypal.com/nvp';
+  $export['uc_paypal_wpp_server'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_address_override';
+  $strongarm->value = 1;
+  $export['uc_paypal_wps_address_override'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_address_selection';
+  $strongarm->value = 'billing';
+  $export['uc_paypal_wps_address_selection'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_cancel_return_url';
+  $strongarm->value = 'cart';
+  $export['uc_paypal_wps_cancel_return_url'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_checkout_button';
+  $strongarm->value = 'Submit Order';
+  $export['uc_paypal_wps_checkout_button'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_currency';
+  $strongarm->value = 'EUR';
+  $export['uc_paypal_wps_currency'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_debug_ipn';
+  $strongarm->value = 0;
+  $export['uc_paypal_wps_debug_ipn'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_email';
+  $strongarm->value = 'seller_1339334871_biz@duael.fr';
+  $export['uc_paypal_wps_email'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_language';
+  $strongarm->value = 'FR';
+  $export['uc_paypal_wps_language'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_no_shipping';
+  $strongarm->value = '1';
+  $export['uc_paypal_wps_no_shipping'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_payment_action';
+  $strongarm->value = 'Sale';
+  $export['uc_paypal_wps_payment_action'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_server';
+  $strongarm->value = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+  $export['uc_paypal_wps_server'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_paypal_wps_submit_method';
+  $strongarm->value = 'single';
+  $export['uc_paypal_wps_submit_method'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -869,6 +1399,66 @@ If this does not resolve the issue, please call in to complete your order.';
    'email' => '',
 ));
   $export['uc_quote_store_default_address'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_recurring_checkout_fail';
+  $strongarm->value = 'fail';
+  $export['uc_recurring_checkout_fail'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_recurring_checkout_message';
+  $strongarm->value = '';
+  $export['uc_recurring_checkout_message'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_recurring_checkout_process';
+  $strongarm->value = 1;
+  $export['uc_recurring_checkout_process'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_recurring_payment_methods';
+  $strongarm->value = array(
+    'check' => 'check',
+    'cod' => 'cod',
+    'other' => 'other',
+  );
+  $export['uc_recurring_payment_methods'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_recurring_product_checkout_pane_message';
+  $strongarm->value = '';
+  $export['uc_recurring_product_checkout_pane_message'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_recurring_trigger_renewals';
+  $strongarm->value = 1;
+  $export['uc_recurring_trigger_renewals'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_reflate_email';
+  $strongarm->value = 'contact@legiest.fr';
+  $export['uc_reflate_email'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_reflate_interval';
+  $strongarm->value = '30,15,15,10,10,5,5,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1';
+  $export['uc_reflate_interval'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -994,8 +1584,43 @@ If this does not resolve the issue, please call in to complete your order.';
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'uc_use_next_buttons';
+  $strongarm->name = 'uc_termsofservice_checkout_display';
+  $strongarm->value = 'full';
+  $export['uc_termsofservice_checkout_display'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_node';
+  $strongarm->value = 'Conditions Générales de Vente [nid: 22]';
+  $export['uc_termsofservice_checkout_node'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_required';
   $strongarm->value = 1;
+  $export['uc_termsofservice_checkout_required'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_rules';
+  $strongarm->value = 0;
+  $export['uc_termsofservice_checkout_rules'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_termsofservice_checkout_title';
+  $strongarm->value = '0';
+  $export['uc_termsofservice_checkout_title'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'uc_use_next_buttons';
+  $strongarm->value = 0;
   $export['uc_use_next_buttons'] = $strongarm;
 
   $strongarm = new stdClass();

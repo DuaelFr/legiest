@@ -62,18 +62,6 @@ function contextes_context_default_contexts() {
           'region' => 'menu',
           'weight' => '-9',
         ),
-        'views-news-block_1' => array(
-          'module' => 'views',
-          'delta' => 'news-block_1',
-          'region' => 'sidebar_first',
-          'weight' => '-8',
-        ),
-        'views-news-block' => array(
-          'module' => 'views',
-          'delta' => 'news-block',
-          'region' => 'header_first',
-          'weight' => '-10',
-        ),
         'boxes-legiest_address' => array(
           'module' => 'boxes',
           'delta' => 'legiest_address',
@@ -184,6 +172,18 @@ function contextes_context_default_contexts() {
           'delta' => 'products-block_new',
           'region' => 'content',
           'weight' => '-8',
+        ),
+        'views-news-block_1' => array(
+          'module' => 'views',
+          'delta' => 'news-block_1',
+          'region' => 'sidebar_first',
+          'weight' => '-8',
+        ),
+        'views-news-block' => array(
+          'module' => 'views',
+          'delta' => 'news-block',
+          'region' => 'header_first',
+          'weight' => '-10',
         ),
       ),
     ),

@@ -21,9 +21,14 @@ function pathauto_install() {
   // Set the default separator character to replace instead of remove (default).
   variable_set('pathauto_punctuation_hyphen', 1);
 
-  // Set the weight to 1
+  // Set the weight to 1 more than the core path module
+  $w = db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('name', 'path')
+    ->execute()
+    ->fetchColumn();
   db_update('system')
-    ->fields(array('weight' => 1))
+    ->fields(array('weight' => $w + 1))
     ->condition('type', 'module')
     ->condition('name', 'pathauto')
     ->execute();
@@ -33,7 +38,7 @@ function pathauto_install() {
  * Implements hook_uninstall().
  */
 function pathauto_uninstall() {
-  // Delete all the pathauto variables and then clear the variable cache
+  // Delete all the pathauto variables and then clear the variable cache.
   db_query("DELETE FROM {variable} WHERE name LIKE 'pathauto_%'");
   cache_clear_all('variables', 'cache');
 }

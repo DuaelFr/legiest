@@ -69,16 +69,19 @@ function custom_search_results_admin() {
     '#title'          => t('Display basic search'),
     '#default_value'  => variable_get('custom_search_results_search', TRUE),
   );
-  $form['search_form']['advanced'] = array(
-    '#type'         => 'fieldset',
-    '#title'        => t('Advanced search'),
-    '#collapsible'  => TRUE,
-    '#collapsed'    => TRUE,
-  );
-  $form['search_form']['advanced']['custom_search_results_advanced_search'] = array(
+  $form['search_form']['custom_search_results_advanced_search'] = array(
     '#type'           => 'checkbox',
     '#title'          => t('Display advanced search'),
     '#default_value'  => variable_get('custom_search_results_advanced_search', TRUE),
+  );
+  $form['search_form']['advanced'] = array(
+    '#type'         => 'fieldset',
+    '#title'        => t('Advanced search'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="custom_search_results_advanced_search"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['search_form']['advanced']['custom_search_results_advanced_search_collapsible'] = array(
     '#type'           => 'checkbox',
@@ -194,6 +197,11 @@ function custom_search_results_admin() {
     '#title'          => t('Label text'),
     '#default_value'  => variable_get('custom_search_filter_label', CUSTOM_SEARCH_FILTER_LABEL_DEFAULT),
     '#description'    => t('Enter the label text for the list. The default value is "!default".', array('!default' => CUSTOM_SEARCH_FILTER_LABEL_DEFAULT)),
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="custom_search_filter"]' => array('value' => 'disabled'),
+      ),
+    ),
   );
 
   return system_settings_form($form);

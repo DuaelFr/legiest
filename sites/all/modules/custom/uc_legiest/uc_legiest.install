@@ -20,6 +20,7 @@ function uc_legiest_install() {
     ->fetchField();
   db_update('system')
     ->fields(array('weight' => $weight+5))
+    ->condition('name', 'uc_legiest')
     ->execute();
 }
 
@@ -206,7 +207,7 @@ function _uc_legiest_install_tax_rates() {
       'taxed_line_items' => array(),
       'weight' => 0,
       'shippable' => 0,
-      'display_include' => 1,
+      'display_include' => 0,
       'inclusion_text' => $rate['text'],
     );
     uc_taxes_rate_save($rate);    

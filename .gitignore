@@ -3,6 +3,7 @@ sites/*/settings*.php
 
 # Ignore paths that contain user-generated content.
 sites/*/files
+sites/*/uc_files
 sites/*/private
 
 # Ignore tmp files.

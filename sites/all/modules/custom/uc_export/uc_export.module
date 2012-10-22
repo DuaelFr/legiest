@@ -1,0 +1,786 @@
+<?php
+/**
+ * @file
+ * Allow administrator to manage his Übercart exports.
+ */
+
+define('UC_EXPORT_MAIL_VAR', 'uc_export_email');
+define('UC_EXPORT_INTERVAL_VAR', 'uc_export_interval');
+define('UC_EXPORT_HEADERS_VAR', 'uc_export_headers');
+define('UC_EXPORT_LAST_EXPORT_VAR', 'uc_export_last_export');
+
+define('UC_EXPORT_PERMISSION', 'administer store exports');
+
+/**
+ * Implements hook_permission().
+ */
+function uc_export_permission() {
+  $perm = array();
+  
+  $perm[UC_EXPORT_PERMISSION] = array(
+    'title' => 'Administer store exports',
+    'description' => '',
+  );
+  
+  return $perm;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function uc_export_menu() {
+  $menu = array();
+
+  $menu['admin/store/export'] = array(
+    'title' => 'Export',
+    'description' => '',
+    'access arguments' => array(UC_EXPORT_PERMISSION),
+    'page callback' => '_uc_export_home',
+  );
+  $menu['admin/store/export/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Paramètres du module',
+    'access arguments' => array(UC_EXPORT_PERMISSION),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_export_settings_form'),
+  );
+  $menu['admin/store/export/clients'] =
+  $menu['admin/store/export/prospects'] =  
+  $menu['admin/store/export/shipping'] = array(
+    'title callback' => '_uc_export_page_title',
+    'title arguments' => array(3),
+    'description' => '',
+    'access arguments' => array(UC_EXPORT_PERMISSION),
+    'page callback' => '_uc_export_page',
+    'page arguments' => array(3),
+  );
+  $menu['admin/store/export/%/force'] = array(
+    'title' => 'Forcer un export',
+    'description' => '',
+    'access arguments' => array(UC_EXPORT_PERMISSION),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_export_force_confirm_form', 3),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $menu['admin/store/export/%/delete/%'] = array(
+    'title' => 'Supprimer un export',
+    'description' => '',
+    'access arguments' => array(UC_EXPORT_PERMISSION),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_export_delete_confirm_form', 3, 5),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $menu;
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function uc_export_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path != 'admin/store/export/settings' && preg_match('#^admin/store/export/[^/]+$#', $root_path)) {
+    $data['actions']['count']++;
+    $data['actions']['output'][] = array(
+      '#theme' => 'menu_local_action',
+      '#link' => array(
+        'title' => 'Forcer l\'export',
+        'href' => $root_path . '/force',
+        'localized_options' => array(),
+      ),
+      '#active' => FALSE,
+    );
+  }
+  if (preg_match('#^admin/store/export#', $root_path)) {
+    $menu = menu_get_item('admin/store/export');
+    $content = system_admin_menu_block($menu);
+    if (empty($data['tabs'])) { $data['tabs'] = array(); }
+    if (empty($data['tabs'][0])) { $data['tabs'][0] = array('count' => 0, 'output' => array()); }
+    foreach ($content as $item) {
+      $data['tabs'][0]['count']++;
+      $data['tabs'][0]['output'][] = array(
+        '#theme' => 'menu_local_task',
+        '#link' => $item,
+        '#active' => $item['router_path'] == $root_path,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_file_download().
+ * 
+ * Autorise le téléchargement des exports pour l'admin
+ */
+function uc_export_file_download($uri) {
+  $result = NULL;
+  if (strpos($uri, 'private://uc_export') !== FALSE) {
+    $result = -1;
+    if (user_access(UC_EXPORT_PERMISSION)) {
+      // Prepare headers
+      $wrapper = file_stream_wrapper_get_instance_by_uri($uri);
+      $fpath = $wrapper->realpath();
+      $file = array(
+        'filename' => basename($fpath),
+        'filemime' => file_get_mimetype($fpath),
+        'filesize' => filesize($fpath),
+      );
+      $result = file_get_content_headers((object)$file);
+      // Force download
+      $result['Content-Disposition'] = str_replace('inline', 'attachment', $result['Content-Disposition']);
+    }
+  }
+  return $result;
+}
+
+/**
+ * Implements hook_mail().
+ */
+function uc_export_mail($key, &$message, $params) {
+  if ($key == 'mail_export') {
+    $type = $params['type'];
+    $date = $params['date'];
+    $file = $params['file'];
+    $count = $params['count'];
+    $site_name = uc_export_get_source();
+    
+    $message['subject'] = '[' . $site_name . '] Export terminé';
+    $message['body'] = array();
+    $message['body'][] = 'Un nouvel export ' . uc_export_get_name($type) 
+            . ' s\'est terminé sur le site ' . $site_name 
+            . ' le ' . date('d/m/Y', $date) . ' à ' . date('H:i', $date);
+    $message['body'][] = '';
+    if (empty($count)) {
+      $message['body'][] = 'Ce dernier ne contenant pas d\'élément, aucun fichier n\'a été créé.';
+    }
+    else {
+      $message['body'][] = 'Vous trouverez ci-joint le fichier correspondant.';
+  
+      $message['params']['attachments'][] = array(
+        'filename' => basename($file),
+        'filepath' => $file,
+        'filemime' => file_get_mimetype($file),
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function uc_export_cron() {
+  if (date(H) > 1 && date(H) < 4) {
+    uc_export_execute('shipping');
+    uc_export_execute('clients');
+    uc_export_execute('prospects');
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// TOOLS
+
+/**
+ * Stand for UC Export Sanitize.
+ * 
+ * Used for GLS export.
+ */
+function uc_export_s($str) {
+  return $str == '' ? '.' : $str;
+}
+
+/**
+ * Get uc_export file path. 
+ */
+function uc_export_get_path($type) {
+  $path = variable_get('file_private_path');
+  if (empty($path)) {
+    $path = variable_get('file_public_path');
+  }
+  $path = DRUPAL_ROOT . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . 'uc_export' . DIRECTORY_SEPARATOR . $type;
+  if (!is_dir($path)) {
+    mkdir($path, 0770, TRUE);
+  }
+  return $path;  
+}
+
+/**
+ * Get uc_export type name. 
+ */
+function uc_export_get_name($type) {
+  switch ($type) {
+    case 'shipping':
+      return 'GLS';
+    case 'prospects':
+      return 'Prospects';
+    default:
+      return 'Clients';
+  }  
+}
+
+/**
+ * Get uc_export source site. 
+ */
+function uc_export_get_source() {
+  return strpos($GLOBALS['base_url'], 'legiest') !== FALSE ?
+         'Legiest' : 'AffichageCodeDuTravail';  
+}
+
+/**
+ * Process an export.
+ */
+function uc_export_execute($type, $force = FALSE) {
+  $start = microtime(TRUE);
+
+  // Check if a new export is needed or forced
+  $last = variable_get(UC_EXPORT_LAST_EXPORT_VAR . '_' . $type, 0);
+  $interval = variable_get(UC_EXPORT_INTERVAL_VAR) * 24 * 60 * 60;
+  // If not forced
+  if (!$force) {
+    // The interval is not over
+    // We remove 10 minute in the test to allow small variations
+    if (time() < $last + $interval - 600) {
+      return;
+    }
+  }
+  // Used to avoid multiple exports at the same time
+  if (time() < $last) {
+    return;
+  }
+  
+  // Prepare the good function and check it exists
+  $func = '_uc_export_execute_' . $type;
+  if (!function_exists($func)) {
+    watchdog('uc_export', 'Export type @type is not allowed', array('@type' => check_plain($type)), WATCHDOG_ERROR);
+    return;
+  }
+  
+  // Set the last export time in the future to avoid multiple exports at the same time
+  variable_set(UC_EXPORT_LAST_EXPORT_VAR . '_' . $type, mktime(0, 0, 0, 1, 1, date('Y')+1));
+  
+  // Execute specific export and retreive data
+  $data = call_user_func($func);
+
+  // Keep the current time
+  $now = REQUEST_TIME;
+  
+  // Write data to a file
+  $path = uc_export_get_path($type);
+  $file = $path . DIRECTORY_SEPARATOR . $type . '_' . date('Y-m-d_H-i', $now) . '.csv';
+  // If data contains at least one real line (headers does not count)
+  if (count($data) > intval(variable_get(UC_EXPORT_HEADERS_VAR, TRUE))) {
+    $f = fopen($file, 'a+');
+    foreach ($data as $line) {
+      fputcsv($f, $line, ';', '"');
+    }
+    fclose($f);
+  }
+  
+  // Save the current time as the last export
+  variable_set(UC_EXPORT_LAST_EXPORT_VAR . '_' . $type, $now);
+
+  // Send the file by email
+  $mail = variable_get(UC_EXPORT_MAIL_VAR);
+  if (!empty($mail)) {
+    $params = array(
+      'date'  => $now,
+      'type'  => $type,
+      'file'  => $file,
+      'count' => count($data) - intval(variable_get(UC_EXPORT_HEADERS_VAR, TRUE)),
+    );
+    drupal_mail('uc_export', 'mail_export', $mail, language_default(), $params);
+  }
+
+  // Report succes in watchdog
+  $end = microtime(TRUE);
+  drupal_set_message('L\'export s\'est déroulé avec succès.', 'status');
+  watchdog('uc_export', 
+         'Export type @type is over.<br />- @total_time seconds<br />- @count items', 
+           array(
+             '@type' => check_plain($type),
+             '@total_time' => round($end - $start, 2),
+             '@count' => count($data) - intval(variable_get(UC_EXPORT_HEADERS_VAR, TRUE)),
+           ), 
+           WATCHDOG_INFO);
+}
+
+/**
+ * Export procedure for shipping to GLS.
+ */
+function _uc_export_execute_shipping() {
+  $data = array();
+  
+  // Prepare headers
+  if (variable_get(UC_EXPORT_HEADERS_VAR, TRUE)) {
+    $data[] = array(
+      'N° Factures', 'Raison sociale', 'ADR2', 'ADR3', 'ADRESSEPRINCIPALE', 'Réf',
+      'Pays', 'CP', 'VILLE', 'Contact', 'Téléphone', 'Email', 'Commentaires',
+      'Ref1', 'Qte1', 'Ref2', 'Qte2', 'Ref3', 'Qte3',
+      'Ref4', 'Qte4', 'Ref5', 'Qte5', 'Ref6', 'Qte6',
+    );
+  }
+  
+  // Get exportables order ids
+  $to_export = db_select('uc_orders', 'o')
+    ->fields('o', array('order_id'))
+    ->condition('order_status', array('processing', 'special_processing'), 'IN')
+    ->execute()
+    ->fetchCol();
+  $orders = uc_order_load_multiple($to_export);
+    
+  // Build data
+  foreach ($orders as $order) {
+    $adr_prefix = empty($order->delivery_street1) ? 'billing_' : 'delivery_';
+
+    $tmp = array();
+    $tmp[] = uc_export_s($order->order_id); // N° Factures
+    $tmp[] = uc_export_s($order->{$adr_prefix . 'company'}); // Raison sociale
+    $tmp[] = uc_export_s($order->{$adr_prefix . 'street2'}); // ADR2
+    $tmp[] = '.'; // ADR3
+    $tmp[] = uc_export_s($order->{$adr_prefix . 'street1'}); // ADRESSEPRINCIPALE
+    $tmp[] = '.'; // Réf
+    $tmp[] = 'FR'; // Pays
+    $tmp[] = "'" . uc_export_s($order->{$adr_prefix . 'postal_code'}); // CP
+    $tmp[] = uc_export_s($order->{$adr_prefix . 'city'}); // VILLE
+    $tmp[] = uc_export_s($order->{$adr_prefix . 'first_name'} . ' ' . strtoupper($order->{$adr_prefix . 'last_name'})); // Contact
+    $tmp[] = "'" . uc_export_s($order->{$adr_prefix . 'phone'}); // Téléphone
+    $tmp_prod = array(); 
+    if (count($order->products) == 1) {
+      $product = reset($order->products);
+      $tmp[] = $product->model; // Email [Référence expédiée]
+      $tmp[] = $product->qty; // Commentaires [Quantité expédiée]
+      $tmp_prod[] = $product->model;
+      $tmp_prod[] = $product->qty;
+    }
+    else {
+      $count = 0;
+      foreach ($order->products as $product) {
+        $count += $product->qty;
+        $tmp_prod[] = $product->model;
+        $tmp_prod[] = $product->qty;
+      }
+      $tmp[] = count($order->products); // Email [Nombre de références expédiées]
+      $tmp[] = $count; // Commentaires [Quantité totale de produits]
+    }
+    for ($i = 0 ; $i < 6 ; ++$i) {
+      if (!empty($tmp_prod[$i*2])) {
+        $tmp[] = $tmp_prod[$i*2]; // RefI
+        $tmp[] = $tmp_prod[$i*2+1]; // QteI
+      }
+      else {
+        $tmp[] = '.'; // RefI
+        $tmp[] = '.'; // QteI      
+      }
+    }
+    $data[] = $tmp;
+
+    // Log export
+    uc_order_log_changes($order->order_id, array('Export GLS.'));
+
+    // Change order states
+    if ($order->order_status == 'special_processing') {
+      uc_order_update_status($order->order_id, 'special_pending');
+    }
+    else {
+      uc_order_update_status($order->order_id, 'completed');
+    }
+  }
+
+  return $data;
+}
+
+/**
+ * Get users considred as clients.
+ * 
+ * Clients have at least an order which has been paid.
+ */
+function _uc_export_get_clients() {
+  return db_select('uc_orders', 'o')
+    ->fields('o', array('uid'))
+    ->condition('o.order_status', array('processing', 'completed'), 'IN')
+    ->distinct()
+    ->execute()
+    ->fetchCol();
+}
+
+/**
+ * Export procedure for clients.
+ */
+function _uc_export_execute_clients() {
+  // Get exportables order ids
+  $query = db_select('uc_orders', 'o');
+  $query->leftJoin('uc_order_export', 'e', 'o.order_id = e.order_id');
+  $to_export = $query->fields('o', array('order_id'))
+//    ->condition('o.order_status', array('pending', 'processing', 'special_processing', 'special_pending', 'completed'), 'IN')
+    ->condition('o.uid', _uc_export_get_clients(), 'IN')
+    ->condition('e.exported', NULL)
+    ->orderBy('o.created', 'asc')
+    ->execute()
+    ->fetchCol();
+  $orders = uc_order_load_multiple($to_export);
+
+  return _uc_export_execute_people($orders);
+}
+
+/**
+ * Export procedure for prospects.
+ */
+function _uc_export_execute_prospects() {
+  // Get exportables order ids
+  $query = db_select('uc_orders', 'o');
+  $query->leftJoin('uc_order_export', 'e', 'o.order_id = e.order_id');
+  $to_export = $query->fields('o', array('order_id'))
+//    ->condition('o.order_status', array('pending', 'processing', 'special_processing', 'special_pending', 'completed'), 'IN')
+    ->condition('o.uid', _uc_export_get_clients(), 'NOT IN')
+    ->condition('e.exported', NULL)
+    ->orderBy('o.created', 'asc')
+    ->execute()
+    ->fetchCol();
+  $orders = uc_order_load_multiple($to_export);
+
+  return _uc_export_execute_people($orders);
+}
+
+/**
+ * Export procedure for clients and prospects
+ */
+function _uc_export_execute_people($orders) {
+  $data = array();
+
+  if (variable_get(UC_EXPORT_HEADERS_VAR, TRUE)) {
+    $data[] = array(
+      'CODE_CL', 'NOM', 'ADR1', 'ADR2', 'ADR3', 'CP', 'VILLE', 'CONTACT', 
+      'E_MAIL', 'TEL', 'FAX', 'GSM', 'MODE REGL', 'ORIGINE CDE', 'DATE_FAC', 
+      'NUM_FAC', 'TOT TTC', 'TOTAL HT', 'Tx TVA', 'TVA', 'PORT', 'RESTE DU', 
+      'QT1', 'REF1', 'PU1', 'MTHT1', 'DES1', 
+      'QT2', 'REF2', 'PU2', 'MTHT2', 'DES2', 
+      'QT3', 'REF3', 'PU3', 'MTHT3', 'DES3', 
+      'QT4', 'REF4', 'PU4', 'MTHT4', 'DES4', 
+      'QT5', 'REF5', 'PU5', 'MTHT5', 'DES5', 
+      'QT6', 'REF6', 'PU6', 'MTHT6', 'DES6', 
+      'QT7', 'REF7', 'PU7', 'MTHT7', 'DES7', 
+      'QT8', 'REF8', 'PU8', 'MTHT8', 'DES8', 
+      'QT9', 'REF9', 'PU9', 'MTHT9', 'DES9', 
+      'QT10', 'REF10', 'PU10', 'MTHT10', 'DES10',
+    );
+  }
+
+  // Build data
+  foreach ($orders as $order) {
+    $tmp = array();
+    $tmp[] = $order->uid; // CODE_CL
+    $tmp[] = $order->billing_first_name . ' ' . $order->billing_last_name; // NOM
+    $tmp[] = $order->billing_street1; // ADR1
+    $tmp[] = $order->billing_street2; // ADR2
+    $tmp[] = ''; // ADR3
+    $tmp[] = "'" . $order->billing_postal_code; // CP
+    $tmp[] = $order->billing_city; // VILLE
+    $tmp[] = ''; // CONTACT
+    $tmp[] = $order->primary_email; // E_MAIL
+    $tmp[] = "'" . $order->delivery_phone; // TEL
+    $tmp[] = ''; // FAX
+    $tmp[] = ''; // GSM
+    $tmp[] = $order->payment_method; // MODE REGL
+    $tmp[] = uc_export_get_source(); // ORIGINE CDE
+    $tmp[] = format_date($order->created, 'short'); // DATE_FAC
+    $tmp[] = $order->order_id; // NUM_FAC
+
+    $subtotal = 0;
+    $shipping = 0;
+    foreach ($order->line_items as $li) {
+      if ($li['type'] == 'subtotal') {
+        $subtotal = $li['amount'];
+      }
+      elseif ($li['type'] == 'shipping') {
+        $shipping = $li['amount'];
+      }
+    }
+    $tmp[] = number_format($order->order_total, 2, ',', ''); // TOT TTC
+    $tmp[] = number_format($subtotal, 2, ',', ''); // TOTAL HT
+    $tmp[] = ''; // Tx TVA
+    $tmp[] = number_format($order->order_total - $subtotal, 2, ',', ''); // TVA
+    $tmp[] = number_format($shipping, 2, ',', ''); // PORT
+    $tmp[] = number_format(uc_payment_balance($order), 2, ',', ''); // RESTE DU
+
+    $tmp_prod = array();
+    foreach ($order->products as $product) {
+      $tmp_prod[] = $product->qty;
+      $tmp_prod[] = $product->model;
+      $tmp_prod[] = number_format($product->price, 2, ',', '');
+      $tmp_prod[] = number_format($product->price * $product->qty, 2, ',', '');
+      $tmp_prod[] = $product->title;
+    }
+    for ($i = 0 ; $i < 10 ; ++$i) {
+      if (!empty($tmp_prod[$i*5])) {
+        $tmp[] = $tmp_prod[$i*5]; // GT I
+        $tmp[] = $tmp_prod[$i*5+1]; // REF I
+        $tmp[] = $tmp_prod[$i*5+2]; // PU I
+        $tmp[] = $tmp_prod[$i*5+3]; // MTHT I
+        $tmp[] = $tmp_prod[$i*5+4]; // DES I
+      }
+      else {
+        $tmp[] = ''; // GT I
+        $tmp[] = ''; // REF I
+        $tmp[] = ''; // PU I
+        $tmp[] = ''; // MTHT I
+        $tmp[] = ''; // DES I
+      }
+    }
+
+    $data[] = $tmp;
+
+    // Save export time.
+    db_insert('uc_order_export')
+      ->fields(array(
+        'order_id' => $order->order_id,
+        'exported' => REQUEST_TIME,
+      ))
+      ->execute();
+      
+    // Log export.
+    uc_order_log_changes($order->order_id, array('Export GLS.'));
+  }
+
+  return $data;
+}
+
+// -----------------------------------------------------------------------------
+// FORMS
+
+/**
+ * Confirmation form to delete an export.
+ *
+ * @see uc_export_delete_confirm_form_submit()
+ * @ingroup forms
+ */
+function uc_export_delete_confirm_form($form, &$form_state, $type, $file) {
+  $form['export_type'] = array(
+    '#type' => 'value',
+    '#value' => $type
+  );
+  $form['export_file'] = array(
+    '#type' => 'value',
+    '#value' => $file
+  );
+
+  return confirm_form($form, t('Êtes vous certain de vouloir supprimer l\'export @export_file?', array('@export_file' => $file)), 'admin/store/export/' . $type, NULL, t('Delete'));
+}
+
+/**
+ * Form submission handler for uc_export_delete_confirm_form().
+ *
+ * @see uc_export_delete_confirm_form()
+ */
+function uc_export_delete_confirm_form_submit($form, &$form_state) {
+  $type = $form_state['values']['export_type'];
+  $file = $form_state['values']['export_file'];
+  
+  $path = uc_export_get_path($type);
+  $fpath = $path . DIRECTORY_SEPARATOR . $file;
+  if (is_file($fpath)) {
+    unlink($fpath);
+  }
+
+  // Display a message to the user and return to the order admin page.
+  drupal_set_message(t('L\'export @export_file a été complètement supprimé.', array('@export_file' => $file)));
+
+  $form_state['redirect'] = 'admin/store/export/' . $type;
+}
+
+/**
+ * Confirmation form to force an export.
+ *
+ * @see uc_export_force_confirm_form_submit()
+ * @ingroup forms
+ */
+function uc_export_force_confirm_form($form, &$form_state, $type) {
+  $form['export_type'] = array(
+    '#type' => 'value',
+    '#value' => $type
+  );
+
+  return confirm_form($form, t('Êtes vous certain de vouloir forcer l\'export @export_type?', array('@export_type' => uc_export_get_name($type))), 'admin/store/export/' . $type, 'Attention, cela peut ralentir fortement votre site durant plusieurs minutes.', t('Forcer'));
+}
+
+/**
+ * Form submission handler for uc_export_force_confirm_form().
+ *
+ * @see uc_export_force_confirm_form()
+ */
+function uc_export_force_confirm_form_submit($form, &$form_state) {
+  $type = $form_state['values']['export_type'];
+  
+  uc_export_execute($type, TRUE);
+
+  $form_state['redirect'] = 'admin/store/export/' . $type;
+}
+
+/**
+ * Implements hook_form().
+ */
+function uc_export_settings_form() {
+  $form = array();
+  
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => 'E-Mail',
+    '#description' => 'Adresse à laquelle sont envoyés les fichiers.',
+    '#default_value' => variable_get(UC_EXPORT_MAIL_VAR, ''),
+    '#required' => TRUE,
+  );
+  $form['interval'] = array(
+    '#type' => 'select',
+    '#title' => 'Intervale',
+    '#description' => 'Intervale de temps entre deux exports.',
+    '#default_value' => variable_get(UC_EXPORT_INTERVAL_VAR, 1),
+    '#options' => array(
+      '1' => '1 jour',
+      '2' => '2 jours',
+      '3' => '3 jours',
+      '4' => '4 jours',
+      '5' => '5 jours',
+      '6' => '6 jours',
+      '7' => '1 semaine',
+      '10' => '10 jours',
+      '14' => '2 semaines',
+      '21' => '3 semaines',
+      '28' => '4 semaines',
+      '30' => '30 jours',
+    ),
+    '#required' => TRUE,
+  );
+  $form['headers'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Inclure les en-têtes',
+    '#description' => 'Cochez cette cas si vous souhaitez que les fichiers exportés contiennent une ligne d\'en-têtes.',
+    '#default_value' => variable_get(UC_EXPORT_HEADERS_VAR, TRUE),
+  );
+  $form['reset'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Réinitialiser',
+    '#description' => 'Réinitialise la date des derniers exports. Attention cela peut entrainer des ralentissements sur le site.',
+    '#default_value' => 0,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  
+  return $form;
+}
+
+/**
+ * Implements hook_form_validate().
+ */
+function uc_export_settings_form_validate($form, &$form_state) {
+  if ($form_state['values']['mail'] && !valid_email_address($form_state['values']['mail'])) {
+    form_set_error('mail', t('The e-mail address you specified is not valid.'));
+  }
+}
+
+/**
+ * Implements hook_form_submit().
+ */
+function uc_export_settings_form_submit($form, &$form_state) {
+  variable_set(UC_EXPORT_MAIL_VAR, $form_state['values']['mail']);
+  variable_set(UC_EXPORT_INTERVAL_VAR, $form_state['values']['interval']);
+  variable_set(UC_EXPORT_HEADERS_VAR, $form_state['values']['headers']);
+  drupal_set_message('Les nouveaux paramètres ont été enregistrés.', 'status');
+  
+  if (!empty($form_state['values']['reset'])) {
+    variable_del(UC_EXPORT_LAST_EXPORT_VAR . '_shipping');
+    variable_del(UC_EXPORT_LAST_EXPORT_VAR . '_clients');
+    
+    drupal_set_message('Les dates des derniers exports ont été réinitialisées.', 'status');
+  }
+}
+
+
+
+// -----------------------------------------------------------------------------
+// MENU CALLBACKS
+
+/**
+ * Menu admin/store/export page callback.
+ */
+function _uc_export_home() {
+  $menu = menu_get_item('admin/store/export');
+  $content = system_admin_menu_block($menu);
+
+  $build['menu'] = array(
+    '#theme' => 'admin_block_content',
+    '#content' => $content,
+    '#weight' => 5,
+  );
+
+  return $build;
+}
+
+/**
+ * Menu admin/store/export/% title callback.
+ */
+function _uc_export_page_title($type) {
+  return 'Export ' . uc_export_get_name($type);
+}
+
+/**
+ * Menu admin/store/export/% page callback.
+ */
+function _uc_export_page($type) {
+  // Get last export date
+  $last = variable_get(UC_EXPORT_LAST_EXPORT_VAR . '_' . $type);
+  if (empty($last)) { 
+    $last = '- Jamais -'; 
+  }
+  elseif (time() < $last) {
+    $last = '- En cours -';
+  }
+  else {
+    $last = format_date($last, 'medium');
+  }
+  
+  // Get export files
+  $files = array();
+  $path = uc_export_get_path($type);
+  $d = opendir($path);
+  while ($file = readdir($d)) {
+    if ($file{0} != '.') {
+      $fpath = $path . DIRECTORY_SEPARATOR . $file;
+      $ftime = format_date(filemtime($fpath), 'medium');
+      $furl  = file_create_url('private://uc_export/' . $type . '/' . $file);
+      $count = count(file($fpath));
+      $delurl = 'admin/store/export/' . $type . '/delete/' . $file;
+      $files[$ftime . '_' . $file] = array(
+        l($file, $furl),
+        $ftime,
+        format_plural($count, '@count ligne', '@count lignes'),
+        l('Télécharger', $furl) . ' | ' . l('Supprimer', $delurl),
+      );
+    }
+  }
+  closedir($d);
+  krsort($files);
+  
+  // Build page
+  $build = array(
+    'last' => array(
+      '#type' => 'item',
+      '#title' => 'Dernier export',
+      '#markup' => $last,
+    ),
+    'list_title' => array(
+      '#type' => 'item',
+      '#title' => 'Exports existants',
+      '#markup' => '',
+    ),
+    'list' => array(
+      '#theme' => 'table',
+      '#header' => array(
+        'Fichier', 'Date', 'Contenu', 'Actions',
+      ),
+      '#rows' => $files,
+      '#empty' => 'Aucun export à afficher.',
+    ),
+  );
+  return $build;
+}

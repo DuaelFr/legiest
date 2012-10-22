@@ -1,4 +1,3 @@
-
 (function($) {
   Drupal.behaviors.custom_search = {
     attach: function(context) {
@@ -95,6 +94,17 @@
           terms = terms.split(',');
           for (var i=0; i<terms.length; i++) {
             $('#edit-term option[value='+terms[i]+']').attr('selected', true);
+          }
+        }
+        // languages
+        var pos = edit_keys.indexOf('language:');
+        if (pos) {
+          var pos2 = edit_keys.indexOf(' ',pos);
+          if (pos2==-1) pos2 = edit_keys.length;
+          var languages = edit_keys.substring(pos+9,pos2);
+          languages = languages.split(',');
+          for (var i=0; i<languages.length; i++) {
+            $('.search-advanced #edit-language-'+languages[i]).attr('checked', true);
           }
         }
       }
