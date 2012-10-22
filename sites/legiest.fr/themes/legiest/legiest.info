@@ -54,6 +54,14 @@ css[global.css][name] = Your custom global styles
 css[global.css][description] = This file holds all the globally active custom CSS of your theme.
 css[global.css][options][weight] = 10
 
+css[invoice-screen.css][name] = Ubercart invoices (screen)
+css[invoice-screen.css][description] = This file holds all the invoice screen styles.
+css[invoice-screen.css][options][weight] = 11
+
+css[invoice-print.css][name] = Ubercart invoices (print)
+css[invoice-print.css][description] = This file holds all the invoice print styles.
+css[invoice-print.css][options][weight] = 12
+
 ; SCRIPTS
 scripts[] = js/jquery.corner.js
 scripts[] = js/legiest_corner.js

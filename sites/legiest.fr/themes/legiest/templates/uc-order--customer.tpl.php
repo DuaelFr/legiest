@@ -1,4 +1,4 @@
-<?php
+  <?php
 
 /**
  * @file
@@ -47,18 +47,18 @@
         <?php if ($business_header): ?>
         <tr valign="top">
           <td>
-            <table width="100%" style="font-family: verdana, arial, helvetica; font-size: small;">
+            <table id="invoice-header" width="100%" style="font-family: verdana, arial, helvetica; font-size: small;">
               <tr>
                 <td>
                   <?php print $site_logo; ?>
                 </td>
                 <td width="98%">
                   <div style="padding-left: 1em;">
-                  <span style="font-size: large;"><?php print $store_name; ?></span><br />
-                  <?php print $site_slogan; ?>
+                  <span id="store-name" style="font-size: large;"><?php //print $store_name; ?>Droit du Travail</span><br />
+                  <span id="store-slogan"><?php print $site_slogan; ?></span>
                   </div>
                 </td>
-                <td nowrap="nowrap">
+                <td id="store-address" nowrap="nowrap">
                   <?php print $store_address; ?><br /><?php print $store_phone; ?>
                 </td>
               </tr>
@@ -66,7 +66,11 @@
           </td>
         </tr>
         <?php endif; ?>
-
+        <tr>
+          <td class="invoice-number">
+          <span id="invoice-number">Facture n° <?php print strip_tags($order_link); ?></span>
+          </td>
+        </tr>
         <tr valign="top">
           <td>
 

@@ -1,1 +1,31 @@
 .invoice tbody { border-top: none; }
+
+#invoice-header {
+  margin-bottom: 0;
+}
+#store-name {
+  text-transform: uppercase;
+  color: #0062A0;
+  font-weight: bold;
+}
+#store-slogan {
+  font-size: 85%;
+  color: #DC0932;
+}
+#store-address {
+  font-size: 90%;
+  color: #555;
+}
+.invoice-number {
+  text-align: right;
+  padding-right: 20px;
+}
+#invoice-number {
+  font-size: 150%;
+  font-weight: bold;
+}
+#purchasing-header {
+  font-size: 150%;
+  color: #0062A0;
+}
+
