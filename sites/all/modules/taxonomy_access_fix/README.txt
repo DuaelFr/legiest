@@ -4,15 +4,13 @@ Taxonomy access fix
 
 This module
 
-* adds 1 per mission per vocabulary: `add terms in VOCABULARY_ID`
+* adds 1 permission per vocabulary: "add terms in X"
 * changes the way vocabulary specific permissions are handled
-* changes the admin pages accesss callback to a custom access check
-* alters to vocabularies overview table to show only what you have access
-  to edit or delete
+* changes the Taxonomy admin pages' access checks
+* alters the vocabularies overview table to show only what you have access to edit or delete
 
-The module does what native Taxonomy should have done: check and
-define Taxonomy permissions better.
+The module does what native Taxonomy lacks: more specific Taxonomy permissions (and checking them correctly).
 
-**NOTE:** A module can't add permissions to another module, so the extra
-"add terms" permissions are located under "Taxonomy access fix" and not
-under "Taxonomy".
+*Note*: In order to access the admin/structure/taxonomy page, you must first set permissions for the desired vocabularies.
+
+*Note*: A module can't add permissions to another module, so the extra "add terms in X" permissions are located under "Taxonomy access fix" and not under "Taxonomy".

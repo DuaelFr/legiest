@@ -85,7 +85,7 @@ function uc_recurring_tokens($type, $tokens, $data = array(), $options = array()
           break;
 
         case 'next-charge':
-          $replacements[$original] = $format_date($fee->next_charge);
+          $replacements[$original] = format_date($fee->next_charge);
           break;
 
         case 'fee-amount':

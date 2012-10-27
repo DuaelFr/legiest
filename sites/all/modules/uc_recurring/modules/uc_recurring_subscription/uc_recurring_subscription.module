@@ -152,7 +152,7 @@ function uc_recurring_subscription_load($nid) {
 function uc_recurring_subscription_delete($nid) {
   // TODO Please review the conversion of this statement to the D7 database API syntax.
   /* db_query("DELETE FROM {uc_recurring_subcription} WHERE nid = %d", $nid) */
-  db_delete('uc_recurring_subcription')
+  db_delete('uc_recurring_subscription')
   ->condition('nid', $nid)
   ->execute();
 }
@@ -334,4 +334,3 @@ function uc_recurring_subscription_uc_recurring_access_apply($fee, $product) {
     uc_order_comment_save($fee->order_id, $user->uid, t('Applied recurring access to role id: @role.', array('@role' => $rid)));
   }
 }
-
