@@ -41,3 +41,4 @@
  */
 $sites['legiest.pycna.com'] = 'legiest.fr';
 $sites['act.pycna.com'] = 'affichagecodedutravail.fr';
+$sites['affichagecodedutravail.pycna.com'] = 'affichagecodedutravail.fr';
