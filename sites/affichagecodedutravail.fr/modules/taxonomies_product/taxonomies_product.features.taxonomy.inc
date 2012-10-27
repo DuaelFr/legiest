@@ -9,14 +9,6 @@
  */
 function taxonomies_product_taxonomy_default_vocabularies() {
   return array(
-    'category_theme' => array(
-      'name' => 'Thématique de Catégorie',
-      'machine_name' => 'category_theme',
-      'description' => 'Classement par métier des catégories',
-      'hierarchy' => '0',
-      'module' => 'taxonomy',
-      'weight' => '0',
-    ),
     'product_category' => array(
       'name' => 'Catégorie de Produit',
       'machine_name' => 'product_category',
@@ -24,6 +16,7 @@ function taxonomies_product_taxonomy_default_vocabularies() {
       'hierarchy' => '0',
       'module' => 'taxonomy',
       'weight' => '0',
+      'metatags' => array(),
     ),
   );
 }

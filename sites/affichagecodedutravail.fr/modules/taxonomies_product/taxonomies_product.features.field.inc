@@ -163,83 +163,12 @@ function taxonomies_product_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-product_category-field_theme'.
-  $fields['taxonomy_term-product_category-field_theme'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_theme',
-      'foreign keys' => array(
-        'tid' => array(
-          'columns' => array(
-            'tid' => 'tid',
-          ),
-          'table' => 'taxonomy_term_data',
-        ),
-      ),
-      'indexes' => array(
-        'tid' => array(
-          0 => 'tid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'taxonomy',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => array(
-            'vocabulary' => 'category_theme',
-            'parent' => '0',
-          ),
-        ),
-      ),
-      'translatable' => '0',
-      'type' => 'taxonomy_term_reference',
-    ),
-    'field_instance' => array(
-      'bundle' => 'product_category',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => 'Thématique (métier) à laquelle appartient la catégorie.
-Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.
-Si l\'une de vos catégories liée à une thématique possède une ou plusieurs sous-catégories, ces dernières devront également être rattachées à la même thématique.',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'taxonomy',
-          'settings' => array(),
-          'type' => 'taxonomy_term_reference_link',
-          'weight' => 1,
-        ),
-      ),
-      'entity_type' => 'taxonomy_term',
-      'field_name' => 'field_theme',
-      'label' => 'Thématique',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'options',
-        'settings' => array(),
-        'type' => 'options_select',
-        'weight' => '1',
-      ),
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Caché');
   t('Icone de la catégorie (affiché dans le menu pour les termes de premier niveau et dans la page de détail pour tous)');
   t('Image');
   t('Si coché, le terme et ses enfants n\'apparaîtront pas dans le menu. Si appliqué sur une élément de premier niveau, il n\'y aura aucun moyen, hors recherche, de trouver le contenu de la catégorie.');
-  t('Thématique');
-  t('Thématique (métier) à laquelle appartient la catégorie.
-Laissez ce champ vide pour que la catégorie apparaisse dans la liste générale.
-Si l\'une de vos catégories liée à une thématique possède une ou plusieurs sous-catégories, ces dernières devront également être rattachées à la même thématique.');
 
   return $fields;
 }

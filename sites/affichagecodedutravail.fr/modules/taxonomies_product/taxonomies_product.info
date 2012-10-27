@@ -18,7 +18,6 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:1
 features[field][] = taxonomy_term-product_category-field_hidden
 features[field][] = taxonomy_term-product_category-field_picture
-features[field][] = taxonomy_term-product_category-field_theme
 features[taxonomy][] = category_theme
 features[taxonomy][] = product_category
 features[variable][] = taxonomy_menu_display_descendants_category_theme
