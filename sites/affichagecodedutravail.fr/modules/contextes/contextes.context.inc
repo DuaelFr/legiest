@@ -122,17 +122,17 @@ function contextes_context_default_contexts() {
           'region' => 'content',
           'weight' => '-10',
         ),
-        'views-products-block_new_theme' => array(
+        'views-products-block_new_category' => array(
           'module' => 'views',
-          'delta' => 'products-block_new_theme',
+          'delta' => 'products-block_new_category',
           'region' => 'content',
-          'weight' => '-9',
+          'weight' => '-8',
         ),
         'views-2d9f38f566546e47ae02bab05b35c50a' => array(
           'module' => 'views',
           'delta' => '2d9f38f566546e47ae02bab05b35c50a',
           'region' => 'content',
-          'weight' => '-8',
+          'weight' => '-7',
         ),
       ),
     ),
