@@ -111,7 +111,7 @@ function taxonomy_access_fix_access($op, $vocabulary = NULL) {
     case 'index':
       // Only if they have >= 1 vocabulary access.
       foreach (taxonomy_get_vocabularies() as $vid => $vocabulary) {
-        if (user_access('edit terms in ' . $vid) || user_access('delete terms in ' . $vid)) {
+        if (user_access('edit terms in ' . $vid) || user_access('delete terms in ' . $vid) || user_access('add terms in ' . $vid)) {
           return TRUE;
         }
       }
@@ -119,7 +119,7 @@ function taxonomy_access_fix_access($op, $vocabulary = NULL) {
     case 'list terms':
       if ($vocabulary) {
         $vid = $vocabulary->vid;
-        if (user_access('edit terms in ' . $vid) || user_access('delete terms in ' . $vid)) {
+        if (user_access('edit terms in ' . $vid) || user_access('delete terms in ' . $vid) || user_access('add terms in ' . $vid)) {
           return TRUE;
         }
       }
