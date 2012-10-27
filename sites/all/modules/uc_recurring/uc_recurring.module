@@ -398,7 +398,7 @@ function uc_recurring_renew($fee) {
     // Save the fee object.
     uc_recurring_fee_user_save($fee);
 
-    module_invoke_all('recurring_renewal_completed', $order, $fee);
+    uc_recurring_renewal_module_invoke('recurring_renewal_completed', $order, $fee);
     // @todo - replace with rules
     //ca_pull_trigger('uc_recurring_renewal_complete', $order, $fee);
     rules_invoke_event('uc_recurring_renewal_complete', $order, $fee);
@@ -434,7 +434,7 @@ function uc_recurring_renew($fee) {
       uc_recurring_fee_user_save($fee);
     }
 
-    module_invoke_all('recurring_renewal_failed', $order, $fee);
+    uc_recurring_renewal_module_invoke('recurring_renewal_failed', $order, $fee);
     // @todo - replace with rules
     //ca_pull_trigger('uc_recurring_renewal_failed', $order, $fee);
     rules_invoke_event('uc_recurring_renewal_failed', $order, $fee);
@@ -449,6 +449,12 @@ function uc_recurring_renew($fee) {
  */
 function uc_recurring_create_renewal_order($fee) {
   global $user;
+
+  // Clear CC cache so that correct info is loaded (if any)
+  if (module_exists('uc_credit')) {
+    uc_credit_cache('clear');
+  }
+
   $order = uc_order_load($fee->order_id);
   $old_id = $order->order_id;
 
@@ -474,10 +480,7 @@ function uc_recurring_create_renewal_order($fee) {
   unset($new_order->line_items);
 
   // Give other modules a chance to modify the new order before processing
-  foreach (module_implements('recurring_renewal_pending') as $module) {
-    $func = $module . '_recurring_renewal_pending';
-    $func($new_order, $fee);
-  }
+  uc_recurring_renewal_module_invoke('recurring_renewal_pending', $new_order, $fee);
 
   $new_order->line_items = uc_order_load_line_items($new_order, TRUE);
 
@@ -729,8 +732,8 @@ function uc_recurring_includes() {
  */
 function uc_recurring_invoke($handler, $op, $params = array()) {
   $info = uc_recurring_get_recurring_info($handler);
-  $function = $info[$op];
-  if (function_exists($function)) {
+  $function = isset($info[$op]) ? $info[$op] : "";
+  if ($function && function_exists($function)) {
     // Add the op argument to the params, in case the handler will need to use
     // it to identify the operation it is in.
     $params[] = $op;
@@ -887,7 +890,7 @@ function uc_recurring_get_fees($order, $reset = FALSE) {
  */
 function uc_recurring_get_fees_for_renew() {
   $fees = array();
-  $result = db_query("SELECT * FROM {uc_recurring_users} WHERE remaining_intervals <> :remaining_intervals AND next_charge <= :next_charge AND own_handler = :own_handler ORDER BY order_id DESC", array(':remaining_intervals' => 0, ':next_charge' => REQUEST_TIME, ':own_handler' => 0));
+  $result = db_query("SELECT * FROM {uc_recurring_users} WHERE remaining_intervals <> :remaining_intervals AND next_charge <= :next_charge AND status = :status AND own_handler = :own_handler ORDER BY order_id DESC", array(':remaining_intervals' => 0, ':next_charge' => REQUEST_TIME, ':status' => UC_RECURRING_FEE_STATUS_ACTIVE, ':own_handler' => 0));
   foreach ($result as $fee) {
     $fee->data = unserialize($fee->data);
     $fees[$fee->rfid] = $fee;
@@ -1222,6 +1225,28 @@ function uc_recurring_set_intervals(&$fee) {
   $fee->charged_intervals++;
   $fee->attempts = 0;
   $fee->data['extension'] = 0;
+}
+
+/**
+ * Invokes uc_recurring renewal hooks in every module.
+ *
+ * We cannot use module_invoke() for this, because the arguments need to
+ * be passed by reference.
+ * @param $type
+ *   The renewal hook type. Available type recurring_renewal_pending,
+ *     recurring_renewal_completed, recurring_renewal_failed.
+ * @param $order
+ *   The order object.
+ * @param $fee
+ *   The recurring Fee object.
+ */
+function uc_recurring_renewal_module_invoke($type, &$order, &$fee) {
+  foreach (module_list() as $module) {
+    $function = $module .'_'. $type;
+    if (function_exists($function)) {
+      $function($order, $fee);
+    }
+  }
 }
 
 /**

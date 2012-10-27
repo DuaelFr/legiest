@@ -10,9 +10,9 @@ files[] = uc_recurring_hosted.module
 files[] = uc_recurring_hosted.paypal_ipn.inc
 files[] = uc_recurring_hosted.test
 
-; Information added by drupal.org packaging script on 2012-04-25
-version = "7.x-2.0-alpha2"
+; Information added by drupal.org packaging script on 2012-09-22
+version = "7.x-2.0-alpha3"
 core = "7.x"
 project = "uc_recurring"
-datestamp = "1335397885"
+datestamp = "1348323920"
 

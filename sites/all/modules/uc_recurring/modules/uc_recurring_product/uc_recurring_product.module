@@ -444,6 +444,8 @@ function uc_recurring_product_uc_order($op, $order, $arg2) {
     // TODO: Allow admin to create a recurring order from "create order" page.
     case 'submit':
       if (variable_get('uc_recurring_checkout_process', TRUE)) {
+        //reload order to capture uid in case checkout was anonymous
+        $order = uc_order_load($order->order_id);
         if (uc_recurring_product_process_order($order) === FALSE) {
           return array(array('pass' => FALSE, 'message' => t('Your order cannot be completed, because we could not process your recurring payment. Please review your payment details and contact us to complete your order if the problem persists.')));
         }

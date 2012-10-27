@@ -478,7 +478,7 @@ function uc_recurring_hosted_authorizenet_arb_cancel($order, $fee) {
   $data = _uc_authorizenet_arb_parse_response($response);
 
   if ($data['resultCode'] == 'Error') {
-    if (!empty($order->$order_id)) {
+    if (!empty($order->order_id)) {
       uc_order_comment_save($order->order_id, 0, t('Authorize.Net: Subscription @subscription_id cancellation failed.@error - @text', array('@subscription_id' => $subscription_id, '@error' => $data['code'], '@text' => $data['text'])), 'admin');
     }
     return FALSE;
@@ -631,8 +631,9 @@ function uc_recurring_hosted_form_uc_paypal_wps_form_alter(&$form, $form_state) 
  */
 function uc_recurring_hosted_paypal_cancel_form($form_state, $rfid) {
   $form['message'] = array(
-    '#value' => t('You can cancel your subscription from your paypal account, see <a href="@link">here</a> for instructions.', array('@link' => 'https://www.paypal.com/helpcenter/main.jsp?cmd=_help&t=solutionTab&solutionId=11750')),
-  );
+    '#markup' => t('You can cancel your subscription from your paypal account, see <a href="@link">here</a> for instructions.',
+      array('@link' => 'https://www.paypal.com/webapps/helpcenter/article/?currentIssueID=59055&m=SRE')
+  ));
   return $form;
 }
 

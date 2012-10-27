@@ -12,7 +12,7 @@ function uc_recurring_admin($filter = NULL, $id = NULL) {
   $item = menu_get_item();
 
   // Add the filter form to the top of the table.
-  $output = drupal_get_form('uc_recurring_admin_filter_form', $item);
+  $output = render(drupal_get_form('uc_recurring_admin_filter_form', $item));
 
   // Build an array of fees to include in the admin table.
   $fees = array();
@@ -210,21 +210,36 @@ function uc_recurring_admin_edit_form($form, $form_state, $rfid, $fee_handler) {
       '#description' => t('Specify how many more recurring fees will be charged.'),
     );
 
-    $attributes = array();
-    if ($fee->remaining_intervals < 0) {
-      $attributes['checked'] = 'checked';
+    $unlimited_intervals_attributes = array();
+    $number_intervals_attributes = array();
+    
+    if (($fee->remaining_intervals < 0 && !isset($form_state['values']['unlimited_intervals'])) || (isset($form_state['values']) && isset($form_state['values']['unlimited_intervals']) && $form_state['values']['unlimited_intervals'] == 1 )) {
+      $unlimited_intervals_attributes['checked'] = 'checked';
+      $number_intervals_default_value = 1;
+      $number_intervals_attributes = array('disabled' => 'disabled');
     }
+    else{
+      $number_intervals_default_value = ($fee->remaining_intervals > 0) ? $fee->remaining_intervals : 1;
+    }
+
     $form['num_interval']['unlimited_intervals'] = array(
       '#type' => 'checkbox',
       '#title' => t('Unlimited rebillings.'),
-      '#attributes' => $attributes,
+      '#attributes' => $unlimited_intervals_attributes,
+      '#ajax' => array(
+        'callback' => 'rebilling_num_intervals_callback',
+        'wrapper' => 'rebilling_num_intervals_replace',
+      ),
     );
+    
     $form['num_interval']['number_intervals'] = array(
       '#type' => 'textfield',
       '#title' => t('Remaining billing periods'),
       '#size' => 16,
-      '#default_value' => $fee->remaining_intervals < 0 ? '' : $fee->remaining_intervals,
-      '#attributes' => $fee->remaining_intervals < 0 ? array('disabled' => 'disabled') : array(),
+      '#prefix' => '<div id="rebilling_num_intervals_replace">',
+      '#suffix' => '</div>',      
+      '#default_value' => $number_intervals_default_value,
+      '#attributes' => $number_intervals_attributes,
     );
 
     $form['next_charge'] = array(
@@ -307,12 +322,18 @@ function uc_recurring_admin_edit_form($form, $form_state, $rfid, $fee_handler) {
   }
 }
 
+function rebilling_num_intervals_callback($form, $form_state) {  
+  return $form['num_interval']['number_intervals'];
+}
+
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
 function uc_recurring_admin_edit_form_validate($form, &$form_state) {
-  if (empty($form_state['values']['unlimited_intervals']) && intval($form_state['values']['number_intervals']) < 0) {
+  //dpm($form_state);
+  if (($form_state['values']['unlimited_intervals'] == 0 || empty($form_state['values']['unlimited_intervals'])) && intval($form_state['values']['number_intervals']) < 1) {
     form_set_error('number_intervals', t('Only positive whole number values are accepted for the number of billing periods.'));
   }
 }

@@ -53,8 +53,8 @@ function uc_recurring_subscription_overview($form, &$form_state) {
         $interval .= ' ' . t('(<a href="@link">cart link</a>)', array('@link' => url('cart/add/e-p' . $node->nid . '_q1_a' . $attribute->aid . 'o' . $feature->option->oid . '-isub', array('query' => array('destination' => 'cart/checkout'), 'absolute' => TRUE))));
       }
 
-      if (!($feature->regular_interval_value == $feature->initial_charge_value &&
-          $feature->regular_interval_unit == $feature->initial_charge_unit)) {
+      if ($feature->regular_interval_value != $feature->initial_charge_value &&
+          $feature->regular_interval_unit != $feature->initial_charge_unit) {
         $trial = theme('uc_price', array('price' => $product->sell_price)) . ' - ' . $feature->initial_charge_value . ' ' . $feature->initial_charge_unit;
       }
 
@@ -132,7 +132,7 @@ function uc_recurring_subscription_product_form($form, $form_state, $product_id 
     $node->sell_price = '0';
 //     $node->x = '';
   }
-  
+
   $form['product'] = array(
     '#type' => 'fieldset',
     '#title' => 'Step One: Product Details',
@@ -191,7 +191,7 @@ function uc_recurring_subscription_product_form($form, $form_state, $product_id 
   );
   $form['recurring']['trial']['trial_interval_value'] = array(
     '#type' => 'textfield',
-    '#default_value' => $trial_product->initial_charge_value,
+    '#default_value' => !empty($trial_product) && isset($trial_product->initial_charge_value) ? $trial_product->initial_charge_value : '',
     '#size' => 2,
     '#prefix' => '<div class="subscription-interval-value">',
     '#suffix' => '</div>',
@@ -204,7 +204,7 @@ function uc_recurring_subscription_product_form($form, $form_state, $product_id 
       'months' => t('month(s)'),
       'years' => t('year(s)'),
     ),
-    '#default_value' => $trial_product->initial_charge_unit,
+    '#default_value' => !empty($trial_product) && isset($trial_product->initial_charge_unit) ? $trial_product->initial_charge_unit : '',
     '#prefix' => '<div class="subscription-interval-period">',
     '#suffix' => '</div>',
   );
@@ -274,15 +274,15 @@ function uc_recurring_subscription_product_form($form, $form_state, $product_id 
       '#type' => 'select',
       '#options' => $roles,
       '#multiple' => TRUE,
-      '#default_value' => $node->subscription->access['subscribe_grant'],
-      '#attributes' => array('class' => array('role-option')), 
+      '#default_value' => isset($node->subscription->access) ? $node->subscription->access['subscribe_grant'] : '',
+      '#attributes' => array('class' => array('role-option')),
       '#parents' => array('access', 0, 'subscribe_grant'),
     );
     $form['access']['role']['expire_grant'] = array(
       '#type' => 'select',
       '#options' => $roles,
       '#multiple' => TRUE,
-      '#default_value' => $node->subscription->access['expire_grant'],
+      '#default_value' => isset($node->subscription->access) ? $node->subscription->access['expire_grant'] : '',
       '#attributes' => array('class' => array('role-option')),
       '#parents' => array('access', 0, 'expire_grant'),
     );
@@ -290,7 +290,7 @@ function uc_recurring_subscription_product_form($form, $form_state, $product_id 
       '#type' => 'select',
       '#options' => $roles,
       '#multiple' => TRUE,
-      '#default_value' => $node->subscription->access['expire_revoke'],
+      '#default_value' => isset($node->subscription->access) ? $node->subscription->access['expire_revoke'] : '',
       '#attributes' => array('class' => array('role-option')),
       '#parents' => array('access', 0, 'expire_revoke'),
     );
@@ -400,7 +400,7 @@ function uc_recurring_subscription_remove_interval_callback($form, $form_state) 
 function uc_recurring_subscription_remove_interval($form, &$form_state) {
   if ($form_state['recurring_count'] > 0) {
     $form_state['recurring_count']--;
-  } 
+  }
   unset($form['recurring']['recurring_intervals'][$form_state['clicked_button']['#attributes']['rel']]);
   unset($form_state['values']['recurring_intervals'][$form_state['clicked_button']['#attributes']['rel']]);
   $form_state['rebuild'] = TRUE;
@@ -774,7 +774,7 @@ function uc_recurring_subscription_subscriber_list($form, $form_state, $product_
   if (is_numeric(arg(4))) {
     $product = node_load(arg(4));
     $id = arg(4);
-    
+
     $header = array(
       array('data' => t('Order')),
       array(
@@ -793,7 +793,7 @@ function uc_recurring_subscription_subscriber_list($form, $form_state, $product_
       array('data' => t('Status')),
       array('data' => t('Operations'))
     );
-    
+
     $query = db_select('users', 'u');
     $query = $query->extend('TableSort');
     $query = $query->orderByHeader($header);
@@ -896,7 +896,7 @@ function theme_uc_recurring_subscription_item($variables) {
       continue;
     }
     // Add class to group weight fields for drag and drop.
-    $form[$key]['weight']['#attributes']['class'] = 'recurring-weight';
+    $form[$key]['weight']['#attributes']['class'] = array('recurring-weight');
 
     $rows[] = array(
       'data' => array(
