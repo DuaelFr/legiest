@@ -1,0 +1,134 @@
+/*******************************************************************************
+ * HEADER
+ ******************************************************************************/
+
+/* Logo, sitename, slogan */
+.site-name-slogan { display: none; }
+
+/* Cart block */
+.block-uc-cart { border-left: 1px solid #000; float: right; padding-left: 15px; }
+.block-uc-cart .block-title { float: left; }
+.block-uc-cart .block-title a { 
+	background: transparent url('http://placehold.it/40x30') no-repeat left center; 
+	display: block; 
+	height: 30px;
+	padding: 0;
+	text-indent: -9999px; 
+	width: 40px;
+}
+.block-uc-cart .content { float: left; line-height: 30px; padding-left: 10px; }
+
+/* User menu block */
+.block-menu-espace-clients { float: right; }
+.block-menu-espace-clients li.leaf { float: left; list-style: none; }
+.block-menu-espace-clients li a { text-decoration: none; }
+.block-menu-espace-clients li.last a { background: orange; border-radius: 5px; color: #fff; padding: 2px 3px; }
+
+/* Search form block */
+.block-search-form { clear: right; float: right; }
+
+/* Menu block */
+.block-nice-menus {}
+.block-nice-menus li { height: 40px; width: 125px; }
+.block-nice-menus li.first { width: 175px; }
+.block-nice-menus li:nth-child(5) { width: 150px; }
+.block-nice-menus li.last { width: 100px; }
+.block-nice-menus li a { display: block; height: 36px; padding-bottom: 2px; padding-top: 2px; }
+.block-nice-menus li.last a { line-height: 36px; }
+.block-nice-menus li ul { top: 40px; }
+.block-nice-menus li li { width: 200px !important; }
+.block-nice-menus li li a { height: 36px; line-height: 36px; padding-bottom: 2px; padding-top: 2px; }
+
+/*******************************************************************************
+ * SLIDESHOW
+ ******************************************************************************/
+
+/* @TODO */
+
+/*******************************************************************************
+ * SIDEBAR
+ ******************************************************************************/
+
+/* @TODO */
+
+/*******************************************************************************
+ * CONTENT
+ ******************************************************************************/
+
+/* @TODO */
+
+/*******************************************************************************
+ * FOOTER
+ ******************************************************************************/
+
+/* @TODO Changer les couleurs */
+
+#zone-footer-wrapper {
+  background-color: #203459;
+}
+#zone-footer {
+    padding-top: 15px;
+}
+
+#region-footer-first,
+#region-footer-first a {
+    color: #697DA2;
+}
+#block-menu-menu-footer-menu {
+    width: 720px;
+}
+#block-menu-menu-footer-menu a {
+  text-decoration: none;
+}
+#block-menu-menu-footer-menu ul.menu li.nolink {
+    display: inline;
+    float: left;
+    margin-left: 0;
+    width: 240px;
+    padding-right: 0;
+}
+#block-menu-menu-footer-menu ul.menu li.nolink span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #98C2F2;
+}
+#block-menu-menu-footer-menu ul.menu li.nolink ul {
+  margin-top: 10px;
+}
+#block-menu-menu-footer-menu ul.menu li.nolink ul li.leaf {
+  list-style-type: none;
+  list-style-image: none;
+  margin-left: 0;
+  font-size: 0.9em;
+  padding: 0;
+}
+#block-menu-menu-footer-menu ul.menu li.last span {
+  visibility: hidden;
+}
+#block-boxes-legiest-address {
+    float: right;
+    width: 220px;
+}
+#block-boxes-legiest-address {
+  font-size: 0.9em;
+}
+#block-boxes-legiest-address h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.2em;
+  color: #98C2F2;
+}
+#block-boxes-legiest-address .content {
+  margin-top: 18px;
+}
+#block-boxes-secure-payment {
+  float: right;
+  width: 460px;
+  margin-top: -65px;
+}
+#block-boxes-secure-payment h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.9em;
+  font-weight: normal;
+  color: 697DA2;
+}
