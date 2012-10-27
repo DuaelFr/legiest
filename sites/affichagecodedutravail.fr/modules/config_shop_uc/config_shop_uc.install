@@ -1,0 +1,77 @@
+<?php
+
+// -----------------------------------------------------------------------------
+// HOOKS
+
+/**
+ * Implements hook_install().
+ */
+function config_shop_uc_install() {
+  _config_shop_install_countries();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function config_shop_uc_uninstall() {
+  _config_shop_clean_countries();
+}
+
+// -----------------------------------------------------------------------------
+// COUNTRIES
+
+/**
+ * Import and enable needed countries
+ */
+function _config_shop_install_countries() {
+  $needed_countries = array(
+    'france', 'monaco', 'belgium', 'switzerland',  
+    'french_guiana', 'french_polynesia', 'french_southern_territories', 
+    'guadeloupe', 'martinique', 'mayotte', 'new_caledonia', 'reunion',
+    'saint_barthelemy', 'saint_martin', 'saint_pierre_miquelon',
+    'wallis_futuna',
+  );
+  
+  module_load_include('inc', 'uc_store', 'uc_store.countries');
+
+  // Remove all countries
+  _config_shop_clean_countries();
+  
+  // Import needed countries
+  $files = _uc_country_import_list();
+  foreach ($files as $file) {
+    $fname = $file['file'];
+    $cname = preg_replace('#^(.*)_[0-9]+_[0-9]+\.cif$#', '$1', $fname);
+    if (in_array($cname, $needed_countries)) {
+      uc_country_import($fname);
+    }
+  }
+}
+
+/**
+ * Remove all installed countries.
+ */
+function _config_shop_clean_countries() {
+  module_load_include('inc', 'uc_store', 'uc_store.countries');
+
+  $countries = uc_get_country_data();
+  $countries = empty($countries) ? array() : $countries;
+  
+  foreach ($countries as $country) {
+    db_delete('uc_countries')
+      ->condition('country_id', $country['country_id'])
+      ->execute();
+    db_delete('uc_zones')
+      ->condition('zone_country_id', $country['country_id'])
+      ->execute();
+    variable_del('uc_address_format_' . $country['country_id']);
+  
+    $func_base = _uc_country_import_include($country['country_id'], $country['version']);
+    if ($func_base !== FALSE) {
+      $func = $func_base . '_uninstall';
+      if (function_exists($func)) {
+        $func();
+      }
+    }
+  }
+}
