@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Views field view field handler class.
@@ -29,12 +30,19 @@ class views_field_view_handler_field_view extends views_handler_field {
    */
   public $child_view = FALSE;
 
+  /**
+   * Disable this handler from being used as a 'group by'.
+   */
+  function use_string_group_by() {
+    return FALSE;
+  }
+
   function option_definition() {
     $options = parent::option_definition();
     $options['view'] = array('default' => '');
     $options['display'] = array('default' => 'default');
     $options['arguments'] = array('default' => '');
-    $options['query_aggregation'] = array('default' => FALSE);
+    $options['query_aggregation'] = array('default' => FALSE, 'bool' => TRUE);
 
     return $options;
   }
@@ -42,8 +50,8 @@ class views_field_view_handler_field_view extends views_handler_field {
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
-    $view_options = drupal_map_assoc(array_keys(views_get_enabled_views()));
-    
+    $view_options = views_get_views_as_options(TRUE);
+
     $form['views_field_view'] = array(
       '#type' => 'fieldset',
       '#title' => t("View settings"),
@@ -67,7 +75,7 @@ class views_field_view_handler_field_view extends views_handler_field {
 
     // If there is no view set, use the first one for now.
     if (count($view_options) && empty($this->options['view'])) {
-      $this->options['view'] = reset($view_options);
+      $this->options['view'] = reset(array_keys($view_options));
     }
 
     if ($this->options['view']) {
@@ -87,8 +95,49 @@ class views_field_view_handler_field_view extends views_handler_field {
         '#description' => t('Select a view display to use.'),
         '#default_value' => $this->options['display'],
         '#options' => $display_options,
+        '#ajax' => array(
+          'path' => views_ui_build_form_url($form_state),
+        ),
+        '#submit' => array('views_ui_config_item_form_submit_temporary'),
+        '#executes_submit_callback' => TRUE,
         '#fieldset' => 'views_field_view',
       );
+
+      // Provide a way to directly access the views edit link of the child view.
+      // Don't show this link if the current view is the selected child view.
+      if ($this->options['view'] && $this->options['display'] && ($this->view->name != $this->options['view'])) {
+        // use t() here, and set HTML on #link options.
+        $link_text = t('Edit "%view (@display)" view', array('%view' => $view_options[$this->options['view']], '@display' => $this->options['display']));
+        $form['view_edit'] = array(
+          '#type' => 'container',
+          '#fieldset' => 'views_field_view',
+        );
+        $form['view_edit']['view_edit_link'] = array(
+          '#theme' => 'link',
+          '#text' => $link_text,
+          '#path' => 'admin/structure/views/view/' . $this->options['view'] . '/edit/' . $this->options['display'],
+          '#options' => array(
+            'attributes' => array(
+              'target' => '_blank',
+              'class' => array('views-field-view-child-view-edit'),
+            ),
+            'html' => TRUE,
+          ),
+          '#attached' => array(
+            'css' => array(
+              drupal_get_path('module', 'views_field_view') . '/views_field_view.css',
+            ),
+          ),
+          '#prefix' => '<span>[</span>',
+          '#suffix' => '<span>]</span>',
+        );
+        $form['view_edit']['description'] = array(
+          '#markup' => t('Use this link to open the current child view\'s edit page in a new window.'),
+          '#prefix' => '<div class="description">',
+          '#suffix' => '</div>',
+        );
+      }
+
       $form['arguments'] = array(
         '#title' => t('Contextual filters'),
         '#description' => t('Use a comma (,) or forwardslash (/) separated list of each contextual filter which should be forwared to the view. 
@@ -141,7 +190,7 @@ class views_field_view_handler_field_view extends views_handler_field {
    * This gives the handlers some time to set up before any handler has
    * been rendered.
    *
-   * @param $values
+   * @param array $values
    *   An array of all objects returned from the query.
    */
   function pre_render(&$values) {
@@ -299,6 +348,7 @@ class views_field_view_handler_field_view extends views_handler_field {
   }
 
   function render($values) {
+    $output = NULL;
     // If it's not a field handler and there are no values
     // Get the first result row from the view and use that.
     if (($this->handler_type !== 'field') && empty($values) && isset($this->view->result)) {
@@ -306,8 +356,6 @@ class views_field_view_handler_field_view extends views_handler_field {
     }
 
     static $running = array();
-    //Set empty output, so we always have an output variable.
-    $output = '';
     // Protect against the evil / recursion.
     // Set the variable for yourself, this is not for the normal "user".
     if (empty($running[$this->options['view']][$this->options['display']]) || variable_get('views_field_view_evil', FALSE)) {
@@ -329,12 +377,31 @@ class views_field_view_handler_field_view extends views_handler_field {
         // Only execute and render the view if the user has access.
         if ($view->access($this->options['display'])) {
           $view->set_display($this->options['display']);
+
+          if ($view->display_handler->use_pager()) {
+            // Check whether the pager IDs should be rewritten.
+            $view->init_query();
+            // Find a proper start value for the ascening pager IDs.
+            $start = 0;
+            $pager = $view->display_handler->get_option('pager');
+            if (isset($this->query->pager->options)) {
+              $start = (int) $this->query->pager->options['id'];
+            }
+
+            // Set the pager ID before initializing the pager, so
+            // views_plugin_pager::set_current_page works as expected, which is
+            // called from view::init_pager()
+            $pager['options']['id'] = $start + 1 + $this->view->row_index;
+            $view->display_handler->set_option('pager', $pager);
+            $view->init_pager();
+          }
+
           $view->pre_execute($args);
           $view->execute();
 
           // If there are no results and hide_empty is set.
           if (empty($view->result) && $this->options['hide_empty']) {
-            return $output;
+            $output = '';
           }
           // Else just call render on the view object.
           else {
@@ -352,14 +419,21 @@ class views_field_view_handler_field_view extends views_handler_field {
         // Only execute and render the view if the user has access.
         if ($child_view->access($this->options['display'])) {
           $results =  $this->child_view_results[$values->{$this->view->base_field}];
-          // Inject the appropriate result set before rendering the view.
-          $child_view->result = $results;
+          // If there are no results and hide_empty is set.
+          if (empty($results) && $this->options['hide_empty']) {
+            $output = '';
+          }
+          else {
+            // Inject the appropriate result set before rendering the view.
+            $child_view->result = $results;
 
-          if (isset($child_view->style_plugin->rendered_fields)) {
-            unset($child_view->style_plugin->rendered_fields);
+            if (isset($child_view->style_plugin->rendered_fields)) {
+              unset($child_view->style_plugin->rendered_fields);
+            }
+
+            $output = $child_view->render();
           }
 
-          $output = $child_view->render();
           $running[$this->options['view']][$this->options['display']] = FALSE;
         }
       }
@@ -380,17 +454,16 @@ class views_field_view_handler_field_view extends views_handler_field {
   /**
    * Get field values from tokens.
    * 
-   * @param $token
+   * @param string $token
    *  token string. E.g. explode(',', $this->options['args']);
-   * @param $view
+   * @param View $view
    *  Full view object to get token values from.
    * 
-   * @return
-   *  array of raw argument values, returned in the same order as the token were passed in.
-   * 
+   * @return array
+   *  An array of raw argument values, returned in the same order as the token
+   *  were passed in.
    */
   function get_token_value($token, $values, $view) {
-    $value = NULL;
     $token_info = $this->get_token_argument($token);
     $arg = $token_info['arg'];
     $token_type = $token_info['type'];
@@ -407,6 +480,20 @@ class views_field_view_handler_field_view extends views_handler_field {
         break;
       }
     }
+    elseif (isset($view->args[$arg - 1])) {
+      switch ($token_type) {
+        case '%':
+          // Get an array of argument keys. So we can use the index as an
+          // identifier.
+          $keys = array_keys($view->argument);
+          $value = $view->argument[$keys[$arg - 1]]->get_title();
+        break;
+        case '!':
+        default:
+          $value = $view->args[$arg - 1];
+        break;
+      }
+    }
     else {
       $value = check_plain(trim($token, '\'"'));
     }
@@ -418,11 +505,11 @@ class views_field_view_handler_field_view extends views_handler_field {
    * Return the argument type and raw argument from a token.
    * E.g. [!test_token] will return "array('type' => '!', 'arg' => test_token)".
    *
-   * @param $token
+   * @param string $token
    *  A single token string.
    *
-   * @return
-   *  Array containing type and arg (As described above).
+   * @return array
+   *  An array containing type and arg (As described above).
    */
   function get_token_argument($token) {
     // Trim whitespace and remove the brackets around the token.
@@ -446,8 +533,11 @@ class views_field_view_handler_field_view extends views_handler_field {
    * Returns array of tokens/values to be used in child views.
    * String containing tokens is split on either "," or "/" characters.
    *
-   * @param $token_string
+   * @param string $token_string
    *   The string of tokens to split.
+   *
+   * @return array
+   *   An array of split token strings.
    */
   function split_tokens($token_string) {
     return preg_split('/,|\//', $token_string);
@@ -455,6 +545,9 @@ class views_field_view_handler_field_view extends views_handler_field {
 
   /**
    * Get available field tokens, code/logic stolen from views_handler_field.inc.
+   *
+   * @return string
+   *   A full HTML string, containing a list of available tokens.
    */
   public function get_token_info() {
     // Get a list of the available fields and arguments for token replacement.
