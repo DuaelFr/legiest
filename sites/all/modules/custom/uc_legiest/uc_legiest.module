@@ -156,15 +156,6 @@ function uc_legiest_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Implements hook_element_info_alter().
- * 
- * Allow to set default country as France.
- */
-function uc_legiest_element_info_alter(&$type) {
-  $type['uc_address']['#process'][] = 'uc_legiest_process_address_field';
-}
-
-/**
  * Implements hook_uc_checkout_pane_alter().
  * 
  * Allow to add an "HT" mention into the cart review pane.
@@ -449,35 +440,6 @@ function uc_payment_method_virt_admin($op, &$order) {
       );
       return $form;
   }
-}
-
-/**
- * uc_address form type callback.
- * 
- * Set default country as France.
- */
-function uc_legiest_process_address_field($element, $form_state) {
-  $prefix = $element['#key_prefix'] ? ($element['#key_prefix'] . '_') : '';
-
-  if (isset($form_state['uc_address'])) {
-    // Use submitted Ajax values.
-    $value = $form_state['uc_address'];
-  }
-  elseif (is_array($element['#value']) || is_object($element['#value'])) {
-    // Use provided default value.
-    $value = (array) $element['#value'];
-  }
-  else {
-    $value = array();
-  }
-  
-  $countries = $element[$prefix . 'country']['#options'];
-  // Force the selected country to a valid one, so the zone dropdown matches.
-  if (empty($value[$prefix . 'country']) || !isset($countries[$value[$prefix . 'country']])) {
-    $element[$prefix . 'country']['#value'] = $element[$prefix . 'country']['#default_value'] = array_search('France', $countries);
-  }
-
-  return $element;
 }
 
 /**

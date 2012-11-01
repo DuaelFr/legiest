@@ -1342,7 +1342,7 @@ For your convenience, you are already logged in with your newly created account.
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_product_image_widget';
-  $strongarm->value = 'colorbox';
+  $strongarm->value = '';
   $export['uc_product_image_widget'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -1472,6 +1472,8 @@ If this does not resolve the issue, please call in to complete your order.';
     'pending' => 0,
     'processing' => 0,
     'paypal_pending' => 0,
+    'special_processing' => 0,
+    'special_pending' => 0,
     'payment_received' => 0,
   );
   $export['uc_reports_reported_statuses'] = $strongarm;
@@ -1501,7 +1503,7 @@ If this does not resolve the issue, please call in to complete your order.';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'uc_store_country';
-  $strongarm->value = '840';
+  $strongarm->value = '250';
   $export['uc_store_country'] = $strongarm;
 
   $strongarm = new stdClass();
