@@ -117,7 +117,7 @@ function uc_legiest_uc_order_state() {
  * Implements hook_views_pre_view().
  */
 function uc_legiest_views_pre_build(&$view) {
-  if ($view->name == 'uc_customers') {
+  if ($view->name == 'uc_customers' || $view->name = 'uc_orders_user') {
     $display = $view->display[$view->current_display];
     $filter = $display->handler->handlers['filter']['order_status'];
     $filter->value['completed'] = 'completed';
