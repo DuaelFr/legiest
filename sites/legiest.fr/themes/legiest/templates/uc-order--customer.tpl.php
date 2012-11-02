@@ -39,10 +39,74 @@
  * @see template_preprocess_uc_order()
  */
 ?>
+<script type="text/css">
+.invoice tbody { border-top: none; }
+
+.invoice-content {
+  margin-bottom: 0;
+}
+#invoice-header {
+  margin-bottom: 0;
+}
+#store-name {
+  text-transform: uppercase;
+  color: #0062A0;
+  font-weight: bold;
+}
+#store-slogan {
+  font-size: 85%;
+  color: #DC0932;
+}
+#store-address {
+  font-size: 90%;
+  color: #555;
+}
+.invoice-number {
+  float: left;
+  font-size: 150%;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+.invoice-date {
+  float: right;
+  padding-right: 20px;
+  margin-bottom: 0;
+}
+#purchasing-header {
+  font-size: 150%;
+  color: #0062A0;
+}
+.purch-order-infos-title {
+  background-color: #ddd;
+  color: #333;
+}
+.shipping-infos {
+  background-color: #efefef;
+  color: #666;
+  font-weight: bold;
+  
+}
+.penalties-infos {
+  font-size: 80%;
+}
+.rib-infos table {
+  margin-bottom: 0;
+}
+.rib-infos td {
+  border: 1px solid; 
+  font-size: 90%;
+  padding: 2px 4px;
+}
+.soc-compt-infos {
+  font-size: 90%;
+  color: #999;
+  text-align: center;
+}
+</script>
 <div class="invoice">
-<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#006699" style="font-family: verdana, arial, helvetica; font-size: small;">
+<table class="first-level-table" width="95%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#006699" style="font-family: verdana, arial, helvetica; font-size: small;">
   <tr>
-    <td>
+    <td id="invoice-border">
       <table width="100%" border="0" cellspacing="0" cellpadding="5" align="center" bgcolor="#FFFFFF" style="font-family: verdana, arial, helvetica; font-size: small;">
         <?php if ($business_header): ?>
         <tr valign="top">
@@ -55,11 +119,11 @@
                 <td width="98%">
                   <div style="padding-left: 1em;">
                   <span id="store-name" style="font-size: large;"><?php //print $store_name; ?>Droit du Travail</span><br />
-                  <span id="store-slogan"><?php print $site_slogan; ?></span>
+                  <span id="store-slogan"><?php //print $site_slogan; ?></span>
                   </div>
                 </td>
                 <td id="store-address" nowrap="nowrap">
-                  <?php print $store_address; ?><br /><?php print $store_phone; ?>
+                  <?php print $store_address; ?><br />Tél : <?php print $store_phone; ?><br /><?php print $store_email; ?>
                 </td>
               </tr>
             </table>
@@ -67,8 +131,15 @@
         </tr>
         <?php endif; ?>
         <tr>
-          <td class="invoice-number">
-          <span id="invoice-number">Facture n° <?php print strip_tags($order_link); ?></span>
+          <td>
+            <?php
+              $date_time = explode(' - ', $order_created);
+              $date_elements = explode('/', $date_time[0]);
+              $order_date = $date_elements[1] . '/' . $date_elements[0] . '/' . $date_elements[2];
+              $order_date_time = $order_date . ' - ' . $date_time[1];
+            ?>
+            <p class="invoice-number">Facture n° L<?php print strip_tags($order_link); ?></p>
+            <p class="invoice-date">Date : <?php print $order_date; ?></span></p>
           </td>
         </tr>
         <tr valign="top">
@@ -88,9 +159,9 @@
             <br /><br /><?php print $site_login_link; ?></p>
             <?php endif; ?>
 
-            <table cellpadding="4" cellspacing="0" border="0" width="100%" style="font-family: verdana, arial, helvetica; font-size: small;">
+            <table class="invoice-content" cellpadding="4" cellspacing="0" border="0" width="100%" style="font-family: verdana, arial, helvetica; font-size: small;">
               <tr>
-                <td colspan="2" bgcolor="#006699" style="color: white;">
+                <td class="purch-order-infos-title" colspan="2"  >
                   <b><?php print t('Purchasing Information:'); ?></b>
                 </td>
               </tr>
@@ -146,16 +217,14 @@
               </tr>
 
               <tr>
-                <td colspan="2" bgcolor="#006699" style="color: white;">
+                <td class="purch-order-infos-title" colspan="2">
                   <b><?php print t('Order Summary:'); ?></b>
                 </td>
               </tr>
 
               <?php if ($shippable): ?>
               <tr>
-                <td colspan="2" bgcolor="#EEEEEE">
-                  <font color="#CC6600"><b><?php print t('Shipping Details:'); ?></b></font>
-                </td>
+                <td class="shipping-infos" colspan="2"><?php print t('Shipping Details:'); ?></td>
               </tr>
               <?php endif; ?>
 
@@ -177,7 +246,7 @@
                         <b><?php print t('Order Date: '); ?></b>
                       </td>
                       <td width="98%">
-                        <?php print $order_created; ?>
+                        <?php print $order_date_time; ?>
                       </td>
                     </tr>
 
@@ -256,7 +325,6 @@
 
                 </td>
               </tr>
-
               <?php if ($help_text || $email_text || $store_footer): ?>
               <tr>
                 <td colspan="2">
@@ -274,16 +342,49 @@
                   <p><?php print t('Thanks again for shopping with us.'); ?></p>
                   <?php endif; ?>
 
+                  <!--
                   <?php if ($store_footer): ?>
                   <p><b><?php print $store_link; ?></b><br /><b><?php print $site_slogan; ?></b></p>
                   <?php endif; ?>
+                  -->
                 </td>
               </tr>
-              <?php endif; ?>
-
+              <?php endif; ?>              
             </table>
           </td>
         </tr>
+        <tr>
+          <td class="penalties-infos">       
+          Pénalités de retard : Taux annuel de : 8,00 %<br />
+          Frais de recouvrement : Le montant de l'indemnité forfaitaire légale est de 40 euros (art. D. 441-5 du Code du Commerce)
+          </td>
+        </tr>
+        <tr>
+          <td class="rib-infos">
+            <table>
+              <tr>
+                <td>Code Banque</td>               
+                <td>Code Guichet</td>
+                <td>Numéro de Compte</td>                
+                <td>Clé RIB</td>                
+                <td>Domiciliation</td>
+              </tr>
+              <tr>
+                <td>12506</td>                
+                <td>20049</td>
+                <td>56039910946</td>                
+                <td>02</td>                
+                <td>Crédit Agricole Besançon Entreprises</td>
+              </tr>
+            </table>
+          </td>
+        </tr> 
+        <tr>
+          <td class="soc-compt-infos">
+            LEGIEST - SARL au capital de 7 500 € - RCS MONTPELLIER - SIRET : 52886183400018<br />
+            TVA FR 67 528861834
+          </td>
+        </tr> 
       </table>
     </td>
   </tr>

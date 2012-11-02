@@ -1,5 +1,8 @@
 .invoice tbody { border-top: none; }
 
+.invoice-content {
+  margin-bottom: 0;
+}
 #invoice-header {
   margin-bottom: 0;
 }
@@ -17,15 +20,43 @@
   color: #555;
 }
 .invoice-number {
-  text-align: right;
-  padding-right: 20px;
-}
-#invoice-number {
+  float: left;
   font-size: 150%;
   font-weight: bold;
+  margin-bottom: 0;
+}
+.invoice-date {
+  float: right;
+  padding-right: 20px;
+  margin-bottom: 0;
 }
 #purchasing-header {
   font-size: 150%;
   color: #0062A0;
 }
-
+.purch-order-infos-title {
+  background-color: #ddd;
+  color: #333;
+}
+.shipping-infos {
+  background-color: #efefef;
+  color: #666;
+  font-weight: bold;
+  
+}
+.penalties-infos {
+  font-size: 80%;
+}
+.rib-infos table {
+  margin-bottom: 0;
+}
+.rib-infos td {
+  border: 1px solid; 
+  font-size: 90%;
+  padding: 2px 4px;
+}
+.soc-compt-infos {
+  font-size: 90%;
+  color: #999;
+  text-align: center;
+}
