@@ -97,6 +97,11 @@
   font-size: 90%;
   padding: 2px 4px;
 }
+.iban-swift-infos {
+  font-size: 90%;
+  color: #666;
+  margin-bottom: 0;
+}
 .soc-compt-infos {
   font-size: 90%;
   color: #999;
@@ -377,6 +382,10 @@
                 <td>Crédit Agricole Besançon Entreprises</td>
               </tr>
             </table>
+            <p class="iban-swift-infos">
+            IBAN : FR76 1250 6200 4956 0399 1094 602<br/>
+            SWIFT : AGRIFRPP825
+            </p>
           </td>
         </tr> 
         <tr>

@@ -68,6 +68,11 @@
   color: #666;
   padding: 2px 4px;
 }
+.iban-swift-infos {
+  font-size: 90%;
+  color: #666;
+  margin-bottom: 0;
+}
 .soc-compt-infos {
   font-size: 90%;
   color: #999;
